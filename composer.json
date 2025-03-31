@@ -1,0 +1,45 @@
+{
+  "name": "whitespace-se/wp-plugin-tracking-gdpr",
+  "description": "WordPress plugin that adds more features to Municipio",
+  "type": "wordpress-plugin",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "AGPL-3.0",
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true,
+      "composer/installers": true
+    }
+  },
+  "extra": {
+    "installer-name": "whitespace-tracking-gdpr",
+    "installer-paths": {
+      "vendor/{$vendor}/{$name}/": [
+        "vendor:wpackagist-plugin",
+        "type:wordpress-muplugin",
+        "type:wordpress-plugin",
+        "type:wordpress-theme"
+      ]
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "WhitespaceTrackingGdpr\\": "psr-4/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org",
+      "only": [
+        "wpackagist-plugin/*",
+        "wpackagist-theme/*"
+      ]
+    }
+  ],
+  "require": {
+  },
+  "require-dev": {
+    "wpackagist-plugin/advanced-custom-fields": "^6.3"
+  }
+}
