@@ -6,7 +6,7 @@ add_action("wp_head", function () {
   $site_id = mx_get_matomo_option("site_id");
   if ($container_id && $url): ?>
       <!-- Matomo Tag Manager -->
-      <script>
+      <script data-category="uncategorized" type="text/plain">
         var _mtm = window._mtm = window._mtm || [];
         _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
         (function() {
@@ -19,7 +19,7 @@ add_action("wp_head", function () {
       <!-- End Matomo Tag Manager -->
       <?php elseif (!$container_id && $url && $site_id): ?>
         <!-- Matomo -->
-        <script>
+        <script data-category="uncategorized" type="text/plain">
           var _paq = window._paq = window._paq || [];
           _paq.push(['requireCookieConsent']);
           _paq.push(['trackPageView']);

@@ -1,10 +1,18 @@
+import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import * as CookieConsent from 'vanilla-cookieconsent';
 
+console.log('Cookie consent loaded');
+
 CookieConsent.run({
+  autoShow: true,
   categories: {
     necessary: {
       enabled: true,
       readOnly: true,
+    },
+    uncategorized: {
+      enabled: false,
+      readOnly: false,
     },
   },
   language: {
@@ -42,6 +50,10 @@ CookieConsent.run({
               description:
                 'These cookies collect information about how you use our website. All of the data is anonymized and cannot be used to identify you.',
               linkedCategory: 'analytics',
+            },
+            {
+              title: 'Uncategorized cookies',
+              linkedCategory: 'uncategorized',
             },
             {
               title: 'More information',
