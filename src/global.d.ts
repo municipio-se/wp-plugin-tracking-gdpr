@@ -6,8 +6,8 @@ interface IframeManager {
     services: {
       [key: string]: {
         embedUrl: string;
-        thumbnailUrl: string;
-        iframe: {
+        thumbnailUrl?: string;
+        iframe?: {
           [key: string]: string;
         };
         languages: {

@@ -107,6 +107,21 @@ window.addEventListener('load', function () {
           },
         },
       },
+      uncategorized: {
+        embedUrl: '{data-id}',
+        // thumbnailUrl: 'https://vumbnail.com/{data-id}.jpg',
+        // iframe: {
+        //   allow:
+        //     'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
+        // },
+        languages: {
+          en: {
+            notice: 'This content is hosted by a third party.',
+            loadBtn: 'Load content',
+            loadAllBtn: "Don't ask again",
+          },
+        },
+      },
     },
   });
 });
