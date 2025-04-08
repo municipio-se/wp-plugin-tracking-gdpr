@@ -1,0 +1,22 @@
+#cc-main {
+  /** Change font **/
+  --cc-font-family: var(--font-family-base);
+
+  /** Change button primary color to custom **/
+  --cc-btn-primary-bg: var(--color-primary);
+  --cc-btn-primary-border-color: #000000;
+  --cc-btn-primary-hover-bg: white;
+  --cc-btn-primary-hover-color: var(--color-primary);
+  --cc-btn-primary-hover-border-color: var(--color-primary);
+
+  /** Also make toggles the same color as the button **/
+  --cc-toggle-on-bg: var(--cc-btn-primary-bg);
+
+  /* border-radius: ; */
+  /* shadow */
+  /* font-size */
+  /* sizes of buttons */
+
+  /** Make the buttons a bit rounder **/
+  /* --cc-btn-border-radius: 10px; */
+}

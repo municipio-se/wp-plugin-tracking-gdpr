@@ -3,6 +3,7 @@ import * as CookieConsent from 'vanilla-cookieconsent';
 
 import '@orestbida/iframemanager/dist/iframemanager.css';
 import '@orestbida/iframemanager';
+import './custom.css';
 
 CookieConsent.run({
   autoShow: true,
