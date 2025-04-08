@@ -107,6 +107,22 @@ window.addEventListener('load', function () {
           },
         },
       },
+      mediaflow: {
+        embedUrl: '//play.mediaflow.com/ovp/16/{data-id}',
+        thumbnailUrl: 'https://im16.inviewer.se/skiss/44/{data-id}.jpg',
+        iframe: {
+          allow:
+            'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
+        },
+        languages: {
+          en: {
+            notice:
+              'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://www.mediaflow.com/integritetsinformation/" target="_blank">terms and conditions</a> of mediaflow.com.',
+            loadBtn: 'Load video',
+            loadAllBtn: "Don't ask again",
+          },
+        },
+      },
       uncategorized: {
         embedUrl: '{data-id}',
         // thumbnailUrl: 'https://vumbnail.com/{data-id}.jpg',

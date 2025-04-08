@@ -10,6 +10,9 @@ function wstg_detect_video_service($url) {
     //Matches youtu.be and full domain
     return "youtube";
   }
+  if (str_contains($url, "mediaflow")) {
+    return "mediaflow";
+  }
   return false;
 }
 
@@ -60,12 +63,25 @@ function wstg_get_video_id($embedLink, $videoService) {
     return wstg_parse_vimeo_id($embedLink);
   }
 
+  if ($videoService == "mediaflow") {
+    preg_match(
+      '/src=["\'].*?mediaflow(pro)?\.com\/ovp\/\d+\/([a-zA-Z0-9]+)\?/',
+      $embedLink,
+      $matches,
+    );
+    return $matches[2];
+  }
+
   return false;
 }
 
 add_filter(
   "the_content",
   function ($content) {
+    if (empty(trim($content))) {
+      return $content; // Avoid processing empty content
+    }
+
     $document = new Document($content);
     $nodes = $document->find("iframe");
     foreach ($nodes as $node) {
