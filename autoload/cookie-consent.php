@@ -13,16 +13,17 @@ add_action(
       filemtime(WHITESPACE_TRACKING_GDPR_PATH . "/dist/assets/index.js"),
       true,
     );
-    // wp_localize_script(
-    //   "whitespace-tracking-gdpr",
-    //   "whitespaceTrackingGdpr",
-    //   [
-    //     "cookieConsent" => get_field("cookie_consent", "option"),
-    //     "matomoUrl" => get_field("mx_matomo_url", "option"),
-    //     "matomoContainerId" => get_field("mx_matomo_container_id", "option"),
-    //     "matomoSiteId" => get_field("mx_matomo_site_id", "option"),
-    //   ],
-    // );
+    $categories = wstg_get_cookie_categories();
+    $cookie_consent = [];
+    foreach ($categories as $category_key => $category) {
+      $cookie_consent[$category_key] = get_field(
+        "wstg_cookie_category_{$category_key}",
+        "option",
+      );
+    }
+    wp_localize_script("whitespace-tracking-gdpr", "whitespaceTrackingGdpr", [
+      "cookieConsent" => $cookie_consent,
+    ]);
   },
   10,
 );

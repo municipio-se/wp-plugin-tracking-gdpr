@@ -5,12 +5,27 @@ import '@orestbida/iframemanager/dist/iframemanager.css';
 import '@orestbida/iframemanager';
 import './custom.css';
 
+const cookieConsent = window.whitespaceTrackingGdpr.cookieConsent;
+console.log(cookieConsent);
+
 CookieConsent.run({
   autoShow: true,
   categories: {
     necessary: {
       enabled: true,
       readOnly: true,
+    },
+    analytics: {
+      enabled: false,
+      readOnly: false,
+    },
+    marketing: {
+      enabled: false,
+      readOnly: false,
+    },
+    embedded: {
+      enabled: false,
+      readOnly: false,
     },
     uncategorized: {
       enabled: false,

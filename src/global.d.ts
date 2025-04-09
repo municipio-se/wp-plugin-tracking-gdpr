@@ -23,5 +23,17 @@ interface IframeManager {
 declare global {
   interface Window {
     iframemanager: () => IframeManager;
+    whitespaceTrackingGdpr: {
+      cookieConsent: {
+        [key: string]: {
+          enabled: boolean;
+          title: string;
+          description: string;
+          services: {
+            title: string;
+          }[];
+        };
+      };
+    };
   }
 }
