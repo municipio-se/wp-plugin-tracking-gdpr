@@ -125,7 +125,6 @@ window.addEventListener('load', function () {
       },
       mediaflow: {
         embedUrl: '//play.mediaflow.com/ovp/16/{data-id}',
-        thumbnailUrl: 'https://im16.inviewer.se/skiss/44/{data-id}.jpg',
         iframe: {
           allow:
             'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
@@ -135,6 +134,36 @@ window.addEventListener('load', function () {
             notice:
               'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://www.mediaflow.com/integritetsinformation/" target="_blank">terms and conditions</a> of mediaflow.com.',
             loadBtn: 'Load video',
+            loadAllBtn: "Don't ask again",
+          },
+        },
+      },
+      objektvision: {
+        embedUrl: 'https://export.objektvision.se/{data-id}',
+        iframe: {
+          allow:
+            'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
+        },
+        languages: {
+          en: {
+            notice:
+              'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://objektvision.se/cookies" target="_blank">terms and conditions</a> of objektvision.se.',
+            loadBtn: 'Load content',
+            loadAllBtn: "Don't ask again",
+          },
+        },
+      },
+      google: {
+        embedUrl: 'https://www.google.com/maps/embed?pb={data-id}',
+        iframe: {
+          allow:
+            'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
+        },
+        languages: {
+          en: {
+            notice:
+              'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://policies.google.com/technologies/cookies" target="_blank">terms and conditions</a> of google.com.',
+            loadBtn: 'Load map',
             loadAllBtn: "Don't ask again",
           },
         },
