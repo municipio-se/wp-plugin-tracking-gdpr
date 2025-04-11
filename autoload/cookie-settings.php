@@ -101,7 +101,42 @@ add_action(
     acf_add_local_field_group([
       "key" => "group_wstg_cookie_settings",
       "title" => __("Cookie Settings", "whitespace-tracking-gdpr"),
-      "fields" => $category_fields,
+      "fields" => [
+        [
+          "key" => "field_wstg_cookie_script_rule",
+          "name" => "script_rule",
+          "label" => __("Script rule", "whitespace-tracking-gdpr"),
+          "type" => "repeater",
+          "sub_fields" => [
+            [
+              "key" => "field_wstg_cookie_script_rule_url",
+              "name" => "url",
+              "label" => __("URL", "whitespace-tracking-gdpr"),
+              "type" => "text",
+            ],
+            [
+              "key" => "field_wstg_cookie_script_rule_regex",
+              "name" => "regex",
+              "label" => __("Regex", "whitespace-tracking-gdpr"),
+              "type" => "true_false",
+              "ui" => 1,
+            ],
+            [
+              "key" => "field_wstg_cookie_script_rule_category",
+              "name" => "category",
+              "label" => __("Category", "whitespace-tracking-gdpr"),
+              "type" => "select",
+              "choices" => array_combine(
+                array_keys(wstg_get_cookie_categories()),
+                array_map(function ($category) {
+                  return $category["title"];
+                }, wstg_get_cookie_categories()),
+              ),
+            ],
+          ],
+        ],
+        ...$category_fields,
+      ],
       "location" => [
         [
           [
