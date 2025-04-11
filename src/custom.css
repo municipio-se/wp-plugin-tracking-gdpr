@@ -11,8 +11,8 @@
 
   /** Also make toggles the same color as the button **/
   --cc-toggle-on-bg: var(--cc-btn-primary-bg);
-
-  /* border-radius: ; */
+  --cc-modal-border-radius: var(--radius-lg);
+  --cc-btn-border-radius: var(--radius-sm);
   /* shadow */
   /* font-size */
   /* sizes of buttons */
