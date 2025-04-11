@@ -25,13 +25,15 @@ declare global {
     iframemanager: () => IframeManager;
     whitespaceTrackingGdpr: {
       cookieConsent: {
-        [key: string]: {
-          enabled: boolean;
-          title: string;
-          description: string;
-          services: {
+        categories: {
+          [key: string]: {
+            enabled: boolean;
             title: string;
-          }[];
+            description: string;
+            services: {
+              title: string;
+            }[];
+          };
         };
       };
     };

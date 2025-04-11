@@ -6,83 +6,88 @@ import '@orestbida/iframemanager';
 import './custom.css';
 
 const cookieConsent = window.whitespaceTrackingGdpr.cookieConsent;
-console.log(cookieConsent);
+// console.log(cookieConsent);
+
+const categories = {} as CookieConsent.CookieConsentConfig['categories'];
+Object.entries(cookieConsent.categories).forEach(([key, category]) => {
+  if (category.enabled === false) return;
+  categories[key] = {
+    enabled: key === 'necessary',
+    readOnly: key === 'necessary',
+  };
+});
+
+// console.log(categories);
+
+const sections =
+  [] as CookieConsent.Translation['preferencesModal']['sections'];
+
+Object.entries(cookieConsent.categories).forEach(([key, category]) => {
+  if (category.enabled === false) return;
+  sections.push({
+    title: category.title,
+    description: category.description,
+    linkedCategory: key,
+  });
+});
 
 CookieConsent.run({
   autoShow: true,
-  categories: {
-    necessary: {
-      enabled: true,
-      readOnly: true,
-    },
-    analytics: {
-      enabled: false,
-      readOnly: false,
-    },
-    marketing: {
-      enabled: false,
-      readOnly: false,
-    },
-    embedded: {
-      enabled: false,
-      readOnly: false,
-    },
-    uncategorized: {
-      enabled: false,
-      readOnly: false,
-    },
-  },
+  categories,
   language: {
-    default: 'en',
+    default: 'sv',
     translations: {
-      en: {
+      sv: {
         consentModal: {
-          title: 'We use cookies',
+          title: 'Vi använder cookies',
           description: 'Cookie modal description',
-          acceptAllBtn: 'Accept all',
-          acceptNecessaryBtn: 'Reject all',
-          showPreferencesBtn: 'Manage Individual preferences',
+          acceptAllBtn: 'Acceptera alla',
+          acceptNecessaryBtn: 'Acceptera nödvändiga',
+          showPreferencesBtn: 'Hantera individuella preferenser',
         },
         preferencesModal: {
-          title: 'Manage cookie preferences',
-          acceptAllBtn: 'Accept all',
-          acceptNecessaryBtn: 'Reject all',
-          savePreferencesBtn: 'Accept current selection',
-          closeIconLabel: 'Close modal',
-          sections: [
-            {
-              title: 'Somebody said ... cookies?',
-              description: 'I want one!',
-            },
-            {
-              title: 'Strictly Necessary cookies',
-              description:
-                'These cookies are essential for the proper functioning of the website and cannot be disabled.',
+          title: 'Hantera cookie-preferenser',
+          acceptAllBtn: 'Acceptera alla',
+          acceptNecessaryBtn: 'Acceptera nödvändiga',
+          savePreferencesBtn: 'Acceptera nuvarande val',
+          closeIconLabel: 'Stäng modal',
+          sections,
+          // sections: [
+          //   {
+          //     title: 'Någon sa ... cookies?',
+          //     description: 'Jag vill ha en!',
+          //   },
+          //   {
+          //     title: 'Nödvändiga cookies',
+          //     description:
+          //       'Dessa cookies är nödvändiga för att webbplatsen ska fungera korrekt och kan inte inaktiveras.',
 
-              //this field will generate a toggle linked to the 'necessary' category
-              linkedCategory: 'necessary',
-            },
-            {
-              title: 'Performance and Analytics',
-              description:
-                'These cookies collect information about how you use our website. All of the data is anonymized and cannot be used to identify you.',
-              linkedCategory: 'analytics',
-            },
-            {
-              title: 'Uncategorized cookies',
-              linkedCategory: 'uncategorized',
-            },
-            {
-              title: 'More information',
-              description:
-                'For any queries in relation to my policy on cookies and your choices, please <a href="#contact-page">contact us</a>',
-            },
-          ],
+          //     //this field will generate a toggle linked to the 'necessary' category
+          //     linkedCategory: 'necessary',
+          //   },
+          //   {
+          //     title: 'Prestanda och analys',
+          //     description:
+          //       'Dessa cookies samlar in information om hur du använder vår webbplats. All data är anonymiserad och kan inte användas för att identifiera dig.',
+          //     linkedCategory: 'analytics',
+          //   },
+          //   {
+          //     title: 'Oanvändade cookies',
+          //     linkedCategory: 'uncategorized',
+          //   },
+          //   {
+          //     title: 'Mer information',
+          //     description:
+          //       'För alla frågor i samband med min policy för cookies och dina val, vänligen <a href="#contact-page">kontakta oss</a>',
+          //   },
+          // ],
         },
       },
     },
   },
 });
+
+window.CookieConsent = CookieConsent;
 
 window.addEventListener('load', function () {
   const im = window.iframemanager();

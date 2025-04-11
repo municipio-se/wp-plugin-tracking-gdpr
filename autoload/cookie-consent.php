@@ -16,7 +16,7 @@ add_action(
     $categories = wstg_get_cookie_categories();
     $cookie_consent = [];
     foreach ($categories as $category_key => $category) {
-      $cookie_consent[$category_key] = get_field(
+      $cookie_consent["categories"][$category_key] = get_field(
         "wstg_cookie_category_{$category_key}",
         "option",
       );
