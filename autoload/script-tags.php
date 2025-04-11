@@ -13,20 +13,18 @@
 add_filter(
   "wp_script_attributes",
   function ($attributes) {
-    // error_log(var_export(get_site_url(), true));
-    // error_log(var_export($attributes["src"], true));
-    if (strpos($attributes["src"], get_site_url() . "/") !== 0) {
-      $attributes["data-category"] = "uncategorized";
+    $category =
+      strpos($attributes["src"], get_site_url() . "/") === 0
+        ? ""
+        : "uncategorized";
+    $category = apply_filters("wstg_script_category", $category);
+    if ($category) {
+      $attributes["data-category"] = $category;
       if (isset($attributes["type"])) {
         $attributes["data-type"] = $attributes["type"];
       }
       $attributes["type"] = "text/plain";
     }
-    // if ($attributes["id"] != "whitespace-tracking-gdpr-js") {
-    //   $attributes["data-category"] = "uncategorized";
-    //   $attributes["type"] = "text/plain";
-    // }
-    // error_log(var_export($attributes, true));
     return $attributes;
   },
   10,
