@@ -1,12 +1,18 @@
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import * as CookieConsent from 'vanilla-cookieconsent';
 
-import '@orestbida/iframemanager/dist/iframemanager.css';
-import '@orestbida/iframemanager';
+import './wstg-iframe';
+
 import './custom.css';
 
 const cookieConsent = window.whitespaceTrackingGdpr.cookieConsent;
-// console.log(cookieConsent);
+
+function maybeRegex(value: string): string | RegExp {
+  if (value.startsWith('/') && value.endsWith('/')) {
+    return new RegExp(value.substring(1, value.length - 1));
+  }
+  return value;
+}
 
 const categories = {} as CookieConsent.CookieConsentConfig['categories'];
 Object.entries(cookieConsent.categories).forEach(([key, category]) => {
@@ -14,10 +20,25 @@ Object.entries(cookieConsent.categories).forEach(([key, category]) => {
   categories[key] = {
     enabled: key === 'necessary',
     readOnly: key === 'necessary',
+    services: Object.fromEntries(
+      Object.entries(category.services ?? {})
+        .filter(([, service]) => service.enabled)
+        .map(([serviceKey, service]) => {
+          return [
+            serviceKey,
+            {
+              label: service.title,
+              cookies: (service.cookies ?? []).map((cookie) => ({
+                name: cookie.name ? maybeRegex(cookie.name) : /^/,
+                path: cookie.path,
+                domain: cookie.domain,
+              })),
+            },
+          ];
+        }),
+    ),
   };
 });
-
-// console.log(categories);
 
 const sections =
   [] as CookieConsent.Translation['preferencesModal']['sections'];
@@ -52,35 +73,6 @@ CookieConsent.run({
           savePreferencesBtn: 'Acceptera nuvarande val',
           closeIconLabel: 'Stäng modal',
           sections,
-          // sections: [
-          //   {
-          //     title: 'Någon sa ... cookies?',
-          //     description: 'Jag vill ha en!',
-          //   },
-          //   {
-          //     title: 'Nödvändiga cookies',
-          //     description:
-          //       'Dessa cookies är nödvändiga för att webbplatsen ska fungera korrekt och kan inte inaktiveras.',
-
-          //     //this field will generate a toggle linked to the 'necessary' category
-          //     linkedCategory: 'necessary',
-          //   },
-          //   {
-          //     title: 'Prestanda och analys',
-          //     description:
-          //       'Dessa cookies samlar in information om hur du använder vår webbplats. All data är anonymiserad och kan inte användas för att identifiera dig.',
-          //     linkedCategory: 'analytics',
-          //   },
-          //   {
-          //     title: 'Oanvändade cookies',
-          //     linkedCategory: 'uncategorized',
-          //   },
-          //   {
-          //     title: 'Mer information',
-          //     description:
-          //       'För alla frågor i samband med min policy för cookies och dina val, vänligen <a href="#contact-page">kontakta oss</a>',
-          //   },
-          // ],
         },
       },
     },
@@ -89,76 +81,10 @@ CookieConsent.run({
 
 window.CookieConsent = CookieConsent;
 
-window.addEventListener('load', function () {
-  const im = window.iframemanager();
-
-  // Example with youtube embed
-  im.run({
-    currLang: 'en',
-    services: {
-      youtube: {
-        embedUrl: 'https://www.youtube-nocookie.com/embed/{data-id}',
-        thumbnailUrl: 'https://i3.ytimg.com/vi/{data-id}/hqdefault.jpg',
-        iframe: {
-          allow:
-            'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
-        },
-        languages: {
-          en: {
-            notice:
-              'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://www.youtube.com/t/terms" target="_blank">terms and conditions</a> of youtube.com.',
-            loadBtn: 'Load video',
-            loadAllBtn: "Don't ask again",
-          },
-        },
-      },
-      vimeo: {
-        embedUrl: 'https://player.vimeo.com/video/{data-id}?dnt=1',
-        thumbnailUrl: 'https://vumbnail.com/{data-id}.jpg',
-        iframe: {
-          allow:
-            'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
-        },
-        languages: {
-          en: {
-            notice:
-              'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://vimeo.com/cookie_policy" target="_blank">terms and conditions</a> of vimeo.com.',
-            loadBtn: 'Load video',
-            loadAllBtn: "Don't ask again",
-          },
-        },
-      },
-      mediaflow: {
-        embedUrl: '//play.mediaflow.com/ovp/16/{data-id}',
-        thumbnailUrl: 'https://im16.inviewer.se/skiss/44/{data-id}.jpg',
-        iframe: {
-          allow:
-            'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
-        },
-        languages: {
-          en: {
-            notice:
-              'This content is hosted by a third party. By showing the external content you accept the <a rel="noreferrer noopener" href="https://www.mediaflow.com/integritetsinformation/" target="_blank">terms and conditions</a> of mediaflow.com.',
-            loadBtn: 'Load video',
-            loadAllBtn: "Don't ask again",
-          },
-        },
-      },
-      uncategorized: {
-        embedUrl: '{data-id}',
-        // thumbnailUrl: 'https://vumbnail.com/{data-id}.jpg',
-        // iframe: {
-        //   allow:
-        //     'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
-        // },
-        languages: {
-          en: {
-            notice: 'This content is hosted by a third party.',
-            loadBtn: 'Load content',
-            loadAllBtn: "Don't ask again",
-          },
-        },
-      },
-    },
+window.ccDebug = function () {
+  console.log({
+    categories,
+    sections,
+    cookieConsent,
   });
-});
+};

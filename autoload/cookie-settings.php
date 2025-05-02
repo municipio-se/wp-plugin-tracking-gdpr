@@ -3,38 +3,59 @@
 function wstg_get_cookie_categories() {
   return [
     "necessary" => [
-      "title" => __("Necessary", "whitespace-tracking-gdpr"),
-      "description" => __(
-        "Necessary cookies are used to collect information about how visitors use a website.",
+      "title" => _x(
+        "Necessary",
+        "Cookie Category Title",
         "whitespace-tracking-gdpr",
       ),
+      // "description" => __(
+      //   "Necessary cookies are used to collect information about how visitors use a website.",
+      //   "whitespace-tracking-gdpr",
+      // ),
       "required" => true,
+      "supports_services" => false,
     ],
     "analytics" => [
-      "title" => __("Analytics", "whitespace-tracking-gdpr"),
+      "title" => _x(
+        "Analytics",
+        "Cookie Category Title",
+        "whitespace-tracking-gdpr",
+      ),
       "description" => __(
-        "Analytics cookies are used to collect information about how visitors use a website.",
+        "Analytics cookies are used to collect information about how visitors use the website.",
         "whitespace-tracking-gdpr",
       ),
     ],
     "marketing" => [
-      "title" => __("Marketing", "whitespace-tracking-gdpr"),
+      "title" => _x(
+        "Marketing",
+        "Cookie Category Title",
+        "whitespace-tracking-gdpr",
+      ),
       "description" => __(
         "Marketing cookies are used to collect information about how visitors use a website.",
         "whitespace-tracking-gdpr",
       ),
     ],
     "embedded" => [
-      "title" => __("Embedded", "whitespace-tracking-gdpr"),
+      "title" => _x(
+        "Embedded",
+        "Cookie Category Title",
+        "whitespace-tracking-gdpr",
+      ),
       "description" => __(
-        "Embedded cookies are used to collect information about how visitors use a website.",
+        "Cookies that are set by third parties when we embed content from different services.",
         "whitespace-tracking-gdpr",
       ),
     ],
     "uncategorized" => [
-      "title" => __("Uncategorized", "whitespace-tracking-gdpr"),
+      "title" => _x(
+        "Uncategorized",
+        "Cookie Category Title",
+        "whitespace-tracking-gdpr",
+      ),
       "description" => __(
-        "Uncategorized cookies are used to collect information about how visitors use a website.",
+        "These cookies have not been categorized yet.",
         "whitespace-tracking-gdpr",
       ),
       "required" => true,
@@ -47,95 +68,94 @@ add_action(
   function () {
     $category_fields = [];
     foreach (wstg_get_cookie_categories() as $category_key => $category) {
-      $enabled = $category["required"]
-        ? []
-        : [
-          [
-            "key" => "field_wstg_cookie_category_{$category_key}_enabled",
-            "name" => "enabled",
-            "label" => __("Enabled", "whitespace-tracking-gdpr"),
-            "type" => "true_false",
-            "ui" => 1,
-          ],
-        ];
-      $category_fields[] = [
+      if ($category["required"]) {
+        continue;
+      }
+      $category_field = [
         "key" => "field_wstg_cookie_category_{$category_key}",
-        "name" => "wstg_cookie_category_{$category_key}",
+        "name" => "{$category_key}",
         "label" => $category["title"],
         "type" => "group",
-        "sub_fields" => [
-          ...$enabled,
-          [
-            "key" => "field_wstg_cookie_category_{$category_key}_title",
-            "name" => "title",
-            "label" => __("Title", "whitespace-tracking-gdpr"),
-            "type" => "text",
-            "default_value" => $category["title"],
-          ],
-          [
-            "key" => "field_wstg_cookie_category_{$category_key}_description",
-            "name" => "description",
-            "label" => __("Description", "whitespace-tracking-gdpr"),
-            "type" => "wysiwyg",
-            "toolbar" => "basic",
-            "media_upload" => 0,
-            "default_value" => $category["description"],
-          ],
-          [
-            "key" => "field_wstg_cookie_category_{$category_key}_services",
-            "name" => "services",
-            "label" => __("Services", "whitespace-tracking-gdpr"),
-            "type" => "repeater",
-            "sub_fields" => [
+        "sub_fields" => [],
+        "layout" => "block",
+      ];
+      $category_field["sub_fields"][] = [
+        "key" => "field_wstg_cookie_category_{$category_key}_enabled",
+        "name" => "enabled",
+        "label" => _x(
+          "Enabled",
+          "Category Sub Field Label",
+          "whitespace-tracking-gdpr",
+        ),
+        "type" => "true_false",
+        "ui" => 1,
+      ];
+      $services = wstg_get_services();
+      $services = array_filter($services, function ($service) use (
+        $category_key,
+      ) {
+        return $service["category"] === $category_key;
+      });
+      $service_fields = [];
+      foreach ($services as $service_key => $service) {
+        $service_field = [
+          "key" => "field_wstg_cookie_service_{$service_key}",
+          "name" => "{$service_key}",
+          "label" => $service["title"],
+          "type" => "group",
+          "sub_fields" => [],
+          "layout" => "block",
+        ];
+        $service_field["sub_fields"][] = [
+          "key" => "field_wstg_cookie_service_{$service_key}_enabled",
+          "name" => "enabled",
+          "label" => _x(
+            "Enabled",
+            "Service Sub Field Label",
+            "whitespace-tracking-gdpr",
+          ),
+          "type" => "true_false",
+          "ui" => 1,
+        ];
+        $service_fields[] = $service_field;
+      }
+      if ($service_fields) {
+        $category_field["sub_fields"][] = [
+          "key" => "field_wstg_cookie_category_{$category_key}_services",
+          "name" => "services",
+          "label" => __("Services", "whitespace-tracking-gdpr"),
+          "instructions" => __(
+            "Are you missing some service that you are using? Contact a developer to have it added.",
+            "whitespace-tracking-gdpr",
+          ),
+          "type" => "group",
+          "layout" => "row",
+          "sub_fields" => $service_fields,
+          "conditional_logic" => [
+            [
               [
-                "key" => "field_wstg_cookie_service_title",
-                "name" => "title",
-                "label" => __("Title", "whitespace-tracking-gdpr"),
-                "type" => "text",
+                "field" => "field_wstg_cookie_category_{$category_key}_enabled",
+                "operator" => "==",
+                "value" => 1,
               ],
             ],
           ],
-        ],
-      ];
+        ];
+      }
+      $category_fields[] = $category_field;
     }
     acf_add_local_field_group([
       "key" => "group_wstg_cookie_settings",
       "title" => __("Cookie Settings", "whitespace-tracking-gdpr"),
       "fields" => [
         [
-          "key" => "field_wstg_cookie_script_rule",
-          "name" => "script_rule",
-          "label" => __("Script rule", "whitespace-tracking-gdpr"),
-          "type" => "repeater",
-          "sub_fields" => [
-            [
-              "key" => "field_wstg_cookie_script_rule_url",
-              "name" => "url",
-              "label" => __("URL", "whitespace-tracking-gdpr"),
-              "type" => "text",
-            ],
-            [
-              "key" => "field_wstg_cookie_script_rule_regex",
-              "name" => "regex",
-              "label" => __("Regex", "whitespace-tracking-gdpr"),
-              "type" => "true_false",
-              "ui" => 1,
-            ],
-            [
-              "key" => "field_wstg_cookie_script_rule_category",
-              "name" => "category",
-              "label" => __("Category", "whitespace-tracking-gdpr"),
-              "type" => "select",
-              "choices" => array_combine(
-                array_keys(wstg_get_cookie_categories()),
-                array_map(function ($category) {
-                  return $category["title"];
-                }, wstg_get_cookie_categories()),
-              ),
-            ],
-          ],
+          "key" => "field_wstg_cookie_categories",
+          "name" => "wstg_cookie_categories",
+          "label" => __("Categories and Services", "whitespace-tracking-gdpr"),
+          "type" => "group",
+          "sub_fields" => $category_fields,
+          "layout" => "row",
         ],
-        ...$category_fields,
       ],
       "location" => [
         [

@@ -1,28 +1,13 @@
 export {};
 
-interface IframeManager {
-  run: (options: {
-    currLang: string;
-    services: {
-      [key: string]: {
-        embedUrl: string;
-        thumbnailUrl?: string;
-        iframe?: {
-          [key: string]: string;
-        };
-        languages: {
-          [lang: string]: {
-            [key: string]: string;
-          };
-        };
-      };
-    };
-  }) => void;
-}
+declare type ServiceCookie = {
+  name: string;
+  path?: string;
+  domain?: string;
+};
 
 declare global {
   interface Window {
-    iframemanager: () => IframeManager;
     whitespaceTrackingGdpr: {
       cookieConsent: {
         categories: {
@@ -32,10 +17,13 @@ declare global {
             description: string;
             services: {
               title: string;
+              cookies?: ServiceCookie[];
+              enabled: boolean;
             }[];
           };
         };
       };
     };
+    ccDebug: () => void;
   }
 }

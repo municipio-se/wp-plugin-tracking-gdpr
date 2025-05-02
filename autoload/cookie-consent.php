@@ -14,12 +14,21 @@ add_action(
       true,
     );
     $categories = wstg_get_cookie_categories();
+    $categories_settings = get_field("wstg_cookie_categories", "option");
+    $services = wstg_get_services();
     $cookie_consent = [];
     foreach ($categories as $category_key => $category) {
-      $cookie_consent["categories"][$category_key] = get_field(
-        "wstg_cookie_category_{$category_key}",
-        "option",
-      );
+      $cookie_consent["categories"][$category_key] =
+        ($categories_settings[$category_key] ?? []) + $category;
+    }
+    foreach ($services as $service_name => $service) {
+      $category = $service["category"];
+      if (!isset($cookie_consent["categories"][$category])) {
+        continue;
+      }
+      $cookie_consent["categories"][$category]["services"][
+        $service_name
+      ] += $service;
     }
     wp_localize_script("whitespace-tracking-gdpr", "whitespaceTrackingGdpr", [
       "cookieConsent" => $cookie_consent,
