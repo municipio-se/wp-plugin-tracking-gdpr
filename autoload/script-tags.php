@@ -1,15 +1,5 @@
 <?php
 
-// add_filter(
-//   "script_loader_tag",
-//   function ($tag, $handle, $src) {
-//     error_log(var_export($tag, true));
-//     return $tag;
-//   },
-//   10,
-//   3,
-// );
-
 add_filter(
   "wp_script_attributes",
   function ($attributes) {
