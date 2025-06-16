@@ -3,10 +3,11 @@
 global $wstg_services;
 $wstg_services = [];
 
-function wstg_register_service($slug, $service) {
+function wstg_register_service($key, $service) {
   global $wstg_services;
-  $service = apply_filters("wstg_register_service", $service, $slug);
-  $wstg_services[$slug] = $service;
+  $service["key"] = $key;
+  $service = apply_filters("wstg_register_service", $service, $key);
+  $wstg_services[$key] = $service;
 }
 
 function wstg_get_services() {
@@ -15,57 +16,38 @@ function wstg_get_services() {
 }
 
 function wstg_get_enabled_services() {
-  $settings = get_field("wstg_cookie_categories", "option");
+  $settings = get_field("wstg_service_settings", "option");
+  $available_services = wstg_get_services();
   $enabled_services = array_filter(
-    wstg_get_services(),
-    function ($service, $slug) use ($settings) {
-      $category = $service["category"];
-      return ($settings[$category]["enabled"] ?? false) &&
-        ($settings[$category]["services"][$slug]["enabled"] ?? false);
-    },
-    ARRAY_FILTER_USE_BOTH,
+    $available_services,
+    fn($service) => wstg_service_is_enabled($service, $settings),
   );
   return $enabled_services;
 }
 
-function wstg_category_is_enabled($key) {
-  $settings = get_field("wstg_cookie_categories", "option");
-  return $settings[$key]["enabled"] ?? false;
-}
-
-function wstg_service_is_enabled($slug) {
-  $service = wstg_get_service($slug);
+function wstg_service_is_enabled($service, $settings = null) {
+  $service = is_string($service) ? wstg_get_service($service) : $service;
   if (!$service) {
     return false;
   }
-  $category = $service["category"];
-  return ($settings[$category]["enabled"] ?? false) &&
-    ($settings[$category]["services"][$slug]["enabled"] ?? false);
+  $settings ??= get_field("wstg_service_settings", "option");
+  $service_key = $service["key"] ?? null;
+  return $settings[$service_key]["enabled"] ?? false;
 }
 
-function wstg_get_service($slug) {
+function wstg_get_service($key) {
   global $wstg_services;
-  return $wstg_services[$slug] ?? null;
-}
-
-function wstg_get_service_by_name($name) {
-  global $wstg_services;
-  foreach ($wstg_services as $slug => $service) {
-    if ($service["title"] === $name) {
-      return $service;
-    }
-  }
-  return null;
+  return $wstg_services[$key] ?? null;
 }
 
 function wstg_parse_input($input) {
   $enabled_services = wstg_get_enabled_services();
-  foreach ($enabled_services as $service_name => $service) {
+  foreach ($enabled_services as $service_key => $service) {
     if (isset($service["iframe"]["parseInput"])) {
       $result = call_user_func($service["iframe"]["parseInput"], $input);
       if ($result) {
         return array_merge($result, [
-          "serviceName" => $service_name,
+          "serviceKey" => $service_key,
           "service" => $service,
           "attributes" => $service["iframe"]["attributes"] ?? [],
         ]);
@@ -82,6 +64,9 @@ function wstg_parse_input($input) {
 }
 
 add_action("plugins_loaded", function () {
+  wstg_register_service("wstg", [
+    "category" => "necessary",
+  ]);
   wstg_register_service("youtube", [
     "title" => "YouTube",
     "category" => "embedded",
@@ -106,10 +91,12 @@ add_action("plugins_loaded", function () {
           )
         ) {
           return [
-            "id" => $matches["id"],
+            // "id" => $matches["id"],
             "embedUrl" => "https://www.youtube.com/embed/{$matches["id"]}",
             // "embedUrl" => "https://www.youtube-nocookie.com/embed/{$matches["id"]}",
             "thumbnailUrl" => "https://i3.ytimg.com/vi/{$matches["id"]}/hqdefault.jpg",
+            "standaloneUrl" => "https://www.youtube.com/watch?v={$matches["id"]}",
+            "aspectRatio" => "16/9",
           ];
         }
       },
@@ -141,10 +128,12 @@ add_action("plugins_loaded", function () {
         ) {
           extract($matches);
           return [
-            "id" => $id,
+            // "id" => $id,
             "embedUrl" => "https://player.vimeo.com/video/{$id}",
             // "embedUrl" => "https://player.vimeo.com/video/{$id}?dnt=1",
             "thumbnailUrl" => "https://vumbnail.com/{$id}.jpg",
+            "standaloneUrl" => "https://vimeo.com/{$id}",
+            "aspectRatio" => "16/9",
           ];
         }
       },
@@ -175,10 +164,11 @@ add_action("plugins_loaded", function () {
         ) {
           extract($matches);
           return [
-            "id" => $id,
-            "server" => $server,
+            // "id" => $id,
+            // "server" => $server,
             "embedUrl" => "https://play.{$domain}.com/ovp/{$server}/{$id}?dnt=1",
             "thumbnailUrl" => "https://im{$server}.inviewer.se/skiss/{$id}.jpg",
+            "aspectRatio" => "16/9",
           ];
         }
       },
@@ -192,3 +182,125 @@ add_action("plugins_loaded", function () {
     ],
   ]);
 });
+
+add_action(
+  "acf/init",
+  function () {
+    $categories = wstg_get_cookie_categories();
+    // $category_choices = array_combine(
+    //   array_keys($categories),
+    //   array_map(function ($category) {
+    //     return $category["title"];
+    //   }, $categories),
+    // );
+    $services_sub_fields = [];
+    $services = wstg_get_services();
+    foreach ($services as $service_key => $service) {
+      if ($service["category"] === "necessary") {
+        continue;
+      }
+      $service_field = [
+        "key" => "field_wstg_service_{$service_key}",
+        "name" => "{$service_key}",
+        "label" => $service["title"],
+        "type" => "group",
+        "sub_fields" => [],
+        "layout" => "block",
+      ];
+      $service_field["sub_fields"][] = [
+        "key" => "field_wstg_service_{$service_key}_enabled",
+        "name" => "enabled",
+        "label" => _x(
+          "Enabled",
+          "Service Sub Field Label",
+          "whitespace-tracking-gdpr",
+        ),
+        "type" => "true_false",
+        "ui" => 1,
+        "wrapper" => [
+          "width" => "25",
+        ],
+      ];
+      // $service_field["sub_fields"][] = [
+      //   "key" => "field_wstg_service_{$service_key}_category",
+      //   "name" => "category",
+      //   "label" => _x(
+      //     "Category",
+      //     "Service Sub Field Label",
+      //     "whitespace-tracking-gdpr",
+      //   ),
+      //   "type" => "message",
+      //   "message" => $categories[$service["category"]]["title"],
+      //   "wrapper" => [
+      //     "width" => "25",
+      //   ],
+      // ];
+      // $service_field["sub_fields"][] = [
+      //   "key" => "field_wstg_service_{$service_key}_category",
+      //   "name" => "category",
+      //   "label" => _x(
+      //     "Category",
+      //     "Service Sub Field Label",
+      //     "whitespace-tracking-gdpr",
+      //   ),
+      //   "type" => "select",
+      //   "choices" => $category_choices,
+      //   "wrapper" => [
+      //     "width" => "25",
+      //   ],
+      //   "disabled" => 1,
+      // ];
+
+      /**
+       * Filter the sub fields for a service.
+       *
+       * @hook wstg_service_settings_sub_fields
+       * @since 0.0.0
+       *
+       * @param array $sub_field The service field array.
+       * @param string $service_key The service key.
+       * @param array $service The service array.
+       * @return array The modified sub field array.
+       */
+      $service_field["sub_fields"] = apply_filters(
+        "wstg_service_settings_sub_fields",
+        $service_field["sub_fields"],
+        $service_key,
+        $service,
+      );
+      $services_sub_fields[] = $service_field;
+    }
+    acf_add_local_field_group([
+      "key" => "group_wstg_service_settings",
+      "title" => __("Services", "whitespace-tracking-gdpr"),
+      "fields" => [
+        [
+          "key" => "field_wstg_service_settings",
+          "name" => "wstg_service_settings",
+          "label" => __(
+            "Enabled services and settings",
+            "whitespace-tracking-gdpr",
+          ),
+          "instructions" => __(
+            "Select which services your site are using. These will be displayed in the cookie consent dialog and acceptance dialog for embedded content.",
+            "whitespace-tracking-gdpr",
+          ),
+          "type" => "group",
+          "layout" => "grid",
+          "sub_fields" => $services_sub_fields,
+        ],
+      ],
+      "location" => [
+        [
+          [
+            "param" => "options_page",
+            "operator" => "==",
+            "value" => "acf-options-mx-tracking",
+          ],
+        ],
+      ],
+      "menu_order" => 11,
+    ]);
+  },
+  11,
+);

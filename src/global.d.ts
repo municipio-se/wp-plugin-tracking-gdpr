@@ -1,3 +1,5 @@
+import { Translation } from 'vanilla-cookieconsent';
+
 export {};
 
 declare type ServiceCookie = {
@@ -9,18 +11,22 @@ declare type ServiceCookie = {
 declare global {
   interface Window {
     whitespaceTrackingGdpr: {
-      cookieConsent: {
-        categories: {
-          [key: string]: {
-            enabled: boolean;
+      categories: {
+        [key: string]: {
+          enabled: boolean;
+          title: string;
+          description: string;
+          services: {
             title: string;
-            description: string;
-            services: {
-              title: string;
-              cookies?: ServiceCookie[];
-              enabled: boolean;
-            }[];
-          };
+            cookies?: ServiceCookie[];
+            enabled: boolean;
+          }[];
+        };
+      };
+      language: string;
+      translation: Translation & {
+        preferencesModal: {
+          description?: string;
         };
       };
     };

@@ -5,7 +5,9 @@ import './wstg-iframe';
 
 import './custom.css';
 
-const cookieConsent = window.whitespaceTrackingGdpr.cookieConsent;
+const settings = window.whitespaceTrackingGdpr;
+
+// console.log(settings);
 
 function maybeRegex(value: string): string | RegExp {
   if (value.startsWith('/') && value.endsWith('/')) {
@@ -15,27 +17,32 @@ function maybeRegex(value: string): string | RegExp {
 }
 
 const categories = {} as CookieConsent.CookieConsentConfig['categories'];
-Object.entries(cookieConsent.categories).forEach(([key, category]) => {
-  if (category.enabled === false) return;
+Object.entries(settings.categories).forEach(([key, category]) => {
+  if (key === 'necessary') {
+    categories[key] = {
+      enabled: true,
+      readOnly: true,
+      services: {},
+    };
+    return;
+  }
   categories[key] = {
-    enabled: key === 'necessary',
-    readOnly: key === 'necessary',
+    // enabled: key === 'necessary',
+    // readOnly: key === 'necessary',
     services: Object.fromEntries(
-      Object.entries(category.services ?? {})
-        .filter(([, service]) => service.enabled)
-        .map(([serviceKey, service]) => {
-          return [
-            serviceKey,
-            {
-              label: service.title,
-              cookies: (service.cookies ?? []).map((cookie) => ({
-                name: cookie.name ? maybeRegex(cookie.name) : /^/,
-                path: cookie.path,
-                domain: cookie.domain,
-              })),
-            },
-          ];
-        }),
+      Object.entries(category.services ?? {}).map(([serviceKey, service]) => {
+        return [
+          serviceKey,
+          {
+            label: service.title,
+            cookies: (service.cookies ?? []).map((cookie) => ({
+              name: cookie.name ? maybeRegex(cookie.name) : /^/,
+              path: cookie.path,
+              domain: cookie.domain,
+            })),
+          },
+        ];
+      }),
     ),
   };
 });
@@ -43,8 +50,13 @@ Object.entries(cookieConsent.categories).forEach(([key, category]) => {
 const sections =
   [] as CookieConsent.Translation['preferencesModal']['sections'];
 
-Object.entries(cookieConsent.categories).forEach(([key, category]) => {
-  if (category.enabled === false) return;
+if (settings.translation.preferencesModal.description) {
+  sections.push({
+    description: settings.translation.preferencesModal.description,
+  });
+}
+
+Object.entries(settings.categories).forEach(([key, category]) => {
   sections.push({
     title: category.title,
     description: category.description,
@@ -56,22 +68,12 @@ CookieConsent.run({
   autoShow: true,
   categories,
   language: {
-    default: 'sv',
+    default: settings.language,
     translations: {
-      sv: {
-        consentModal: {
-          title: 'Vi använder cookies',
-          description: 'Cookie modal description',
-          acceptAllBtn: 'Acceptera alla',
-          acceptNecessaryBtn: 'Acceptera nödvändiga',
-          showPreferencesBtn: 'Hantera individuella preferenser',
-        },
+      [settings.language]: {
+        ...settings.translation,
         preferencesModal: {
-          title: 'Hantera cookie-preferenser',
-          acceptAllBtn: 'Acceptera alla',
-          acceptNecessaryBtn: 'Acceptera nödvändiga',
-          savePreferencesBtn: 'Acceptera nuvarande val',
-          closeIconLabel: 'Stäng modal',
+          ...settings.translation.preferencesModal,
           sections,
         },
       },
@@ -85,6 +87,6 @@ window.ccDebug = function () {
   console.log({
     categories,
     sections,
-    cookieConsent,
+    settings,
   });
 };
