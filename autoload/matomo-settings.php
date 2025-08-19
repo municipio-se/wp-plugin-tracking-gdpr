@@ -81,6 +81,9 @@ add_filter("acf/prepare_field", function ($field) {
       (empty($field["instructions"]) ? "" : $field["instructions"] . "\n") .
       "<i>" .
       sprintf(
+        /*
+        Translators: This message is shown when a field is disabled because its value is defined as a constant in the code.
+        */
         __(
           "This field is disabled because the constant %s has been defined in code.",
           "whitespace-tracking-gdpr",

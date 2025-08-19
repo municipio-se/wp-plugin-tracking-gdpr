@@ -1,0 +1,233 @@
+# Copyright (C) 2025 Whitespace Dev
+# This file is distributed under the same license as the Whitespace Tracking & GDPR plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Whitespace Tracking & GDPR 0.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-plugin-"
+"tracking-gdpr\n"
+"POT-Creation-Date: 2025-08-19T16:00:25+00:00\n"
+"PO-Revision-Date: 2025-08-19 18:12+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sv_SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+"X-Domain: whitespace-tracking-gdpr\n"
+
+#. Plugin Name of the plugin
+#: whitespace-tracking-gdpr.php
+msgid "Whitespace Tracking & GDPR"
+msgstr "Whitespace Tracking & GDPR"
+
+#. Description of the plugin
+#: whitespace-tracking-gdpr.php
+msgid "Adds tracking for Matomo and cookie consent for GDPR compliance."
+msgstr ""
+"Lägger till spårning för Matomo och cookie-samtycke för GDPR-efterlevnad."
+
+#. Author of the plugin
+#: whitespace-tracking-gdpr.php
+msgid "Whitespace Dev"
+msgstr "Whitespace Dev"
+
+#: autoload/categories.php:6
+msgctxt "Cookie Category Title"
+msgid "Necessary"
+msgstr "Nödvändiga"
+
+#: autoload/categories.php:11
+msgid "Necessary cookies are always allowed."
+msgstr "Nödvändiga cookies är alltid tillåtna."
+
+#: autoload/categories.php:18
+msgctxt "Cookie Category Title"
+msgid "Personalization"
+msgstr "Personalisering"
+
+#: autoload/categories.php:23
+msgid ""
+"Personalization services use cookies to remember your activity and "
+"preferences to improve your experience."
+msgstr ""
+"Personaliseringstjänster använder cookies för att komma ihåg din aktivitet "
+"och dina preferenser för att förbättra din upplevelse."
+
+#: autoload/categories.php:29
+msgctxt "Cookie Category Title"
+msgid "Analytics"
+msgstr "Statistik"
+
+#: autoload/categories.php:34
+msgid ""
+"Analytics services use cookies to collect information about how visitors use "
+"the website."
+msgstr ""
+"Statistiktjänster använder cookies för att samla in information om hur "
+"besökare använder webbplatsen."
+
+#: autoload/categories.php:51
+msgctxt "Cookie Category Title"
+msgid "Embedded"
+msgstr "Inbäddat innehåll"
+
+#: autoload/categories.php:56
+msgid ""
+"Cookies that are set by third parties when we embed content from different "
+"services."
+msgstr ""
+"Cookies som sätts av tredje part när vi bäddar in innehåll från olika "
+"tjänster."
+
+#: autoload/categories.php:62
+msgctxt "Cookie Category Title"
+msgid "Uncategorized"
+msgstr "Okategoriserade"
+
+#: autoload/categories.php:67
+msgid "These cookies have not been categorized yet."
+msgstr "Dessa cookies har inte kategoriserats ännu."
+
+#: autoload/cookie-consent.php:76 autoload/cookie-consent.php:109
+msgctxt "Cookie Modal Button Label"
+msgid "Accept all"
+msgstr "Acceptera alla"
+
+#: autoload/cookie-consent.php:82 autoload/cookie-consent.php:115
+msgctxt "Cookie Modal Button Label"
+msgid "Accept necessary"
+msgstr "Acceptera nödvändiga"
+
+#: autoload/cookie-consent.php:88
+msgctxt "Cookie Modal Button Label"
+msgid "Manage cookie preferences"
+msgstr "Hantera cookiepreferenser"
+
+#: autoload/cookie-consent.php:121
+msgctxt "Cookie Modal Button Label"
+msgid "Save current choices"
+msgstr "Spara aktuella val"
+
+#: autoload/cookie-consent.php:127
+msgctxt "Cookie Modal Button Label"
+msgid "Close cookie consent dialog"
+msgstr "Stäng dialogrutan för cookie-samtycke"
+
+#: autoload/cookie-consent.php:217 autoload/cookie-consent.php:221
+msgid "Translations"
+msgstr "Översättningar"
+
+#: autoload/cookie-consent.php:228
+msgid "Language"
+msgstr "Språk"
+
+#: autoload/cookie-consent.php:235
+msgid "Consent dialog"
+msgstr "Dialog om samtycke"
+
+#: autoload/cookie-consent.php:241 autoload/cookie-consent.php:303
+msgid "Title"
+msgstr "Titel"
+
+#: autoload/cookie-consent.php:244
+msgctxt "Cookie Modal Title"
+msgid "Cookie consent"
+msgstr "Samtycke till cookies"
+
+#: autoload/cookie-consent.php:252 autoload/cookie-consent.php:315
+msgid "Description"
+msgstr "Beskrivning"
+
+#: autoload/cookie-consent.php:257
+msgctxt "Cookie Modal Description"
+msgid "We use cookies to improve your experience on our site."
+msgstr "Vi använder cookies för att förbättra din upplevelse på vår webbplats."
+
+#: autoload/cookie-consent.php:297
+msgid "Preferences dialog"
+msgstr "Dialogruta för preferenser"
+
+#: autoload/cookie-consent.php:306
+msgctxt "Cookie Modal Title"
+msgid "Manage cookie preferences"
+msgstr "Hantera cookiepreferenser"
+
+#: autoload/cookie-consent.php:320
+msgctxt "Cookie Modal Description"
+msgid "You can manage your cookie preferences here."
+msgstr "Du kan hantera dina cookiepreferenser här."
+
+#: autoload/csp.php:66
+msgid "Content Security Policy"
+msgstr "Content Security Policy"
+
+#: autoload/csp.php:71
+msgid "Allowed iframe hosts (for the CSP <i>frame-src</i> directive)"
+msgstr "Tillåtna iframe-värdar (för CSP-direktivet <i>frame-src</i>)"
+
+#: autoload/csp.php:75
+msgid "One per line."
+msgstr "En per rad."
+
+#: autoload/matomo-settings.php:6
+msgctxt "Options Page Title"
+msgid "Tracking"
+msgstr "Spårning"
+
+#: autoload/matomo-settings.php:11
+msgctxt "Options Page Menu Title"
+msgid "Tracking"
+msgstr "Spårning"
+
+#: autoload/matomo-settings.php:24
+msgid "Matomo"
+msgstr "Matomo"
+
+#: autoload/matomo-settings.php:28
+msgid "URL"
+msgstr "URL"
+
+#: autoload/matomo-settings.php:31
+msgid "The URL for the Matomo Tag Manager."
+msgstr "URL:en för Matomo Tag Manager."
+
+#: autoload/matomo-settings.php:39
+msgid "Container ID"
+msgstr "Container-ID"
+
+#: autoload/matomo-settings.php:50
+msgid "Site ID"
+msgstr "Webbplats-ID"
+
+#: autoload/matomo-settings.php:53
+msgid "The site ID for the Matomo Tag Manager."
+msgstr "Webbplats-ID för Matomo Tag Manager."
+
+#. Translators: This message is shown when a field is disabled because its value is defined as a constant in the code.
+#: autoload/matomo-settings.php:87
+msgid ""
+"This field is disabled because the constant %s has been defined in code."
+msgstr ""
+"Detta fält är inaktiverat eftersom konstanten %s har definierats i kod."
+
+#: autoload/services.php:267
+msgctxt "Service Sub Field Label"
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: autoload/services.php:329
+msgid "Services"
+msgstr "Tjänster"
+
+#: autoload/services.php:334
+msgid "Enabled services and settings"
+msgstr "Aktiverade tjänster och inställningar"
+
+#: autoload/services.php:338
+msgid ""
+"Select which services your site is using. These will be displayed in the "
+"cookie and tracking consent dialog."
+msgstr ""
+"Välj vilka tjänster din webbplats använder. Dessa kommer att visas i "
+"dialogrutan för cookie- och spårningssamtycke."
