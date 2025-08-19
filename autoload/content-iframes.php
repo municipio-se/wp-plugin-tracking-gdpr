@@ -1,6 +1,7 @@
 <?php
 
 use DiDom\Document;
+use DiDom\Query;
 
 function wstg_detect_video_service($url) {
   if (str_contains($url, "vimeo")) {
@@ -83,27 +84,36 @@ add_filter(
     }
 
     $document = new Document($content);
-    $nodes = $document->find("iframe");
+    $nodes = $document->find("iframe", Query::TYPE_CSS, false);
+    $replacements = [];
+
     foreach ($nodes as $node) {
       $url = $node->getAttribute("src");
       $video_service = wstg_detect_video_service($url);
       $video_id = $video_service
         ? wstg_get_video_id($url, $video_service)
         : false;
-      $replacement = $document->getDocument()->createDocumentFragment();
+
       $inner_html = apply_filters("wstg_content_iframe_replacement", "", [
         "video_service" => $video_service,
         "video_id" => $video_id,
         "url" => $url,
         "node" => $node,
       ]);
-      $replacement->appendXML($inner_html);
-      // $node->parentNode->insertBefore($replacement[0], $node);
-      $node->getNode()->replaceWith($replacement->firstChild); // TODO: Append all elements instead of just the first one
-      // $replacement->setAttribute("data-service", $video_service ?: "");
-      // $replacement->setAttribute("data-id", $video_id ?? "");
+
+      // Collect replacements to do later
+      if (!empty($inner_html)) {
+        $iframe_html =
+          $node->outerHtml ?? $document->getDocument()->saveHTML($node);
+        $replacements[$iframe_html] = $inner_html;
+      }
     }
-    $content = $document->html();
+
+    // Apply all replacements
+    foreach ($replacements as $iframe_html => $replacement_html) {
+      $content = str_replace($iframe_html, $replacement_html, $content);
+    }
+
     return $content;
   },
   20,
