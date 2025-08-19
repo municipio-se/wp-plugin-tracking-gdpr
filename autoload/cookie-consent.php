@@ -337,3 +337,97 @@ add_action(
   },
   12,
 );
+
+// Add "Tracking and GDPR" chooser in Appearance → Menus
+add_action("admin_head-nav-menus.php", function () {
+  add_meta_box(
+    "wstg-menu-items",
+    __("Tracking and GDPR"),
+    function () {
+      ?>
+            <div id="posttype-cookie" class="posttypediv">
+                <div id="tabs-panel-cookie" class="tabs-panel tabs-panel-active">
+                    <ul id="cookie-checklist" class="categorychecklist form-no-clear">
+                        <li>
+                            <label class="menu-item-title">
+                                <input type="checkbox" class="menu-item-checkbox"
+                                       name="menu-item[-1][menu-item-object-id]" value="-1">
+                                <?php _e(
+                                  "Change cookie preferences",
+                                  "whitespace-tracking-gdpr",
+                                ); ?>
+                            </label>
+
+                            <input type="hidden" name="menu-item[-1][menu-item-type]" value="custom">
+                            <input type="hidden" name="menu-item[-1][menu-item-title]" value="<?php esc_attr_e(
+                              "Change cookie preferences",
+                              "whitespace-tracking-gdpr",
+                            ); ?>">
+                            <input type="hidden" name="menu-item[-1][menu-item-url]" value="#">
+                            <input type="hidden" name="menu-item[-1][menu-item-classes]" value="wstg-trigger-cookie-dialog">
+                        </li>
+                    </ul>
+                </div>
+
+                <?php wp_nonce_field(
+                  "add-menu_item",
+                  "menu-settings-column-nonce",
+                ); ?>
+                <p class="button-controls wp-clearfix">
+                    <span class="list-controls">
+                        <a href="#" class="select-all"><?php _e(
+                          "Select All",
+                        ); ?></a>
+                    </span>
+                    <span class="add-to-menu">
+                        <input type="submit"
+                               class="button submit-add-to-menu right"
+                               id="submit-posttype-cookie"
+                               name="add-post-type-menu-item"
+                               value="<?php esc_attr_e("Add to Menu"); ?>">
+                        <span class="spinner"></span>
+                    </span>
+                </p>
+            </div>
+            <?php
+    },
+    "nav-menus",
+    "side",
+    "default",
+  );
+});
+
+// Show a nicer “type” label inside the menu editor
+add_filter("wp_setup_nav_menu_item", function ($item) {
+  if (
+    is_array($item->classes) &&
+    in_array("wstg-trigger-cookie-dialog", $item->classes, true)
+  ) {
+    $item->type_label = __("Tracking and GDPR");
+  }
+  return $item;
+});
+
+add_filter(
+  "walker_nav_menu_start_el",
+  function ($output, $item, $depth, $args) {
+    $classes = is_array($item->classes) ? $item->classes : [];
+    if (in_array("wstg-trigger-cookie-dialog", $classes, true)) {
+      $output = apply_filters(
+        "wstg_trigger_cookie_dialog_menu_item",
+        $output,
+        $item,
+        $depth,
+        $args,
+      );
+      // $label = esc_html($item->title ?: __("Cookie settings"));
+      // // Return a real button instead of the default <a>
+      // return '<button type="button" class="menu-item wstg-trigger-cookie-dialog" data-wstg-trigger-cookie-dialog>' .
+      //   $label .
+      //   "</button>";
+    }
+    return $output;
+  },
+  10,
+  4,
+);

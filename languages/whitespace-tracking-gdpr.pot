@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-19T16:00:25+00:00\n"
+"POT-Creation-Date: 2025-08-19T16:53:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: whitespace-tracking-gdpr\n"
@@ -74,78 +74,83 @@ msgstr ""
 msgid "These cookies have not been categorized yet."
 msgstr ""
 
-#: autoload/cookie-consent.php:76
-#: autoload/cookie-consent.php:109
+#: autoload/cookie-consent.php:74
+#: autoload/cookie-consent.php:107
 msgctxt "Cookie Modal Button Label"
 msgid "Accept all"
 msgstr ""
 
-#: autoload/cookie-consent.php:82
-#: autoload/cookie-consent.php:115
+#: autoload/cookie-consent.php:80
+#: autoload/cookie-consent.php:113
 msgctxt "Cookie Modal Button Label"
 msgid "Accept necessary"
 msgstr ""
 
-#: autoload/cookie-consent.php:88
+#: autoload/cookie-consent.php:86
 msgctxt "Cookie Modal Button Label"
 msgid "Manage cookie preferences"
 msgstr ""
 
-#: autoload/cookie-consent.php:121
+#: autoload/cookie-consent.php:119
 msgctxt "Cookie Modal Button Label"
 msgid "Save current choices"
 msgstr ""
 
-#: autoload/cookie-consent.php:127
+#: autoload/cookie-consent.php:125
 msgctxt "Cookie Modal Button Label"
 msgid "Close cookie consent dialog"
 msgstr ""
 
-#: autoload/cookie-consent.php:217
-#: autoload/cookie-consent.php:221
+#: autoload/cookie-consent.php:212
+#: autoload/cookie-consent.php:216
 msgid "Translations"
 msgstr ""
 
-#: autoload/cookie-consent.php:228
+#: autoload/cookie-consent.php:223
 msgid "Language"
 msgstr ""
 
-#: autoload/cookie-consent.php:235
+#: autoload/cookie-consent.php:230
 msgid "Consent dialog"
 msgstr ""
 
-#: autoload/cookie-consent.php:241
-#: autoload/cookie-consent.php:303
+#: autoload/cookie-consent.php:236
+#: autoload/cookie-consent.php:298
 msgid "Title"
 msgstr ""
 
-#: autoload/cookie-consent.php:244
+#: autoload/cookie-consent.php:239
 msgctxt "Cookie Modal Title"
 msgid "Cookie consent"
 msgstr ""
 
-#: autoload/cookie-consent.php:252
-#: autoload/cookie-consent.php:315
+#: autoload/cookie-consent.php:247
+#: autoload/cookie-consent.php:310
 msgid "Description"
 msgstr ""
 
-#: autoload/cookie-consent.php:257
+#: autoload/cookie-consent.php:252
 msgctxt "Cookie Modal Description"
 msgid "We use cookies to improve your experience on our site."
 msgstr ""
 
-#: autoload/cookie-consent.php:297
+#: autoload/cookie-consent.php:292
 msgid "Preferences dialog"
 msgstr ""
 
-#: autoload/cookie-consent.php:306
+#: autoload/cookie-consent.php:301
 msgctxt "Cookie Modal Title"
 msgid "Manage cookie preferences"
 msgstr ""
 
-#: autoload/cookie-consent.php:320
+#: autoload/cookie-consent.php:315
 msgctxt "Cookie Modal Description"
 msgid "You can manage your cookie preferences here."
+msgstr ""
+
+#: autoload/cookie-consent.php:355
+#: autoload/cookie-consent.php:362
+msgid "Change cookie preferences"
 msgstr ""
 
 #: autoload/csp.php:66

@@ -96,3 +96,12 @@ window.ccDebug = function () {
     settings,
   });
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.wstg-trigger-cookie-dialog').forEach((el) => {
+    el.addEventListener('click', (event) => {
+      event.preventDefault();
+      CookieConsent.show(true);
+    });
+  });
+});
