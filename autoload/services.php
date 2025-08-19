@@ -30,6 +30,9 @@ function wstg_service_is_enabled($service, $settings = null) {
   if (!$service) {
     return false;
   }
+  if ($service["category"] === "necessary") {
+    return true; // Necessary services are always enabled
+  }
   $settings ??= get_field("wstg_service_settings", "option");
   $service_key = $service["key"] ?? null;
   return $settings[$service_key]["enabled"] ?? false;

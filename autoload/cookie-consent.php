@@ -16,16 +16,13 @@ add_action(
     $categories = wstg_get_cookie_categories();
     $service_settings = get_field("wstg_service_settings", "option");
     // $categories_settings = get_field("wstg_cookie_categories", "option");
-    $services = wstg_get_services();
+    $services = wstg_get_enabled_services();
     $settings = [];
     // foreach ($categories as $category_key => $category) {
     //   $settings["categories"][$category_key] = $category;
     // }
     foreach ($services as $service_key => $service) {
       $category_key = $service["category"];
-      if (!($service_settings[$service_key]["enabled"] ?? true)) {
-        continue;
-      }
       if (!isset($settings["categories"][$category_key])) {
         if (!isset($categories[$category_key])) {
           continue;
@@ -35,6 +32,8 @@ add_action(
       $settings["categories"][$category_key]["services"][$service_key] =
         $service + ($service_settings[$service_key] ?? []);
     }
+
+    error_log(var_export($settings, true));
 
     $translations = get_field("wstg_translations", "option");
     // Find the translation that matches the current locale
@@ -66,22 +65,26 @@ add_action(
             "field_wstg_translations_consent_modal_title",
             "option",
           )["placeholder"],
+
         "description" =>
           $translation["consentModal"]["description"] ??
           get_field_object(
             "field_wstg_translations_consent_modal_description",
             "option",
           )["default_value"],
+
         "acceptAllBtn" => _x(
           "Accept all",
           "Cookie Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
+
         "acceptNecessaryBtn" => _x(
           "Accept necessary",
           "Cookie Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
+
         "showPreferencesBtn" => _x(
           "Manage cookie preferences",
           "Cookie Modal Button Label",
@@ -95,27 +98,32 @@ add_action(
             "field_wstg_translations_preferences_modal_title",
             "option",
           )["placeholder"],
+
         "description" =>
           $translation["preferencesModal"]["description"] ??
           get_field_object(
             "field_wstg_translations_preferences_modal_description",
             "option",
           )["default_value"],
+
         "acceptAllBtn" => _x(
           "Accept all",
           "Cookie Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
+
         "acceptNecessaryBtn" => _x(
           "Accept necessary",
           "Cookie Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
+
         "savePreferencesBtn" => _x(
           "Save current choices",
           "Cookie Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
+
         "closeIconLabel" => _x(
           "Close cookie consent dialog",
           "Cookie Modal Button Label",
