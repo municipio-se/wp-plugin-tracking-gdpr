@@ -33,8 +33,6 @@ add_action(
         $service + ($service_settings[$service_key] ?? []);
     }
 
-    error_log(var_export($settings, true));
-
     $translations = get_field("wstg_translations", "option");
     // Find the translation that matches the current locale
     $translation = null;
@@ -160,9 +158,6 @@ add_action(
 add_filter(
   "wp_script_attributes",
   function ($attributes) {
-    // error_log(var_export(get_site_url(), true));
-    // error_log(var_export($attributes["src"], true));
-    // error_log(var_export($attributes["id"], true));
     if ($attributes["id"] == "whitespace-tracking-gdpr-js") {
       // $attributes["data-category"] = "uncategorized";
       $attributes["type"] = "module";
