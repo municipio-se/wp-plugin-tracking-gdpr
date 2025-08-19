@@ -21,20 +21,16 @@ define(
   plugin_basename(dirname(__FILE__)) . "/languages",
 );
 
-add_action("plugins_loaded", function () {
-  load_plugin_textdomain(
-    "whitespace-tracking-gdpr",
-    false,
-    WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
-  );
-});
+load_plugin_textdomain(
+  "whitespace-tracking-gdpr",
+  false,
+  WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
+);
 
-add_action("muplugins_loaded", function () {
-  load_muplugin_textdomain(
-    "whitespace-tracking-gdpr",
-    WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
-  );
-});
+load_muplugin_textdomain(
+  "whitespace-tracking-gdpr",
+  WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
+);
 
 array_map(static function () {
   include_once func_get_args()[0];
