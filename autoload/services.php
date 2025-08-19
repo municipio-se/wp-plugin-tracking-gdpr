@@ -64,124 +64,174 @@ function wstg_parse_input($input) {
 }
 
 add_action("plugins_loaded", function () {
-  wstg_register_service("wstg", [
-    "category" => "necessary",
-  ]);
-  wstg_register_service("youtube", [
-    "title" => "YouTube",
-    "category" => "embedded",
-    "termsUrl" => "https://www.youtube.com/t/terms",
-    "iframe" => [
-      "parseInput" => function (string $input) {
-        if (
-          preg_match(
-            "/^https:\/\/www\.youtube\.com\/embed\/(?<id>[a-zA-Z0-9_-]+)$/",
-            $input,
-            $matches,
-          ) ||
-          preg_match(
-            "/^https:\/\/www\.youtube\.com\/watch\?v=(?<id>[a-zA-Z0-9_-]+)$/",
-            $input,
-            $matches,
-          ) ||
-          preg_match(
-            "/^https:\/\/youtu\.be\/(?<id>[a-zA-Z0-9_-]+)$/",
-            $input,
-            $matches,
-          )
-        ) {
-          return [
-            // "id" => $matches["id"],
-            "embedUrl" => "https://www.youtube.com/embed/{$matches["id"]}",
-            // "embedUrl" => "https://www.youtube-nocookie.com/embed/{$matches["id"]}",
-            "thumbnailUrl" => "https://i3.ytimg.com/vi/{$matches["id"]}/hqdefault.jpg",
-            "standaloneUrl" => "https://www.youtube.com/watch?v={$matches["id"]}",
-            "aspectRatio" => "16/9",
-          ];
-        }
-      },
-      "attributes" => [
-        "allow" =>
-          "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
-      ],
-    ],
-    "cookies" => [
-      [
-        // "name" => "/^/",
-        "domain" => "youtube.com",
-      ],
-    ],
-  ]);
-  wstg_register_service("vimeo", [
-    "title" => "Vimeo",
-    "category" => "embedded",
-    "termsUrl" => "https://vimeo.com/cookie_policy",
-    "iframe" => [
-      "parseInput" => function (string $input) {
-        if (
-          preg_match(
-            "/^https:\/\/player\.vimeo\.com\/video\/(?<id>[0-9]+)/",
-            $input,
-            $matches,
-          ) ||
-          preg_match("/^https:\/\/vimeo\.com\/(?<id>[0-9]+)/", $input, $matches)
-        ) {
-          extract($matches);
-          return [
-            // "id" => $id,
-            "embedUrl" => "https://player.vimeo.com/video/{$id}",
-            // "embedUrl" => "https://player.vimeo.com/video/{$id}?dnt=1",
-            "thumbnailUrl" => "https://vumbnail.com/{$id}.jpg",
-            "standaloneUrl" => "https://vimeo.com/{$id}",
-            "aspectRatio" => "16/9",
-          ];
-        }
-      },
-      "attributes" => [
-        "allow" =>
-          "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
-      ],
-    ],
-    "cookies" => [
-      [
-        // "name" => "/^/",
-        "domain" => "vimeo.com",
-      ],
-    ],
-  ]);
-  wstg_register_service("mediaflow", [
-    "title" => "Mediaflow",
-    "category" => "embedded",
-    "termsUrl" => "https://www.mediaflow.com/integritetsinformation/",
-    "iframe" => [
-      "parseInput" => function (string $input) {
-        if (
-          preg_match(
-            "/https:\/\/play\.(?<domain>mediaflow(?:pro))\.com\/ovp\/(?<server>\d+)\/(?<id>[a-zA-Z0-9]+)/",
-            $input,
-            $matches,
-          )
-        ) {
-          extract($matches);
-          return [
-            // "id" => $id,
-            // "server" => $server,
-            "embedUrl" => "https://play.{$domain}.com/ovp/{$server}/{$id}?dnt=1",
-            "thumbnailUrl" => "https://im{$server}.inviewer.se/skiss/{$id}.jpg",
-            "aspectRatio" => "16/9",
-          ];
-        }
-      },
-      // "match" => "/^https:\/\/play\.mediaflow\.com\/ovp\/{$mediaflow_server_id}\/([a-zA-Z0-9]+)$/",
-      // "embedUrl" => "//play.mediaflow.com/ovp/{$mediaflow_server_id}/{data-id}",
-      // "thumbnailUrl" => "https://im{$mediaflow_server_id}.inviewer.se/skiss/{data-id}.jpg",
-      "attributes" => [
-        "allow" =>
-          "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
-      ],
-    ],
-  ]);
+  do_action("wstg_register_services");
 });
+
+add_action(
+  "wstg_register_services",
+  function () {
+    wstg_register_service("wstg", [
+      "category" => "necessary",
+    ]);
+    wstg_register_service("youtube", [
+      "title" => "YouTube",
+      "category" => "embedded",
+      "termsUrl" => "https://www.youtube.com/t/terms",
+      "iframe" => [
+        "parseInput" => function (string $input) {
+          if (
+            preg_match(
+              "/^https:\/\/www\.youtube\.com\/embed\/(?<id>[a-zA-Z0-9_-]+)$/",
+              $input,
+              $matches,
+            ) ||
+            preg_match(
+              "/^https:\/\/www\.youtube\.com\/watch\?v=(?<id>[a-zA-Z0-9_-]+)$/",
+              $input,
+              $matches,
+            ) ||
+            preg_match(
+              "/^https:\/\/youtu\.be\/(?<id>[a-zA-Z0-9_-]+)$/",
+              $input,
+              $matches,
+            )
+          ) {
+            return [
+              // "id" => $matches["id"],
+              "embedUrl" => "https://www.youtube.com/embed/{$matches["id"]}",
+              // "embedUrl" => "https://www.youtube-nocookie.com/embed/{$matches["id"]}",
+              "thumbnailUrl" => "https://i3.ytimg.com/vi/{$matches["id"]}/hqdefault.jpg",
+              "standaloneUrl" => "https://www.youtube.com/watch?v={$matches["id"]}",
+              "aspectRatio" => "16/9",
+            ];
+          }
+        },
+        "attributes" => [
+          "allow" =>
+            "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
+        ],
+      ],
+      "cookies" => [
+        [
+          // "name" => "/^/",
+          "domain" => "youtube.com",
+        ],
+      ],
+      "csp" => [
+        "frame-src" => [
+          "youtube.com",
+          "*.youtube.com",
+          "youtube-nocookie.com",
+          "*.youtube-nocookie.com",
+          "youtu.be",
+          "*.youtu.be",
+        ],
+      ],
+    ]);
+    wstg_register_service("vimeo", [
+      "title" => "Vimeo",
+      "category" => "embedded",
+      "termsUrl" => "https://vimeo.com/cookie_policy",
+      "iframe" => [
+        "parseInput" => function (string $input) {
+          if (
+            preg_match(
+              "/^https:\/\/player\.vimeo\.com\/video\/(?<id>[0-9]+)/",
+              $input,
+              $matches,
+            ) ||
+            preg_match(
+              "/^https:\/\/vimeo\.com\/(?<id>[0-9]+)/",
+              $input,
+              $matches,
+            )
+          ) {
+            extract($matches);
+            return [
+              // "id" => $id,
+              "embedUrl" => "https://player.vimeo.com/video/{$id}",
+              // "embedUrl" => "https://player.vimeo.com/video/{$id}?dnt=1",
+              "thumbnailUrl" => "https://vumbnail.com/{$id}.jpg",
+              "standaloneUrl" => "https://vimeo.com/{$id}",
+              "aspectRatio" => "16/9",
+            ];
+          }
+        },
+        "attributes" => [
+          "allow" =>
+            "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
+        ],
+      ],
+      "cookies" => [
+        [
+          // "name" => "/^/",
+          "domain" => "vimeo.com",
+        ],
+      ],
+      "csp" => [
+        "frame-src" => ["vimeo.com", "*.vimeo.com"],
+      ],
+    ]);
+    wstg_register_service("mediaflow", [
+      "title" => "Mediaflow",
+      "category" => "embedded",
+      "termsUrl" => "https://www.mediaflow.com/integritetsinformation/",
+      "iframe" => [
+        "parseInput" => function (string $input) {
+          if (
+            preg_match(
+              "/https:\/\/play\.(?<domain>mediaflow(?:pro))\.com\/ovp\/(?<server>\d+)\/(?<id>[a-zA-Z0-9]+)/",
+              $input,
+              $matches,
+            )
+          ) {
+            extract($matches);
+            return [
+              // "id" => $id,
+              // "server" => $server,
+              "embedUrl" => "https://play.{$domain}.com/ovp/{$server}/{$id}?dnt=1",
+              "thumbnailUrl" => "https://im{$server}.inviewer.se/skiss/{$id}.jpg",
+              "aspectRatio" => "16/9",
+            ];
+          }
+        },
+        // "match" => "/^https:\/\/play\.mediaflow\.com\/ovp\/{$mediaflow_server_id}\/([a-zA-Z0-9]+)$/",
+        // "embedUrl" => "//play.mediaflow.com/ovp/{$mediaflow_server_id}/{data-id}",
+        // "thumbnailUrl" => "https://im{$mediaflow_server_id}.inviewer.se/skiss/{data-id}.jpg",
+        "attributes" => [
+          "allow" =>
+            "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
+        ],
+      ],
+    ]);
+  },
+  9,
+);
+
+// add_action(
+//   "plugins_loaded",
+//   function () {
+//     wstg_register_service("unknown", [
+//       "title" => __("unknown services"),
+//       "category" => "embedded",
+//       "iframe" => [
+//         "parseInput" => function (string $input) {
+//           // Accepts any valid URL
+//           if (filter_var($input, FILTER_VALIDATE_URL)) {
+//             return [
+//               "embedUrl" => $input,
+//             ];
+//           }
+//         },
+//         "attributes" => [
+//           "allow" =>
+//             "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
+//         ],
+//       ],
+//     ]);
+//   },
+//   20,
+// );
 
 add_action(
   "acf/init",
@@ -203,6 +253,7 @@ add_action(
         "key" => "field_wstg_service_{$service_key}",
         "name" => "{$service_key}",
         "label" => $service["title"],
+        "instructions" => $service["category"],
         "type" => "group",
         "sub_fields" => [],
         "layout" => "block",
@@ -282,7 +333,7 @@ add_action(
             "whitespace-tracking-gdpr",
           ),
           "instructions" => __(
-            "Select which services your site are using. These will be displayed in the cookie consent dialog and acceptance dialog for embedded content.",
+            "Select which services your site is using. These will be displayed in the cookie and tracking consent dialog.",
             "whitespace-tracking-gdpr",
           ),
           "type" => "group",

@@ -73,8 +73,19 @@ class WstgIframeElement extends HTMLElement {
     return this.getAttribute('service') || null;
   }
 
+  get resolvedService(): string | null {
+    const service = this.service ?? 'undefined';
+    const config = window.CookieConsent.getConfig();
+    for (const category of Object.values(config.categories)) {
+      if (category.services && service in category.services) {
+        return service;
+      }
+    }
+    return null;
+  }
+
   get category() {
-    return this.getAttribute('category') || 'uncategorized';
+    return this.getAttribute('category') || 'embedded';
   }
 
   connectedCallback() {
@@ -117,8 +128,11 @@ class WstgIframeElement extends HTMLElement {
   }
 
   get accepted() {
-    if (this.service) {
-      return window.CookieConsent.acceptedService(this.service, this.category);
+    if (this.resolvedService) {
+      return window.CookieConsent.acceptedService(
+        this.resolvedService,
+        this.category,
+      );
     }
     return window.CookieConsent.acceptedCategory(this.category);
   }

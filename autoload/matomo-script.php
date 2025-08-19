@@ -1,12 +1,22 @@
 <?php
 
+add_action("init", function () {
+  $url = mx_get_matomo_option("url");
+  $host = parse_url($url, PHP_URL_HOST);
+  if ($host) {
+    wstg_csp_allow("connect-src", $host);
+  }
+});
+
 add_action("wp_head", function () {
   $url = mx_get_matomo_option("url");
   $container_id = mx_get_matomo_option("container_id");
   $site_id = mx_get_matomo_option("site_id");
   if ($container_id && $url): ?>
       <!-- Matomo Tag Manager -->
-      <script>
+      <script<?php echo wp_sanitize_script_attributes(
+        apply_filters("wp_inline_script_attributes", []),
+      ); ?>>
         var _mtm = window._mtm = window._mtm || [];
         _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
         (function() {
@@ -19,7 +29,9 @@ add_action("wp_head", function () {
       <!-- End Matomo Tag Manager -->
       <?php elseif (!$container_id && $url && $site_id): ?>
         <!-- Matomo -->
-        <script>
+        <script<?php echo wp_sanitize_script_attributes(
+          apply_filters("wp_inline_script_attributes", []),
+        ); ?>>
           var _paq = window._paq = window._paq || [];
           _paq.push(['requireCookieConsent']);
           _paq.push(['trackPageView']);
@@ -32,11 +44,15 @@ add_action("wp_head", function () {
             g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
           })();
         </script>
-        <script data-category="analytics" type="text/plain">
+        <script<?php echo wp_sanitize_script_attributes(
+          apply_filters("wp_inline_script_attributes", []),
+        ); ?> data-category="analytics" type="text/plain">
           _paq.push(['rememberCookieConsentGiven']);
           console.log('rememberCookieConsentGiven');
         </script>
-        <script data-category="!analytics" type="text/plain">
+        <script<?php echo wp_sanitize_script_attributes(
+          apply_filters("wp_inline_script_attributes", []),
+        ); ?> data-category="!analytics" type="text/plain">
           _paq.push(['forgetCookieConsentGiven']);
           console.log('forgetCookieConsentGiven');
         </script>

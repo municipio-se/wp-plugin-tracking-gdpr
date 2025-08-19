@@ -14,6 +14,17 @@ function wstg_get_cookie_categories() {
       ),
       "required" => true,
     ],
+    "personalization" => [
+      "title" => _x(
+        "Personalization",
+        "Cookie Category Title",
+        "whitespace-tracking-gdpr",
+      ),
+      "description" => __(
+        "Personalization services use cookies to remember your activity and preferences to improve your experience.",
+        "whitespace-tracking-gdpr",
+      ),
+    ],
     "analytics" => [
       "title" => _x(
         "Analytics",
@@ -21,21 +32,21 @@ function wstg_get_cookie_categories() {
         "whitespace-tracking-gdpr",
       ),
       "description" => __(
-        "Analytics cookies are used to collect information about how visitors use the website.",
+        "Analytics services use cookies to collect information about how visitors use the website.",
         "whitespace-tracking-gdpr",
       ),
     ],
-    "marketing" => [
-      "title" => _x(
-        "Marketing",
-        "Cookie Category Title",
-        "whitespace-tracking-gdpr",
-      ),
-      "description" => __(
-        "Marketing cookies are used to collect information about how visitors use a website.",
-        "whitespace-tracking-gdpr",
-      ),
-    ],
+    // "marketing" => [
+    //   "title" => _x(
+    //     "Marketing",
+    //     "Cookie Category Title",
+    //     "whitespace-tracking-gdpr",
+    //   ),
+    //   "description" => __(
+    //     "Marketing cookies are used to collect information about how visitors use a website.",
+    //     "whitespace-tracking-gdpr",
+    //   ),
+    // ],
     "embedded" => [
       "title" => _x(
         "Embedded",

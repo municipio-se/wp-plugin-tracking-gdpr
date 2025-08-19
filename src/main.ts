@@ -47,6 +47,12 @@ Object.entries(settings.categories).forEach(([key, category]) => {
   };
 });
 
+categories['embedded'] ??= {};
+categories['embedded'].services ??= {};
+categories['embedded'].services['undefined'] ??= {
+  label: 'Other third-party services',
+};
+
 const sections =
   [] as CookieConsent.Translation['preferencesModal']['sections'];
 

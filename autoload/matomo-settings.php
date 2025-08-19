@@ -92,7 +92,7 @@ add_filter("acf/prepare_field", function ($field) {
   return $field;
 });
 
-function mx_matomo_option_is_contant($option) {
+function mx_matomo_option_is_constant($option) {
   $constant = "MATOMO_" . strtoupper($option);
   return defined($constant) && constant($constant);
 }
