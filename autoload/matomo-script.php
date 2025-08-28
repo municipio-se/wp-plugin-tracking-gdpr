@@ -59,3 +59,12 @@ add_action("wp_head", function () {
         <!-- End Matomo Code -->
         <?php endif;
 });
+
+add_action("init", function () {
+  $matomo_url = mx_get_matomo_option("url");
+  $matomo_container_id = mx_get_matomo_option("container_id");
+  $matomo_site_id = mx_get_matomo_option("site_id");
+  if ($matomo_url && ($matomo_container_id || $matomo_site_id)) {
+    wstg_csp_allow("connect-src", parse_url($matomo_url, PHP_URL_HOST));
+  }
+});
