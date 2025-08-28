@@ -33,6 +33,13 @@ add_action(
         $service + ($service_settings[$service_key] ?? []);
     }
 
+    $matomo_url = mx_get_matomo_option("url");
+    $matomo_container_id = mx_get_matomo_option("container_id");
+    $matomo_site_id = mx_get_matomo_option("site_id");
+    if ($matomo_url && ($matomo_container_id || $matomo_site_id)) {
+      $settings["categories"]["analytics"] = $categories["analytics"];
+    }
+
     $translations = get_field("wstg_translations", "option");
     // Find the translation that matches the current locale
     $translation = null;
