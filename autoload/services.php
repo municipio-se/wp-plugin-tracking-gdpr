@@ -239,13 +239,6 @@ add_action(
 add_action(
   "acf/init",
   function () {
-    $categories = wstg_get_cookie_categories();
-    // $category_choices = array_combine(
-    //   array_keys($categories),
-    //   array_map(function ($category) {
-    //     return $category["title"];
-    //   }, $categories),
-    // );
     $services_sub_fields = [];
     $services = wstg_get_services();
     foreach ($services as $service_key => $service) {
