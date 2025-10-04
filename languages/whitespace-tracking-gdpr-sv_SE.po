@@ -3,17 +3,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Whitespace Tracking & GDPR 0.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-plugin-"
-"tracking-gdpr\n"
-"POT-Creation-Date: 2025-08-19T16:53:01+00:00\n"
-"PO-Revision-Date: 2025-08-19 18:53+0200\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-plugin-tracking-"
+"gdpr\n"
+"POT-Creation-Date: 2025-10-04T21:56:23+00:00\n"
+"PO-Revision-Date: 2025-10-04 23:59+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 "X-Domain: whitespace-tracking-gdpr\n"
 
 #. Plugin Name of the plugin
@@ -23,9 +23,12 @@ msgstr "Whitespace Tracking & GDPR"
 
 #. Description of the plugin
 #: whitespace-tracking-gdpr.php
-msgid "Adds tracking for Matomo and cookie consent for GDPR compliance."
+msgid ""
+"Adds tracking for Matomo and a consent dialog for cookie law and GDPR "
+"compliance."
 msgstr ""
-"Lägger till spårning för Matomo och cookie-samtycke för GDPR-efterlevnad."
+"Lägger till spårning för Matomo och en dialogruta för samtycke för "
+"efterlevnad av cookie-lagstiftning och GDPR."
 
 #. Author of the plugin
 #: whitespace-tracking-gdpr.php
@@ -89,76 +92,80 @@ msgstr "Okategoriserade"
 msgid "These cookies have not been categorized yet."
 msgstr "Dessa cookies har inte kategoriserats ännu."
 
-#: autoload/cookie-consent.php:74 autoload/cookie-consent.php:107
-msgctxt "Cookie Modal Button Label"
+#: autoload/cookie-consent.php:30
+msgid "Other third-party services"
+msgstr "Andra tjänster från tredje part"
+
+#: autoload/cookie-consent.php:91 autoload/cookie-consent.php:124
+msgctxt "Constent Modal Button Label"
 msgid "Accept all"
 msgstr "Acceptera alla"
 
-#: autoload/cookie-consent.php:80 autoload/cookie-consent.php:113
-msgctxt "Cookie Modal Button Label"
+#: autoload/cookie-consent.php:97 autoload/cookie-consent.php:130
+msgctxt "Constent Modal Button Label"
 msgid "Accept necessary"
 msgstr "Acceptera nödvändiga"
 
-#: autoload/cookie-consent.php:86
-msgctxt "Cookie Modal Button Label"
+#: autoload/cookie-consent.php:103
+msgctxt "Constent Modal Button Label"
 msgid "Manage cookie preferences"
 msgstr "Hantera cookiepreferenser"
 
-#: autoload/cookie-consent.php:119
-msgctxt "Cookie Modal Button Label"
+#: autoload/cookie-consent.php:136
+msgctxt "Constent Modal Button Label"
 msgid "Save current choices"
 msgstr "Spara aktuella val"
 
-#: autoload/cookie-consent.php:125
-msgctxt "Cookie Modal Button Label"
+#: autoload/cookie-consent.php:142
+msgctxt "Constent Modal Button Label"
 msgid "Close cookie consent dialog"
 msgstr "Stäng dialogrutan för cookie-samtycke"
 
-#: autoload/cookie-consent.php:212 autoload/cookie-consent.php:216
+#: autoload/cookie-consent.php:229 autoload/cookie-consent.php:233
 msgid "Translations"
 msgstr "Översättningar"
 
-#: autoload/cookie-consent.php:223
+#: autoload/cookie-consent.php:240
 msgid "Language"
 msgstr "Språk"
 
-#: autoload/cookie-consent.php:230
+#: autoload/cookie-consent.php:247
 msgid "Consent dialog"
 msgstr "Dialog om samtycke"
 
-#: autoload/cookie-consent.php:236 autoload/cookie-consent.php:298
+#: autoload/cookie-consent.php:253 autoload/cookie-consent.php:315
 msgid "Title"
 msgstr "Titel"
 
-#: autoload/cookie-consent.php:239
-msgctxt "Cookie Modal Title"
+#: autoload/cookie-consent.php:256
+msgctxt "Constent Modal Title"
 msgid "Cookie consent"
 msgstr "Samtycke till cookies"
 
-#: autoload/cookie-consent.php:247 autoload/cookie-consent.php:310
+#: autoload/cookie-consent.php:264 autoload/cookie-consent.php:327
 msgid "Description"
 msgstr "Beskrivning"
 
-#: autoload/cookie-consent.php:252
-msgctxt "Cookie Modal Description"
+#: autoload/cookie-consent.php:269
+msgctxt "Constent Modal Description"
 msgid "We use cookies to improve your experience on our site."
 msgstr "Vi använder cookies för att förbättra din upplevelse på vår webbplats."
 
-#: autoload/cookie-consent.php:292
+#: autoload/cookie-consent.php:309
 msgid "Preferences dialog"
 msgstr "Dialogruta för preferenser"
 
-#: autoload/cookie-consent.php:301
-msgctxt "Cookie Modal Title"
+#: autoload/cookie-consent.php:318
+msgctxt "Constent Modal Title"
 msgid "Manage cookie preferences"
 msgstr "Hantera cookiepreferenser"
 
-#: autoload/cookie-consent.php:315
-msgctxt "Cookie Modal Description"
+#: autoload/cookie-consent.php:332
+msgctxt "Constent Modal Description"
 msgid "You can manage your cookie preferences here."
 msgstr "Du kan hantera dina cookiepreferenser här."
 
-#: autoload/cookie-consent.php:355 autoload/cookie-consent.php:362
+#: autoload/cookie-consent.php:376 autoload/cookie-consent.php:383
 msgid "Change cookie preferences"
 msgstr "Ändra inställningar för cookies"
 
@@ -167,12 +174,16 @@ msgid "Content Security Policy"
 msgstr "Content Security Policy"
 
 #: autoload/csp.php:71
-msgid "Allowed iframe hosts (for the CSP <i>frame-src</i> directive)"
-msgstr "Tillåtna iframe-värdar (för CSP-direktivet <i>frame-src</i>)"
+msgid "Allowed iframe hosts (for the CSP “frame-src” directive)"
+msgstr "Tillåtna iframe-värdar (för CSP-direktivet ”frame-src”)"
 
 #: autoload/csp.php:75
-msgid "One per line."
-msgstr "En per rad."
+msgid ""
+"One per line. ⚠️ Warning: This will allow any iframe from the specified "
+"sources, including potentially harmful ones."
+msgstr ""
+"En per rad. ⚠️ Varning: Detta kommer att tillåta alla iframes från de angivna "
+"källorna, inklusive potentiellt skadliga sådana."
 
 #: autoload/matomo-settings.php:6
 msgctxt "Options Page Title"
@@ -210,28 +221,48 @@ msgstr "Webbplats-ID för Matomo Tag Manager."
 
 #. Translators: This message is shown when a field is disabled because its value is defined as a constant in the code.
 #: autoload/matomo-settings.php:87
-msgid ""
-"This field is disabled because the constant %s has been defined in code."
-msgstr ""
-"Detta fält är inaktiverat eftersom konstanten %s har definierats i kod."
+#, php-format
+msgid "This field is disabled because the constant %s has been defined in code."
+msgstr "Detta fält är inaktiverat eftersom konstanten %s har definierats i kod."
 
-#: autoload/services.php:267
+#: autoload/services.php:260
 msgctxt "Service Sub Field Label"
 msgid "Enabled"
 msgstr "Aktiverad"
 
-#: autoload/services.php:329
+#: autoload/services.php:322
 msgid "Services"
 msgstr "Tjänster"
 
-#: autoload/services.php:334
+#: autoload/services.php:327
 msgid "Enabled services and settings"
 msgstr "Aktiverade tjänster och inställningar"
 
-#: autoload/services.php:338
+#: autoload/services.php:331
 msgid ""
 "Select which services your site is using. These will be displayed in the "
 "cookie and tracking consent dialog."
 msgstr ""
 "Välj vilka tjänster din webbplats använder. Dessa kommer att visas i "
 "dialogrutan för cookie- och spårningssamtycke."
+
+#: autoload/services.php:342
+msgid "Allow any embedded content"
+msgstr "Tillåt allt inbäddat innehåll"
+
+#: autoload/services.php:346
+msgid ""
+"⚠️ Warning: This could violate cookie law compliance. Only enable this if you "
+"know what you are doing. Please report any missing services to the plugin "
+"author."
+msgstr ""
+"⚠️ Varning: Detta kan bryta mot cookie-lagstiftningen. Aktivera endast detta "
+"om du vet vad du gör. Rapportera eventuella saknade tjänster till plugin-"
+"skaparen."
+
+#~ msgctxt "Cookie Modal Title"
+#~ msgid "Manage cookie preferences"
+#~ msgstr "Hantera cookiepreferenser"
+
+#~ msgid "One per line."
+#~ msgstr "En per rad."

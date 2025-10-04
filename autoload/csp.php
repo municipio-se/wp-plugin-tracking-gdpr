@@ -69,10 +69,13 @@ add_action(
           "key" => "field_wstg_csp_settings_allowed_frame_src",
           "name" => "wstg_csp_settings_allowed_frame_src",
           "label" => __(
-            "Allowed iframe hosts (for the CSP <i>frame-src</i> directive)",
+            "Allowed iframe hosts (for the CSP “frame-src” directive)",
             "whitespace-tracking-gdpr",
           ),
-          "instructions" => __("One per line.", "whitespace-tracking-gdpr"),
+          "instructions" => __(
+            "One per line. ⚠️ Warning: This will allow any iframe from the specified sources, including potentially harmful ones.",
+            "whitespace-tracking-gdpr",
+          ),
           "type" => "textarea",
           "rows" => 10,
         ],

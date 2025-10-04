@@ -90,19 +90,19 @@ add_action(
 
         "acceptAllBtn" => _x(
           "Accept all",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "acceptNecessaryBtn" => _x(
           "Accept necessary",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "showPreferencesBtn" => _x(
           "Manage cookie preferences",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
       ],
@@ -123,25 +123,25 @@ add_action(
 
         "acceptAllBtn" => _x(
           "Accept all",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "acceptNecessaryBtn" => _x(
           "Accept necessary",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "savePreferencesBtn" => _x(
           "Save current choices",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "closeIconLabel" => _x(
           "Close cookie consent dialog",
-          "Cookie Modal Button Label",
+          "Constent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
       ],
@@ -255,7 +255,7 @@ add_action(
                   "type" => "text",
                   "placeholder" => _x(
                     "Cookie consent",
-                    "Cookie Modal Title",
+                    "Constent Modal Title",
                     "whitespace-tracking-gdpr",
                   ),
                 ],
@@ -268,7 +268,7 @@ add_action(
                   "media_upload" => 0,
                   "default_value" => _x(
                     "We use cookies to improve your experience on our site.",
-                    "Cookie Modal Description",
+                    "Constent Modal Description",
                     "whitespace-tracking-gdpr",
                   ),
                 ],
@@ -317,7 +317,7 @@ add_action(
                   "type" => "text",
                   "placeholder" => _x(
                     "Manage cookie preferences",
-                    "Cookie Modal Title",
+                    "Constent Modal Title",
                     "whitespace-tracking-gdpr",
                   ),
                 ],
@@ -331,7 +331,7 @@ add_action(
                   "media_upload" => 0,
                   "default_value" => _x(
                     "You can manage your cookie preferences here.",
-                    "Cookie Modal Description",
+                    "Constent Modal Description",
                     "whitespace-tracking-gdpr",
                   ),
                 ],
