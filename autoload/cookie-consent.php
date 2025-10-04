@@ -21,6 +21,16 @@ add_action(
     // foreach ($categories as $category_key => $category) {
     //   $settings["categories"][$category_key] = $category;
     // }
+    $allow_any_embedded_content = get_field(
+      "wstg_allow_any_embedded_content",
+      "option",
+    );
+    if ($allow_any_embedded_content) {
+      $services["undefined"] = [
+        "title" => __("Other third-party services", "whitespace-tracking-gdpr"),
+        "category" => "embedded",
+      ];
+    }
     foreach ($services as $service_key => $service) {
       $category_key = $service["category"];
       if (!isset($settings["categories"][$category_key])) {

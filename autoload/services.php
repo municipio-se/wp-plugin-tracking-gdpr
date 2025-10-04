@@ -343,6 +343,20 @@ add_action(
           "layout" => "grid",
           "sub_fields" => $services_sub_fields,
         ],
+        [
+          "key" => "field_wstg_allow_any_embedded_content",
+          "name" => "wstg_allow_any_embedded_content",
+          "label" => __(
+            "Allow any embedded content",
+            "whitespace-tracking-gdpr",
+          ),
+          "instructions" => __(
+            "⚠️ Warning: This could violate cookie law compliance. Only enable this if you know what you are doing. Please report any missing services to the plugin author.",
+            "whitespace-tracking-gdpr",
+          ),
+          "type" => "true_false",
+          "ui" => 1,
+        ],
       ],
       "location" => [
         [

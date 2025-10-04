@@ -47,12 +47,6 @@ Object.entries(settings.categories).forEach(([key, category]) => {
   };
 });
 
-categories['embedded'] ??= {};
-categories['embedded'].services ??= {};
-categories['embedded'].services['undefined'] ??= {
-  label: 'Other third-party services',
-};
-
 const sections =
   [] as CookieConsent.Translation['preferencesModal']['sections'];
 
@@ -62,7 +56,8 @@ if (settings.translation.preferencesModal.description) {
   });
 }
 
-Object.entries(settings.categories).forEach(([key, category]) => {
+Object.keys(categories).forEach((key) => {
+  const category = settings.categories[key];
   sections.push({
     title: category.title,
     description: category.description,
