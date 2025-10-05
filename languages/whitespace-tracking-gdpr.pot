@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-04T21:56:23+00:00\n"
+"POT-Creation-Date: 2025-10-05T11:28:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: whitespace-tracking-gdpr\n"
@@ -74,87 +74,98 @@ msgstr ""
 msgid "These cookies have not been categorized yet."
 msgstr ""
 
-#: autoload/cookie-consent.php:30
+#: autoload/consent-dialog.php:30
 msgid "Other third-party services"
 msgstr ""
 
-#: autoload/cookie-consent.php:91
-#: autoload/cookie-consent.php:124
-msgctxt "Constent Modal Button Label"
+#: autoload/consent-dialog.php:73
+#: autoload/consent-dialog.php:106
+msgctxt "Consent Modal Button Label"
 msgid "Accept all"
 msgstr ""
 
-#: autoload/cookie-consent.php:97
-#: autoload/cookie-consent.php:130
-msgctxt "Constent Modal Button Label"
+#: autoload/consent-dialog.php:79
+#: autoload/consent-dialog.php:112
+msgctxt "Consent Modal Button Label"
 msgid "Accept necessary"
 msgstr ""
 
-#: autoload/cookie-consent.php:103
-msgctxt "Constent Modal Button Label"
-msgid "Manage cookie preferences"
+#: autoload/consent-dialog.php:85
+msgctxt "Consent Modal Button Label"
+msgid "Customize your consent"
 msgstr ""
 
-#: autoload/cookie-consent.php:136
-msgctxt "Constent Modal Button Label"
+#: autoload/consent-dialog.php:118
+msgctxt "Consent Modal Button Label"
 msgid "Save current choices"
 msgstr ""
 
-#: autoload/cookie-consent.php:142
-msgctxt "Constent Modal Button Label"
+#: autoload/consent-dialog.php:124
+msgctxt "Consent Modal Button Label"
 msgid "Close cookie consent dialog"
 msgstr ""
 
-#: autoload/cookie-consent.php:229
-#: autoload/cookie-consent.php:233
-msgid "Translations"
+#: autoload/consent-dialog.php:219
+msgid "Text strings"
 msgstr ""
 
-#: autoload/cookie-consent.php:240
-msgid "Language"
-msgstr ""
-
-#: autoload/cookie-consent.php:247
+#: autoload/consent-dialog.php:223
 msgid "Consent dialog"
 msgstr ""
 
-#: autoload/cookie-consent.php:253
-#: autoload/cookie-consent.php:315
+#: autoload/consent-dialog.php:229
+#: autoload/consent-dialog.php:300
 msgid "Title"
 msgstr ""
 
-#: autoload/cookie-consent.php:256
-msgctxt "Constent Modal Title"
-msgid "Cookie consent"
+#: autoload/consent-dialog.php:232
+msgctxt "Consent Modal Title"
+msgid "We value your privacy"
 msgstr ""
 
-#: autoload/cookie-consent.php:264
-#: autoload/cookie-consent.php:327
+#: autoload/consent-dialog.php:240
+#: autoload/consent-dialog.php:311
 msgid "Description"
 msgstr ""
 
-#: autoload/cookie-consent.php:269
-msgctxt "Constent Modal Description"
+#: autoload/consent-dialog.php:247
+msgctxt "Consent Modal Description"
+msgid "We use cookies to improve your experience on our site. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>."
+msgstr ""
+
+#: autoload/consent-dialog.php:254
+msgctxt "Consent Modal Description"
 msgid "We use cookies to improve your experience on our site."
 msgstr ""
 
-#: autoload/cookie-consent.php:309
+#: autoload/consent-dialog.php:294
 msgid "Preferences dialog"
 msgstr ""
 
-#: autoload/cookie-consent.php:318
-msgctxt "Constent Modal Title"
-msgid "Manage cookie preferences"
+#: autoload/consent-dialog.php:303
+msgctxt "Consent Modal Title"
+msgid "Customize your consent"
 msgstr ""
 
-#: autoload/cookie-consent.php:332
-msgctxt "Constent Modal Description"
+#: autoload/consent-dialog.php:318
+msgctxt "Consent Modal Description"
+msgid "You can manage your cookie preferences here. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>."
+msgstr ""
+
+#: autoload/consent-dialog.php:325
+msgctxt "Consent Modal Description"
 msgid "You can manage your cookie preferences here."
 msgstr ""
 
-#: autoload/cookie-consent.php:376
-#: autoload/cookie-consent.php:383
+#: autoload/consent-dialog.php:367
+#: autoload/consent-dialog.php:374
 msgid "Change cookie preferences"
+msgstr ""
+
+#. translators: 1: URL to set the page for privacy policy
+#: autoload/consent-dialog.php:465
+#, php-format
+msgid "To ensure compliance with GDPR and the cookie law, please <a href=\"%1$s\">set a page for your privacy policy</a>."
 msgstr ""
 
 #: autoload/csp.php:66

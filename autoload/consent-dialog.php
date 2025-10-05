@@ -50,102 +50,86 @@ add_action(
       $settings["categories"]["analytics"] = $categories["analytics"];
     }
 
-    $translations = get_field("wstg_translations", "option");
-    // Find the translation that matches the current locale
-    $translation = null;
-    $locale = get_locale();
-    foreach ($translations as $translation_item) {
-      if ($translation_item["locale"] === $locale) {
-        $translation = $translation_item;
-        break;
-      }
-    }
-    if ($translation === null) {
-      // Fallback to the first translation
-      $translation = [
-        "locale" => $locale,
-        "description" => get_field_object(
-          "field_wstg_translations_consent_modal_description",
-          "option",
-        )["default_value"],
-      ];
-    }
-
-    $settings["language"] = $translation["locale"];
+    $translation = [
+      "consent_modal" => get_field("wstg_strings_consent_modal"),
+      "preferences_modal" => get_field("wstg_strings_preferences_modal"),
+    ];
+    $settings["language"] = get_locale();
     $settings["translation"] = [
       "consentModal" => [
         "title" =>
-          $translation["consentModal"]["title"] ?:
-          get_field_object(
-            "field_wstg_translations_consent_modal_title",
-            "option",
-          )["placeholder"],
+          $translation["consent_modal"]["title"] ?:
+          get_field_object("field_wstg_strings_consent_modal_title", "option")[
+            "placeholder"
+          ],
 
         "description" =>
-          $translation["consentModal"]["description"] ??
+          $translation["consent_modal"]["description"] ??
           get_field_object(
-            "field_wstg_translations_consent_modal_description",
+            "field_wstg_strings_consent_modal_description",
             "option",
           )["default_value"],
 
         "acceptAllBtn" => _x(
           "Accept all",
-          "Constent Modal Button Label",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "acceptNecessaryBtn" => _x(
           "Accept necessary",
-          "Constent Modal Button Label",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "showPreferencesBtn" => _x(
-          "Manage cookie preferences",
-          "Constent Modal Button Label",
+          "Customize your consent",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
       ],
       "preferencesModal" => [
         "title" =>
-          $translation["preferencesModal"]["title"] ?:
+          $translation["preferences_modal"]["title"] ?:
           get_field_object(
-            "field_wstg_translations_preferences_modal_title",
+            "field_wstg_strings_preferences_modal_title",
             "option",
           )["placeholder"],
 
         "description" =>
-          $translation["preferencesModal"]["description"] ??
+          $translation["preferences_modal"]["description"] ??
           get_field_object(
-            "field_wstg_translations_preferences_modal_description",
+            "field_wstg_strings_preferences_modal_description",
             "option",
           )["default_value"],
 
         "acceptAllBtn" => _x(
           "Accept all",
-          "Constent Modal Button Label",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "acceptNecessaryBtn" => _x(
           "Accept necessary",
-          "Constent Modal Button Label",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "savePreferencesBtn" => _x(
           "Save current choices",
-          "Constent Modal Button Label",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
 
         "closeIconLabel" => _x(
           "Close cookie consent dialog",
-          "Constent Modal Button Label",
+          "Consent Modal Button Label",
           "whitespace-tracking-gdpr",
         ),
       ],
     ];
+
+    error_log(var_export($settings, true));
 
     wp_localize_script(
       "whitespace-tracking-gdpr",
@@ -224,118 +208,125 @@ add_action(
         sections: Section[]
       }
     */
+
+    $page_for_privacy_policy = get_option("wp_page_for_privacy_policy");
+    $privacy_policy_url = $page_for_privacy_policy
+      ? get_permalink($page_for_privacy_policy)
+      : "";
+
     acf_add_local_field_group([
-      "key" => "group_wstg_translations",
-      "title" => __("Translations", "whitespace-tracking-gdpr"),
+      "key" => "group_wstg_strings",
+      "title" => __("Text strings", "whitespace-tracking-gdpr"),
       "fields" => [
         [
-          "key" => "field_wstg_translations",
-          "label" => __("Translations", "whitespace-tracking-gdpr"),
-          "name" => "translations",
-          "type" => "repeater",
-          "layout" => "row",
+          "key" => "field_wstg_strings_consent_modal",
+          "label" => __("Consent dialog", "whitespace-tracking-gdpr"),
+          "name" => "wstg_string_consent_modal",
+          "type" => "group",
           "sub_fields" => [
             [
-              "key" => "field_wstg_translations_locale",
-              "label" => __("Language", "whitespace-tracking-gdpr"),
-              "name" => "locale",
-              "type" => "select",
-              "choices" => get_available_languages(),
+              "key" => "field_wstg_strings_consent_modal_title",
+              "label" => __("Title", "whitespace-tracking-gdpr"),
+              "name" => "title",
+              "type" => "text",
+              "placeholder" => _x(
+                "We value your privacy",
+                "Consent Modal Title",
+                "whitespace-tracking-gdpr",
+              ),
             ],
             [
-              "key" => "field_wstg_translations_consent_modal",
-              "label" => __("Consent dialog", "whitespace-tracking-gdpr"),
-              "name" => "consent_modal",
-              "type" => "group",
-              "sub_fields" => [
-                [
-                  "key" => "field_wstg_translations_consent_modal_title",
-                  "label" => __("Title", "whitespace-tracking-gdpr"),
-                  "name" => "title",
-                  "type" => "text",
-                  "placeholder" => _x(
-                    "Cookie consent",
-                    "Constent Modal Title",
+              "key" => "field_wstg_strings_consent_modal_description",
+              "label" => __("Description", "whitespace-tracking-gdpr"),
+              "name" => "description",
+              "type" => "wysiwyg",
+              "toolbar" => "basic",
+              "media_upload" => 0,
+              "default_value" => $privacy_policy_url
+                ? sprintf(
+                  _x(
+                    "We use cookies to improve your experience on our site. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>.",
+                    "Consent Modal Description",
                     "whitespace-tracking-gdpr",
                   ),
-                ],
-                [
-                  "key" => "field_wstg_translations_consent_modal_description",
-                  "label" => __("Description", "whitespace-tracking-gdpr"),
-                  "name" => "description",
-                  "type" => "wysiwyg",
-                  "toolbar" => "basic",
-                  "media_upload" => 0,
-                  "default_value" => _x(
-                    "We use cookies to improve your experience on our site.",
-                    "Constent Modal Description",
-                    "whitespace-tracking-gdpr",
-                  ),
-                ],
-                // [
-                //   "key" =>
-                //     "field_wstg_translations_consent_modal_accept_all_btn",
-                //   "label" => __(
-                //     "Accept all button",
-                //     "whitespace-tracking-gdpr",
-                //   ),
-                //   "name" => "accept_all_btn",
-                //   "type" => "text",
-                // ],
-                // [
-                //   "key" =>
-                //     "field_wstg_translations_consent_modal_accept_necessary_btn",
-                //   "label" => __(
-                //     "Accept necessary button",
-                //     "whitespace-tracking-gdpr",
-                //   ),
-                //   "name" => "accept_necessary_btn",
-                //   "type" => "text",
-                // ],
-                // [
-                //   "key" =>
-                //     "field_wstg_translations_consent_modal_show_preferences_btn",
-                //   "label" => __(
-                //     "Show preferences button",
-                //     "whitespace-tracking-gdpr",
-                //   ),
-                //   "name" => "show_preferences_btn",
-                //   "type" => "text",
-                // ],
-              ],
+                  esc_url($privacy_policy_url),
+                )
+                : _x(
+                  "We use cookies to improve your experience on our site.",
+                  "Consent Modal Description",
+                  "whitespace-tracking-gdpr",
+                ),
+            ],
+            // [
+            //   "key" =>
+            //     "field_wstg_strings_consent_modal_accept_all_btn",
+            //   "label" => __(
+            //     "Accept all button",
+            //     "whitespace-tracking-gdpr",
+            //   ),
+            //   "name" => "accept_all_btn",
+            //   "type" => "text",
+            // ],
+            // [
+            //   "key" =>
+            //     "field_wstg_strings_consent_modal_accept_necessary_btn",
+            //   "label" => __(
+            //     "Accept necessary button",
+            //     "whitespace-tracking-gdpr",
+            //   ),
+            //   "name" => "accept_necessary_btn",
+            //   "type" => "text",
+            // ],
+            // [
+            //   "key" =>
+            //     "field_wstg_strings_consent_modal_show_preferences_btn",
+            //   "label" => __(
+            //     "Show preferences button",
+            //     "whitespace-tracking-gdpr",
+            //   ),
+            //   "name" => "show_preferences_btn",
+            //   "type" => "text",
+            // ],
+          ],
+        ],
+        [
+          "key" => "field_wstg_strings_preferences_modal",
+          "label" => __("Preferences dialog", "whitespace-tracking-gdpr"),
+          "name" => "wstg_string_preferences_modal",
+          "type" => "group",
+          "sub_fields" => [
+            [
+              "key" => "field_wstg_strings_preferences_modal_title",
+              "label" => __("Title", "whitespace-tracking-gdpr"),
+              "name" => "title",
+              "type" => "text",
+              "placeholder" => _x(
+                "Customize your consent",
+                "Consent Modal Title",
+                "whitespace-tracking-gdpr",
+              ),
             ],
             [
-              "key" => "field_wstg_translations_preferences_modal",
-              "label" => __("Preferences dialog", "whitespace-tracking-gdpr"),
-              "name" => "preferences_modal",
-              "type" => "group",
-              "sub_fields" => [
-                [
-                  "key" => "field_wstg_translations_preferences_modal_title",
-                  "label" => __("Title", "whitespace-tracking-gdpr"),
-                  "name" => "title",
-                  "type" => "text",
-                  "placeholder" => _x(
-                    "Manage cookie preferences",
-                    "Constent Modal Title",
+              "key" => "field_wstg_strings_preferences_modal_description",
+              "label" => __("Description", "whitespace-tracking-gdpr"),
+              "name" => "description",
+              "type" => "wysiwyg",
+              "toolbar" => "basic",
+              "media_upload" => 0,
+              "default_value" => $privacy_policy_url
+                ? sprintf(
+                  _x(
+                    "You can manage your cookie preferences here. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>.",
+                    "Consent Modal Description",
                     "whitespace-tracking-gdpr",
                   ),
-                ],
-                [
-                  "key" =>
-                    "field_wstg_translations_preferences_modal_description",
-                  "label" => __("Description", "whitespace-tracking-gdpr"),
-                  "name" => "description",
-                  "type" => "wysiwyg",
-                  "toolbar" => "basic",
-                  "media_upload" => 0,
-                  "default_value" => _x(
-                    "You can manage your cookie preferences here.",
-                    "Constent Modal Description",
-                    "whitespace-tracking-gdpr",
-                  ),
-                ],
-              ],
+                  esc_url($privacy_policy_url),
+                )
+                : _x(
+                  "You can manage your cookie preferences here.",
+                  "Consent Modal Description",
+                  "whitespace-tracking-gdpr",
+                ),
             ],
           ],
         ],
@@ -448,4 +439,44 @@ add_filter(
   },
   10,
   4,
+);
+
+/**
+ * Shows a notice in the wp-admin/options-general.php?page=acf-options-mx-tracking page if no page for privacy policy is set and a link to set it
+ */
+add_action(
+  "admin_notices",
+  function () {
+    $screen = get_current_screen();
+    if ($screen?->id !== "settings_page_acf-options-mx-tracking") {
+      return;
+    }
+    $page_for_privacy_policy = get_option("wp_page_for_privacy_policy");
+    if ($page_for_privacy_policy) {
+      return;
+    }
+    $url = admin_url("options-privacy.php");
+    ?>
+    <div class="notice notice-warning is-dismissible">
+      <p>
+         <?php echo wp_kses(
+           sprintf(
+             /* translators: 1: URL to set the page for privacy policy */
+             __(
+               'To ensure compliance with GDPR and the cookie law, please <a href="%1$s">set a page for your privacy policy</a>.',
+               "whitespace-tracking-gdpr",
+             ),
+             $url,
+           ),
+           [
+             "a" => [
+               "href" => [],
+             ],
+           ],
+         ); ?>
+      </p>
+    </div>
+    <?php
+  },
+  10,
 );
