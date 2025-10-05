@@ -17,20 +17,28 @@ define(
   WHITESPACE_TRACKING_GDPR_PATH . "/autoload",
 );
 define(
+  "WHITESPACE_TRACKING_GDPR_IS_MU",
+  strpos(WHITESPACE_TRACKING_GDPR_PATH, WPMU_PLUGIN_DIR) === 0,
+);
+define(
   "WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH",
   plugin_basename(dirname(__FILE__)) . "/languages",
 );
 
-load_plugin_textdomain(
-  "whitespace-tracking-gdpr",
-  false,
-  WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
-);
-
-load_muplugin_textdomain(
-  "whitespace-tracking-gdpr",
-  WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
-);
+add_action("init", function () {
+  if (WHITESPACE_TRACKING_GDPR_IS_MU) {
+    load_muplugin_textdomain(
+      "whitespace-tracking-gdpr",
+      WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
+    );
+  } else {
+    load_plugin_textdomain(
+      "whitespace-tracking-gdpr",
+      false,
+      WHITESPACE_TRACKING_GDPR_LANGUAGES_PATH,
+    );
+  }
+});
 
 array_map(static function () {
   include_once func_get_args()[0];
