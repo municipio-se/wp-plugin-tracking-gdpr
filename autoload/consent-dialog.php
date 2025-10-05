@@ -245,7 +245,7 @@ add_action(
               "default_value" => $privacy_policy_url
                 ? sprintf(
                   _x(
-                    "We use cookies to improve your experience on our site. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>.",
+                    'We use cookies to improve your experience on our site. For more information, please see our <a href="%s" target="_blank" rel="noopener">Privacy Policy</a>.',
                     "Consent Modal Description",
                     "whitespace-tracking-gdpr",
                   ),
@@ -316,7 +316,7 @@ add_action(
               "default_value" => $privacy_policy_url
                 ? sprintf(
                   _x(
-                    "You can manage your cookie preferences here. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>.",
+                    'You can manage your cookie preferences here. For more information, please see our <a href="%s" target="_blank" rel="noopener">Privacy Policy</a>.',
                     "Consent Modal Description",
                     "whitespace-tracking-gdpr",
                   ),
@@ -463,7 +463,7 @@ add_action(
            sprintf(
              /* translators: 1: URL to set the page for privacy policy */
              __(
-               'To ensure compliance with GDPR and the cookie law, please <a href="%1$s">set a page for your privacy policy</a>.',
+               'To ensure compliance with GDPR and the cookie law, please <a href="%s">set a page for your privacy policy</a>.',
                "whitespace-tracking-gdpr",
              ),
              $url,

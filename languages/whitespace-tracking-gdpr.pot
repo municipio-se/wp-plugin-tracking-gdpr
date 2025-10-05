@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-05T11:28:55+00:00\n"
+"POT-Creation-Date: 2025-10-05T11:48:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: whitespace-tracking-gdpr\n"
@@ -129,8 +129,9 @@ msgid "Description"
 msgstr ""
 
 #: autoload/consent-dialog.php:247
+#, php-format
 msgctxt "Consent Modal Description"
-msgid "We use cookies to improve your experience on our site. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>."
+msgid "We use cookies to improve your experience on our site. For more information, please see our <a href=\"%s\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>."
 msgstr ""
 
 #: autoload/consent-dialog.php:254
@@ -148,8 +149,9 @@ msgid "Customize your consent"
 msgstr ""
 
 #: autoload/consent-dialog.php:318
+#, php-format
 msgctxt "Consent Modal Description"
-msgid "You can manage your cookie preferences here. For more information, please see our <a href='%1' target='_blank' rel='noopener'>Privacy Policy</a>."
+msgid "You can manage your cookie preferences here. For more information, please see our <a href=\"%s\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>."
 msgstr ""
 
 #: autoload/consent-dialog.php:325
@@ -165,7 +167,7 @@ msgstr ""
 #. translators: 1: URL to set the page for privacy policy
 #: autoload/consent-dialog.php:465
 #, php-format
-msgid "To ensure compliance with GDPR and the cookie law, please <a href=\"%1$s\">set a page for your privacy policy</a>."
+msgid "To ensure compliance with GDPR and the cookie law, please <a href=\"%s\">set a page for your privacy policy</a>."
 msgstr ""
 
 #: autoload/csp.php:66
