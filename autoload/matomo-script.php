@@ -12,12 +12,12 @@ add_action("wp_head", function () {
   $url = mx_get_matomo_option("url");
   $container_id = mx_get_matomo_option("container_id");
   $site_id = mx_get_matomo_option("site_id");
-  if($url && ($container_id || $site_id)):
-    if($container_id):
-      ?>
+  if ($url && ($container_id || $site_id)):
+    if ($container_id): ?>
         <script<?php echo wp_sanitize_script_attributes(
           apply_filters("wp_inline_script_attributes", []),
         ); ?>>
+          var _paq = window._paq = window._paq || [];
           var _mtm = window._mtm = window._mtm || [];
           _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
           (function() {
@@ -27,13 +27,12 @@ add_action("wp_head", function () {
             s.parentNode.insertBefore(g,s);
           })();
         </script>
-      <?php
-    elseif($site_id):
-      ?>
+      <?php elseif ($site_id): ?>
         <script<?php echo wp_sanitize_script_attributes(
           apply_filters("wp_inline_script_attributes", []),
         ); ?>>
           var _paq = window._paq = window._paq || [];
+          var _mtm = window._mtm = window._mtm || [];
           _paq.push(['requireCookieConsent']);
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
@@ -45,20 +44,18 @@ add_action("wp_head", function () {
             g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
           })();
         </script>
-      <?php
-    endif;
-    ?>
+      <?php endif; ?>
       <script<?php echo wp_sanitize_script_attributes(
         apply_filters("wp_inline_script_attributes", []),
       ); ?> data-category="analytics" type="text/plain">
         _paq.push(['rememberCookieConsentGiven']);
-        console.log('rememberCookieConsentGiven');
+        _mtm.push({'event': 'mtm.ConsentGiven'})
       </script>
       <script<?php echo wp_sanitize_script_attributes(
         apply_filters("wp_inline_script_attributes", []),
       ); ?> data-category="!analytics" type="text/plain">
         _paq.push(['forgetCookieConsentGiven']);
-        console.log('forgetCookieConsentGiven');
+        _mtm.push({'event': 'mtm.ConsentRevoked'})
       </script>
     <?php
   endif;
