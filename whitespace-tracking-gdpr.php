@@ -25,7 +25,7 @@ define(
   plugin_basename(dirname(__FILE__)) . "/languages",
 );
 
-add_action("init", function () {
+add_action("plugins_loaded", function () {
   if (WHITESPACE_TRACKING_GDPR_IS_MU) {
     load_muplugin_textdomain(
       "whitespace-tracking-gdpr",
