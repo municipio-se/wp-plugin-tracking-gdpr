@@ -129,7 +129,11 @@ add_action(
       ],
     ];
 
-    error_log(var_export($settings, true));
+    $settings["matomo"] = [
+      "url" => $matomo_url,
+      "containerId" => $matomo_container_id,
+      "siteId" => $matomo_site_id,
+    ];
 
     wp_localize_script(
       "whitespace-tracking-gdpr",

@@ -29,7 +29,26 @@ declare global {
           description?: string;
         };
       };
+      matomo: {
+        url: string;
+        containerId: string;
+        siteId: string;
+      };
     };
     ccDebug: () => void;
+    _mtm: Array<any>;
+    _paq: Array<any>;
+  }
+
+  declare interface WindowEventMap {
+    'cc:onFirstConsent': CustomEvent<
+      Parameters<CookieConsent.CookieConsentConfig['onFirstConsent']>[0]
+    >;
+    'cc:onConsent': CustomEvent<
+      Parameters<CookieConsent.CookieConsentConfig['onConsent']>[0]
+    >;
+    'cc:onChange': CustomEvent<
+      Parameters<CookieConsent.CookieConsentConfig['onChange']>[0]
+    >;
   }
 }

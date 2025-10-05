@@ -5,6 +5,8 @@ import './wstg-iframe';
 
 import './custom.css';
 
+import matomo from './matomo';
+
 const settings = window.whitespaceTrackingGdpr;
 
 // console.log(settings);
@@ -100,3 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+matomo(settings.matomo.url, {
+  containerId: settings.matomo.containerId || undefined,
+  siteId: settings.matomo.siteId || undefined,
+})
+  .connectToConsentDialog()
+  .loadMTM()
+  .loadMatomo();

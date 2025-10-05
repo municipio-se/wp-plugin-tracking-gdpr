@@ -8,59 +8,6 @@ add_action("init", function () {
   }
 });
 
-add_action("wp_head", function () {
-  $url = mx_get_matomo_option("url");
-  $container_id = mx_get_matomo_option("container_id");
-  $site_id = mx_get_matomo_option("site_id");
-  if ($url && ($container_id || $site_id)):
-    if ($container_id): ?>
-        <script<?php echo wp_sanitize_script_attributes(
-          apply_filters("wp_inline_script_attributes", []),
-        ); ?>>
-          var _paq = window._paq = window._paq || [];
-          var _mtm = window._mtm = window._mtm || [];
-          _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
-          (function() {
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.async=true;
-            g.src='<?php echo $url; ?>js/container_' + '<?php echo $container_id; ?>' + '.js';
-            s.parentNode.insertBefore(g,s);
-          })();
-        </script>
-      <?php elseif ($site_id): ?>
-        <script<?php echo wp_sanitize_script_attributes(
-          apply_filters("wp_inline_script_attributes", []),
-        ); ?>>
-          var _paq = window._paq = window._paq || [];
-          var _mtm = window._mtm = window._mtm || [];
-          _paq.push(['requireCookieConsent']);
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          (function() {
-            var u="<?php echo $url; ?>";
-            _paq.push(['setTrackerUrl', u+'matomo.php']);
-            _paq.push(['setSiteId', '<?php echo $site_id; ?>']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-          })();
-        </script>
-      <?php endif; ?>
-      <script<?php echo wp_sanitize_script_attributes(
-        apply_filters("wp_inline_script_attributes", []),
-      ); ?> data-category="analytics" type="text/plain">
-        _paq.push(['rememberCookieConsentGiven']);
-        _mtm.push({'event': 'mtm.ConsentGiven'})
-      </script>
-      <script<?php echo wp_sanitize_script_attributes(
-        apply_filters("wp_inline_script_attributes", []),
-      ); ?> data-category="!analytics" type="text/plain">
-        _paq.push(['forgetCookieConsentGiven']);
-        _mtm.push({'event': 'mtm.ConsentRevoked'})
-      </script>
-    <?php
-  endif;
-});
-
 add_action("init", function () {
   $matomo_url = mx_get_matomo_option("url");
   $matomo_container_id = mx_get_matomo_option("container_id");
