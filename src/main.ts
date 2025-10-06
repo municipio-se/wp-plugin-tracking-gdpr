@@ -9,8 +9,6 @@ import matomo from './matomo';
 
 const settings = window.whitespaceTrackingGdpr;
 
-// console.log(settings);
-
 function maybeRegex(value: string): string | RegExp {
   if (value.startsWith('/') && value.endsWith('/')) {
     return new RegExp(value.substring(1, value.length - 1));
@@ -29,8 +27,6 @@ Object.entries(settings.categories).forEach(([key, category]) => {
     return;
   }
   categories[key] = {
-    // enabled: key === 'necessary',
-    // readOnly: key === 'necessary',
     services: Object.fromEntries(
       Object.entries(category.services ?? {}).map(([serviceKey, service]) => {
         return [
