@@ -3,8 +3,6 @@ import * as CookieConsent from 'vanilla-cookieconsent';
 
 import './wstg-iframe';
 
-import './custom.css';
-
 import matomo from './matomo';
 
 const settings = window.whitespaceTrackingGdpr;
