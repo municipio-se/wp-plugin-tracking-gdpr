@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-05T11:48:14+00:00\n"
+"POT-Creation-Date: 2025-10-14T17:47:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: whitespace-tracking-gdpr\n"
@@ -27,6 +27,52 @@ msgstr ""
 #. Author of the plugin
 #: whitespace-tracking-gdpr.php
 msgid "Whitespace Dev"
+msgstr ""
+
+#: autoload/admin.php:5
+msgctxt "Options Page Title"
+msgid "Data sharing"
+msgstr ""
+
+#: autoload/admin.php:6
+msgctxt "Options Page Menu Title"
+msgid "Data sharing"
+msgstr ""
+
+#: autoload/admin.php:32
+#: autoload/admin.php:103
+msgctxt "Options Page Menu Title"
+msgid "Settings"
+msgstr ""
+
+#: autoload/admin.php:40
+msgctxt "Settings Page Description"
+msgid "Configure settings for third-party services, analytics, cookies and more"
+msgstr ""
+
+#: autoload/admin.php:49
+msgctxt "Button Text"
+msgid "Open Settings"
+msgstr ""
+
+#: autoload/admin.php:62
+msgctxt "Options Page Menu Title"
+msgid "Iframe report"
+msgstr ""
+
+#: autoload/admin.php:70
+msgctxt "Iframe Report Page Description"
+msgid "View all iframes detected on the website"
+msgstr ""
+
+#: autoload/admin.php:79
+msgctxt "Button Text"
+msgid "View Report"
+msgstr ""
+
+#: autoload/admin.php:98
+msgctxt "Options Page Title"
+msgid "Data sharing settings"
 msgstr ""
 
 #: autoload/categories.php:6
@@ -105,67 +151,67 @@ msgctxt "Consent Modal Button Label"
 msgid "Close cookie consent dialog"
 msgstr ""
 
-#: autoload/consent-dialog.php:219
+#: autoload/consent-dialog.php:223
 msgid "Text strings"
 msgstr ""
 
-#: autoload/consent-dialog.php:223
+#: autoload/consent-dialog.php:227
 msgid "Consent dialog"
 msgstr ""
 
-#: autoload/consent-dialog.php:229
-#: autoload/consent-dialog.php:300
+#: autoload/consent-dialog.php:233
+#: autoload/consent-dialog.php:304
 msgid "Title"
 msgstr ""
 
-#: autoload/consent-dialog.php:232
+#: autoload/consent-dialog.php:236
 msgctxt "Consent Modal Title"
 msgid "We value your privacy"
 msgstr ""
 
-#: autoload/consent-dialog.php:240
-#: autoload/consent-dialog.php:311
+#: autoload/consent-dialog.php:244
+#: autoload/consent-dialog.php:315
 msgid "Description"
 msgstr ""
 
-#: autoload/consent-dialog.php:247
+#: autoload/consent-dialog.php:251
 #, php-format
 msgctxt "Consent Modal Description"
 msgid "We use cookies to improve your experience on our site. For more information, please see our <a href=\"%s\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>."
 msgstr ""
 
-#: autoload/consent-dialog.php:254
+#: autoload/consent-dialog.php:258
 msgctxt "Consent Modal Description"
 msgid "We use cookies to improve your experience on our site."
 msgstr ""
 
-#: autoload/consent-dialog.php:294
+#: autoload/consent-dialog.php:298
 msgid "Preferences dialog"
 msgstr ""
 
-#: autoload/consent-dialog.php:303
+#: autoload/consent-dialog.php:307
 msgctxt "Consent Modal Title"
 msgid "Customize your consent"
 msgstr ""
 
-#: autoload/consent-dialog.php:318
+#: autoload/consent-dialog.php:322
 #, php-format
 msgctxt "Consent Modal Description"
 msgid "You can manage your cookie preferences here. For more information, please see our <a href=\"%s\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>."
 msgstr ""
 
-#: autoload/consent-dialog.php:325
+#: autoload/consent-dialog.php:329
 msgctxt "Consent Modal Description"
 msgid "You can manage your cookie preferences here."
 msgstr ""
 
-#: autoload/consent-dialog.php:367
-#: autoload/consent-dialog.php:374
+#: autoload/consent-dialog.php:371
+#: autoload/consent-dialog.php:378
 msgid "Change cookie preferences"
 msgstr ""
 
 #. translators: 1: URL to set the page for privacy policy
-#: autoload/consent-dialog.php:465
+#: autoload/consent-dialog.php:469
 #, php-format
 msgid "To ensure compliance with GDPR and the cookie law, please <a href=\"%s\">set a page for your privacy policy</a>."
 msgstr ""
@@ -182,42 +228,37 @@ msgstr ""
 msgid "One per line. ⚠️ Warning: This will allow any iframe from the specified sources, including potentially harmful ones."
 msgstr ""
 
+#: autoload/iframe-scanner.php:73
+#: autoload/iframe-scanner.php:74
+msgid "Iframe report"
+msgstr ""
+
 #: autoload/matomo-settings.php:6
-msgctxt "Options Page Title"
-msgid "Tracking"
-msgstr ""
-
-#: autoload/matomo-settings.php:11
-msgctxt "Options Page Menu Title"
-msgid "Tracking"
-msgstr ""
-
-#: autoload/matomo-settings.php:24
 msgid "Matomo"
 msgstr ""
 
-#: autoload/matomo-settings.php:28
+#: autoload/matomo-settings.php:10
 msgid "URL"
 msgstr ""
 
-#: autoload/matomo-settings.php:31
+#: autoload/matomo-settings.php:13
 msgid "The URL for the Matomo Tag Manager."
 msgstr ""
 
-#: autoload/matomo-settings.php:39
+#: autoload/matomo-settings.php:21
 msgid "Container ID"
 msgstr ""
 
-#: autoload/matomo-settings.php:50
+#: autoload/matomo-settings.php:32
 msgid "Site ID"
 msgstr ""
 
-#: autoload/matomo-settings.php:53
+#: autoload/matomo-settings.php:35
 msgid "The site ID for the Matomo Tag Manager."
 msgstr ""
 
 #. Translators: This message is shown when a field is disabled because its value is defined as a constant in the code.
-#: autoload/matomo-settings.php:87
+#: autoload/matomo-settings.php:69
 #, php-format
 msgid "This field is disabled because the constant %s has been defined in code."
 msgstr ""

@@ -1,24 +1,6 @@
 <?php
 
 add_action("acf/init", function () {
-  // Add subpage for Tracking options
-  acf_add_options_sub_page([
-    "page_title" => _x(
-      "Tracking",
-      "Options Page Title",
-      "whitespace-tracking-gdpr",
-    ),
-    "menu_title" => _x(
-      "Tracking",
-      "Options Page Menu Title",
-      "whitespace-tracking-gdpr",
-    ),
-    "parent_slug" => "options-general.php",
-    "menu_slug" => "acf-options-mx-tracking",
-    "capability" => "manage_options",
-    "autoload" => true,
-  ]);
-
   acf_add_local_field_group([
     "key" => "group_mx_matomo",
     "title" => __("Matomo", "whitespace-tracking-gdpr"),

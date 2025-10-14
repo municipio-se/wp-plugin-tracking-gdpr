@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: Whitespace Tracking & GDPR 0.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-plugin-tracking-"
 "gdpr\n"
-"POT-Creation-Date: 2025-10-05T11:48:14+00:00\n"
-"PO-Revision-Date: 2025-10-05 13:48+0200\n"
+"POT-Creation-Date: 2025-10-14T17:47:27+00:00\n"
+"PO-Revision-Date: 2025-10-14 19:48+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv_SE\n"
@@ -34,6 +34,53 @@ msgstr ""
 #: whitespace-tracking-gdpr.php
 msgid "Whitespace Dev"
 msgstr "Whitespace Dev"
+
+#: autoload/admin.php:5
+msgctxt "Options Page Title"
+msgid "Data sharing"
+msgstr "Datadelning"
+
+#: autoload/admin.php:6
+msgctxt "Options Page Menu Title"
+msgid "Data sharing"
+msgstr "Datadelning"
+
+#: autoload/admin.php:32 autoload/admin.php:103
+msgctxt "Options Page Menu Title"
+msgid "Settings"
+msgstr "Inställningar"
+
+#: autoload/admin.php:40
+msgctxt "Settings Page Description"
+msgid "Configure settings for third-party services, analytics, cookies and more"
+msgstr ""
+"Konfigurera inställningar för tjänster från tredje part, analys, kakor med "
+"mera"
+
+#: autoload/admin.php:49
+msgctxt "Button Text"
+msgid "Open Settings"
+msgstr "Öppna inställningar"
+
+#: autoload/admin.php:62
+msgctxt "Options Page Menu Title"
+msgid "Iframe report"
+msgstr "Iframe-rapport"
+
+#: autoload/admin.php:70
+msgctxt "Iframe Report Page Description"
+msgid "View all iframes detected on the website"
+msgstr "Visa alla iframes som upptäckts på webbplatsen"
+
+#: autoload/admin.php:79
+msgctxt "Button Text"
+msgid "View Report"
+msgstr "Visa rapport"
+
+#: autoload/admin.php:98
+msgctxt "Options Page Title"
+msgid "Data sharing settings"
+msgstr "Inställningar för datadelning"
 
 #: autoload/categories.php:6
 msgctxt "Cookie Category Title"
@@ -121,28 +168,28 @@ msgctxt "Consent Modal Button Label"
 msgid "Close cookie consent dialog"
 msgstr "Stäng dialogrutan för cookie-samtycke"
 
-#: autoload/consent-dialog.php:219
+#: autoload/consent-dialog.php:223
 msgid "Text strings"
 msgstr "Textsträngar"
 
-#: autoload/consent-dialog.php:223
+#: autoload/consent-dialog.php:227
 msgid "Consent dialog"
 msgstr "Dialog om samtycke"
 
-#: autoload/consent-dialog.php:229 autoload/consent-dialog.php:300
+#: autoload/consent-dialog.php:233 autoload/consent-dialog.php:304
 msgid "Title"
 msgstr "Titel"
 
-#: autoload/consent-dialog.php:232
+#: autoload/consent-dialog.php:236
 msgctxt "Consent Modal Title"
 msgid "We value your privacy"
 msgstr "Vi värdesätter din integritet"
 
-#: autoload/consent-dialog.php:240 autoload/consent-dialog.php:311
+#: autoload/consent-dialog.php:244 autoload/consent-dialog.php:315
 msgid "Description"
 msgstr "Beskrivning"
 
-#: autoload/consent-dialog.php:247
+#: autoload/consent-dialog.php:251
 #, php-format
 msgctxt "Consent Modal Description"
 msgid ""
@@ -154,21 +201,21 @@ msgstr ""
 "mer information, se vår <a href=\"%s\" target=\"_blank\" "
 "rel=\"noopener\">integritetspolicy</a>."
 
-#: autoload/consent-dialog.php:254
+#: autoload/consent-dialog.php:258
 msgctxt "Consent Modal Description"
 msgid "We use cookies to improve your experience on our site."
 msgstr "Vi använder cookies för att förbättra din upplevelse på vår webbplats."
 
-#: autoload/consent-dialog.php:294
+#: autoload/consent-dialog.php:298
 msgid "Preferences dialog"
 msgstr "Dialogruta för preferenser"
 
-#: autoload/consent-dialog.php:303
+#: autoload/consent-dialog.php:307
 msgctxt "Consent Modal Title"
 msgid "Customize your consent"
 msgstr "Anpassa ditt samtycke"
 
-#: autoload/consent-dialog.php:318
+#: autoload/consent-dialog.php:322
 #, php-format
 msgctxt "Consent Modal Description"
 msgid ""
@@ -178,17 +225,17 @@ msgstr ""
 "Du kan hantera dina cookiepreferenser här. För mer information, se vår <a "
 "href=\"%s\" target=\"_blank\" rel=\"noopener\">integritetspolicy</a>."
 
-#: autoload/consent-dialog.php:325
+#: autoload/consent-dialog.php:329
 msgctxt "Consent Modal Description"
 msgid "You can manage your cookie preferences here."
 msgstr "Du kan hantera dina cookiepreferenser här."
 
-#: autoload/consent-dialog.php:367 autoload/consent-dialog.php:374
+#: autoload/consent-dialog.php:371 autoload/consent-dialog.php:378
 msgid "Change cookie preferences"
 msgstr "Ändra inställningar för cookies"
 
 #. translators: 1: URL to set the page for privacy policy
-#: autoload/consent-dialog.php:465
+#: autoload/consent-dialog.php:469
 #, php-format
 msgid ""
 "To ensure compliance with GDPR and the cookie law, please <a href=\"%s\">set "
@@ -213,42 +260,36 @@ msgstr ""
 "En per rad. ⚠️ Varning: Detta kommer att tillåta alla iframes från de angivna "
 "källorna, inklusive potentiellt skadliga sådana."
 
+#: autoload/iframe-scanner.php:73 autoload/iframe-scanner.php:74
+msgid "Iframe report"
+msgstr "Iframe-rapport"
+
 #: autoload/matomo-settings.php:6
-msgctxt "Options Page Title"
-msgid "Tracking"
-msgstr "Spårning"
-
-#: autoload/matomo-settings.php:11
-msgctxt "Options Page Menu Title"
-msgid "Tracking"
-msgstr "Spårning"
-
-#: autoload/matomo-settings.php:24
 msgid "Matomo"
 msgstr "Matomo"
 
-#: autoload/matomo-settings.php:28
+#: autoload/matomo-settings.php:10
 msgid "URL"
 msgstr "URL"
 
-#: autoload/matomo-settings.php:31
+#: autoload/matomo-settings.php:13
 msgid "The URL for the Matomo Tag Manager."
 msgstr "URL:en för Matomo Tag Manager."
 
-#: autoload/matomo-settings.php:39
+#: autoload/matomo-settings.php:21
 msgid "Container ID"
 msgstr "Container-ID"
 
-#: autoload/matomo-settings.php:50
+#: autoload/matomo-settings.php:32
 msgid "Site ID"
 msgstr "Webbplats-ID"
 
-#: autoload/matomo-settings.php:53
+#: autoload/matomo-settings.php:35
 msgid "The site ID for the Matomo Tag Manager."
 msgstr "Webbplats-ID för Matomo Tag Manager."
 
 #. Translators: This message is shown when a field is disabled because its value is defined as a constant in the code.
-#: autoload/matomo-settings.php:87
+#: autoload/matomo-settings.php:69
 #, php-format
 msgid "This field is disabled because the constant %s has been defined in code."
 msgstr "Detta fält är inaktiverat eftersom konstanten %s har definierats i kod."
@@ -287,3 +328,11 @@ msgstr ""
 "⚠️ Varning: Detta kan bryta mot cookie-lagstiftningen. Aktivera endast detta "
 "om du vet vad du gör. Rapportera eventuella saknade tjänster till plugin-"
 "skaparen."
+
+#~ msgctxt "Options Page Title"
+#~ msgid "Tracking"
+#~ msgstr "Spårning"
+
+#~ msgctxt "Options Page Menu Title"
+#~ msgid "Tracking"
+#~ msgstr "Spårning"
