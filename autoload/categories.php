@@ -1,7 +1,7 @@
 <?php
 
 function wstg_get_cookie_categories() {
-  return [
+  return apply_filters("wstg_get_cookie_categories", [
     "necessary" => [
       "title" => _x(
         "Necessary",
@@ -70,5 +70,5 @@ function wstg_get_cookie_categories() {
       ),
       "required" => true,
     ],
-  ];
+  ]);
 }
