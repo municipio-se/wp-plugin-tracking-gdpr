@@ -207,6 +207,22 @@ add_action(
         ],
       ],
     ]);
+    wstg_register_service("visma-recruit", [
+      "title" => "Visma Recruit",
+      "category" => "embedded",
+      "iframe" => [
+        "parseInput" => function (string $input) {
+          if (strpos($input, "https://recruit.visma.com/External/") === 0) {
+            return [
+              "embedUrl" => $input,
+            ];
+          }
+        },
+      ],
+      "csp" => [
+        "frame-src" => ["recruit.visma.com"],
+      ],
+    ]);
   },
   9,
 );
