@@ -1,6 +1,6 @@
 {
-  "name": "whitespace-se/wp-plugin-tracking-gdpr",
-  "description": "WordPress plugin that adds more features to Municipio",
+  "name": "municipio/wp-plugin-tracking-gdpr",
+  "description": "WordPress plugin that adds more GDPR and tracking features to Municipio",
   "type": "wordpress-plugin",
   "minimum-stability": "dev",
   "prefer-stable": true,
