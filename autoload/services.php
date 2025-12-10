@@ -206,6 +206,9 @@ add_action(
             "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen;",
         ],
       ],
+      "csp" => [
+        "frame-src" => ["play.mediaflow.com", "play.mediaflowpro.com"],
+      ],
     ]);
     wstg_register_service("visma-recruit", [
       "title" => "Visma Recruit",
