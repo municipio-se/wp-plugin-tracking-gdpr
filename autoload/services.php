@@ -183,7 +183,7 @@ add_action(
         "parseInput" => function (string $input) {
           if (
             preg_match(
-              "/https:\/\/play\.(?<domain>mediaflow(?:pro))\.com\/ovp\/(?<server>\d+)\/(?<id>[a-zA-Z0-9]+)/",
+              "/(?:https:|\")\/\/play\.(?<domain>mediaflow(?:pro))\.com\/ovp\/(?<server>\d+)\/(?<id>[a-zA-Z0-9]+)/",
               $input,
               $matches,
             )
