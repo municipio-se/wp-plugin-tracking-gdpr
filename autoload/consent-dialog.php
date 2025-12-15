@@ -51,8 +51,11 @@ add_action(
     }
 
     $translation = [
-      "consent_modal" => get_field("wstg_strings_consent_modal"),
-      "preferences_modal" => get_field("wstg_strings_preferences_modal"),
+      "consent_modal" => get_field("wstg_string_consent_modal", "option"),
+      "preferences_modal" => get_field(
+        "wstg_string_preferences_modal",
+        "option",
+      ),
     ];
     $settings["language"] = get_locale();
     $settings["translation"] = [
