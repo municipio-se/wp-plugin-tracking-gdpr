@@ -64,6 +64,9 @@ Object.keys(categories).forEach((key) => {
 CookieConsent.run({
   autoShow: true,
   categories,
+  cookie: {
+    name: `cc_cookie_${window.location.hostname.replace(/\./g, '_')}`,
+  },
   language: {
     default: settings.language,
     translations: {
