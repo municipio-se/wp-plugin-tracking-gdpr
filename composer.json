@@ -38,7 +38,8 @@
     }
   ],
   "require": {
-    "imangazaliev/didom": "^2.0"
+    "imangazaliev/didom": "^2.0",
+    "wpackagist-plugin/advanced-custom-fields": "*"
   },
   "require-dev": {
     "wpackagist-plugin/advanced-custom-fields": "^6.3"

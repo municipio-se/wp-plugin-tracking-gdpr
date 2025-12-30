@@ -40,6 +40,18 @@ add_action("plugins_loaded", function () {
   }
 });
 
+// Check for ACF Pro requirements
+if (!function_exists('acf_add_options_sub_page')) {
+    add_action('admin_notices', function() {
+        ?>
+        <div class="notice notice-error is-dismissible">
+            <p><?php _e('Whitespace Tracking & GDPR requires Advanced Custom Fields PRO to be installed and active.', 'whitespace-tracking-gdpr'); ?></p>
+        </div>
+        <?php
+    });
+    return;
+}
+
 array_map(static function () {
   include_once func_get_args()[0];
 }, glob(WHITESPACE_TRACKING_GDPR_AUTOLOAD_PATH . "/*.php"));

@@ -94,23 +94,25 @@ add_action("admin_menu", function () {
 });
 
 add_action("acf/init", function () {
-  acf_add_options_sub_page([
-    "page_title" => _x(
-      "Data sharing settings",
-      "Options Page Title",
-      "whitespace-tracking-gdpr",
-    ),
-    "menu_title" => _x(
-      "Settings",
-      "Options Page Menu Title",
-      "whitespace-tracking-gdpr",
-    ),
-    // "icon_url" => "dashicons-shield",
-    "parent_slug" => "wstg",
-    "menu_slug" => "acf-options-mx-tracking",
-    "capability" => "manage_options",
-    "autoload" => true,
-  ]);
+  if (function_exists('acf_add_options_sub_page')) {
+    acf_add_options_sub_page([
+      "page_title" => _x(
+        "Data sharing settings",
+        "Options Page Title",
+        "whitespace-tracking-gdpr",
+      ),
+      "menu_title" => _x(
+        "Settings",
+        "Options Page Menu Title",
+        "whitespace-tracking-gdpr",
+      ),
+      // "icon_url" => "dashicons-shield",
+      "parent_slug" => "wstg",
+      "menu_slug" => "acf-options-mx-tracking",
+      "capability" => "manage_options",
+      "autoload" => true,
+    ]);
+  }
 });
 
 add_filter("admin_body_class", function ($classes) {
