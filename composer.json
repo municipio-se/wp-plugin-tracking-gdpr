@@ -4,7 +4,7 @@
   "type": "wordpress-plugin",
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "license": "AGPL-3.0",
+  "license": "GPL-2.0-or-later",
   "config": {
     "allow-plugins": {
       "php-http/discovery": true,
