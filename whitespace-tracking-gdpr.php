@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Whitespace Tracking & GDPR
  * Description: Adds tracking for Matomo and a consent dialog for cookie law and GDPR compliance.
- * Version: 0.0.0
+ * Version: 2025.12.1
  * Author: Whitespace Dev
  * Text Domain: whitespace-tracking-gdpr
  * Domain Path: /languages/
@@ -41,15 +41,18 @@ add_action("plugins_loaded", function () {
 });
 
 // Check for ACF Pro requirements
-if (!function_exists('acf_add_options_sub_page')) {
-    add_action('admin_notices', function() {
-        ?>
+if (!function_exists("acf_add_options_sub_page")) {
+  add_action("admin_notices", function () {
+    ?>
         <div class="notice notice-error is-dismissible">
-            <p><?php _e('Whitespace Tracking & GDPR requires Advanced Custom Fields PRO to be installed and active.', 'whitespace-tracking-gdpr'); ?></p>
+            <p><?php _e(
+              "Whitespace Tracking & GDPR requires Advanced Custom Fields PRO to be installed and active.",
+              "whitespace-tracking-gdpr",
+            ); ?></p>
         </div>
         <?php
-    });
-    return;
+  });
+  return;
 }
 
 array_map(static function () {
