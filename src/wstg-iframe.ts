@@ -122,11 +122,9 @@ class WstgIframeElement extends HTMLElement {
   handleLoad() {
     this.loader?.setAttribute('hidden', '');
     window.addEventListener('cc:onFirstConsent', () => {
-      console.log('Update triggered by cc:onFirstConsent');
       this.update();
     });
     window.addEventListener('cc:onChange', () => {
-      console.log('Update triggered by cc:onChange');
       this.update();
     });
     this.update();
