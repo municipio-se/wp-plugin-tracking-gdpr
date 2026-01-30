@@ -96,8 +96,8 @@ add_action(
 );
 
 add_action("init", function () {
-  $input = get_field("wstg_csp_settings_allowed_frame_src", "option");
-  preg_match_all("/^\s*\S+\s*$/gim", $input, $allowed_frame_src);
+  $input = get_field("wstg_csp_settings_allowed_frame_src", "option") ?? "";
+  preg_match_all("/^\s*\S+\s*$/im", $input, $allowed_frame_src);
   $allowed_frame_src = $allowed_frame_src[0];
   $allowed_frame_src = array_map("trim", $allowed_frame_src);
   $allowed_frame_src = array_filter($allowed_frame_src);
