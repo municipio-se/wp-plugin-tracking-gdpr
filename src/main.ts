@@ -1,4 +1,5 @@
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
+import './global.css';
 import * as CookieConsent from 'vanilla-cookieconsent';
 
 import './wstg-iframe';
