@@ -176,6 +176,24 @@ function wstg_parse_mediaflow_embed($input) {
   ];
 }
 
+function wstg_is_mediaflow_embed_wrapper(\DiDom\Element $node) {
+  if (strtolower($node->tagName()) !== "div") {
+    return false;
+  }
+
+  $iframes = $node->find("iframe");
+  if (count($iframes) !== 1) {
+    return false;
+  }
+
+  $images = $node->find("img");
+  if (count($images) < 1) {
+    return false;
+  }
+
+  return trim($node->text()) === "";
+}
+
 function wstg_parse_input($input) {
   $enabled_services = wstg_get_enabled_services();
   foreach ($enabled_services as $service_key => $service) {
@@ -298,6 +316,25 @@ add_action(
               "aspectRatio" => "16/9",
             ];
           }
+        },
+        // Mediaflow often wraps iframe embeds in image preview containers. Replace
+        // the highest matching wrapper so preview images do not remain in output.
+        "replacementTarget" => function (
+          \DiDom\Element $iframeNode,
+          array $context,
+        ): \DiDom\Element {
+          $target = $iframeNode;
+          $parent = $iframeNode->parent();
+
+          while (
+            $parent instanceof \DiDom\Element &&
+            wstg_is_mediaflow_embed_wrapper($parent)
+          ) {
+            $target = $parent;
+            $parent = $parent->parent();
+          }
+
+          return $target;
         },
         // "match" => "/^https:\/\/play\.mediaflow\.com\/ovp\/{$mediaflow_server_id}\/([a-zA-Z0-9]+)$/",
         // "embedUrl" => "//play.mediaflow.com/ovp/{$mediaflow_server_id}/{data-id}",
