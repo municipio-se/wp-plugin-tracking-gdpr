@@ -43,6 +43,139 @@ function wstg_get_service($key) {
   return $wstg_services[$key] ?? null;
 }
 
+function wstg_normalize_embed_url($input) {
+  if (str_starts_with($input, "//")) {
+    return "https:{$input}";
+  }
+  return $input;
+}
+
+function wstg_parse_url_components($input) {
+  $parts = parse_url(wstg_normalize_embed_url($input));
+  if (!is_array($parts)) {
+    return null;
+  }
+  return [
+    "host" => strtolower($parts["host"] ?? ""),
+    "path" => $parts["path"] ?? "",
+    "query" => $parts["query"] ?? "",
+  ];
+}
+
+function wstg_host_matches($host, $domain) {
+  return $host === $domain || str_ends_with($host, ".{$domain}");
+}
+
+function wstg_parse_youtube_embed_id($input) {
+  $parts = wstg_parse_url_components($input);
+  if (!$parts || !$parts["host"] || !$parts["path"]) {
+    return null;
+  }
+
+  if (wstg_host_matches($parts["host"], "youtu.be")) {
+    if (preg_match("#^/(?<id>[a-zA-Z0-9_-]+)(?:/|$)#", $parts["path"], $matches)) {
+      return $matches["id"];
+    }
+    return null;
+  }
+
+  if (
+    !wstg_host_matches($parts["host"], "youtube.com") &&
+    !wstg_host_matches($parts["host"], "youtube-nocookie.com")
+  ) {
+    return null;
+  }
+
+  if (
+    preg_match(
+      "#^/(?:embed|shorts|live|v)/(?<id>[a-zA-Z0-9_-]+)(?:/|$)#",
+      $parts["path"],
+      $matches,
+    )
+  ) {
+    return $matches["id"];
+  }
+
+  if ($parts["path"] !== "/watch" && $parts["path"] !== "/watch/") {
+    return null;
+  }
+
+  parse_str($parts["query"], $queryParameters);
+  $id = $queryParameters["v"] ?? null;
+  if (!is_string($id)) {
+    return null;
+  }
+
+  if (preg_match("/^[a-zA-Z0-9_-]+$/", $id)) {
+    return $id;
+  }
+
+  return null;
+}
+
+function wstg_parse_vimeo_embed_id($input) {
+  $parts = wstg_parse_url_components($input);
+  if (!$parts || !$parts["host"] || !$parts["path"]) {
+    return null;
+  }
+
+  if (wstg_host_matches($parts["host"], "player.vimeo.com")) {
+    if (
+      preg_match(
+        "#^/video/(?<id>[0-9]+)(?:/|$)#",
+        $parts["path"],
+        $matches,
+      )
+    ) {
+      return $matches["id"];
+    }
+    return null;
+  }
+
+  if (!wstg_host_matches($parts["host"], "vimeo.com")) {
+    return null;
+  }
+
+  if (preg_match("#^/(?<id>[0-9]+)(?:/|$)#", $parts["path"], $matches)) {
+    return $matches["id"];
+  }
+
+  return null;
+}
+
+function wstg_parse_mediaflow_embed($input) {
+  $parts = wstg_parse_url_components($input);
+  if (!$parts || !$parts["host"] || !$parts["path"]) {
+    return null;
+  }
+
+  if (
+    !preg_match(
+      "/^play\.(?<domain>mediaflow(?:pro)?)\.com$/",
+      $parts["host"],
+      $hostMatches,
+    )
+  ) {
+    return null;
+  }
+
+  if (
+    !preg_match(
+      "#^/ovp/(?<server>\d+)/(?<id>[a-zA-Z0-9]+)(?:/|$)#",
+      $parts["path"],
+      $pathMatches,
+    )
+  ) {
+    return null;
+  }
+
+  return [
+    "domain" => $hostMatches["domain"],
+    "server" => $pathMatches["server"],
+    "id" => $pathMatches["id"],
+  ];
+}
+
 function wstg_parse_input($input) {
   $enabled_services = wstg_get_enabled_services();
   foreach ($enabled_services as $service_key => $service) {
@@ -82,29 +215,13 @@ add_action(
       "termsUrl" => "https://www.youtube.com/t/terms",
       "iframe" => [
         "parseInput" => function (string $input) {
-          if (
-            preg_match(
-              "/^https:\/\/www\.youtube\.com\/embed\/(?<id>[a-zA-Z0-9_-]+)$/",
-              $input,
-              $matches,
-            ) ||
-            preg_match(
-              "/^https:\/\/www\.youtube\.com\/watch\?v=(?<id>[a-zA-Z0-9_-]+)$/",
-              $input,
-              $matches,
-            ) ||
-            preg_match(
-              "/^https:\/\/youtu\.be\/(?<id>[a-zA-Z0-9_-]+)$/",
-              $input,
-              $matches,
-            )
-          ) {
+          $id = wstg_parse_youtube_embed_id($input);
+          if ($id) {
             return [
-              // "id" => $matches["id"],
-              "embedUrl" => "https://www.youtube.com/embed/{$matches["id"]}",
-              // "embedUrl" => "https://www.youtube-nocookie.com/embed/{$matches["id"]}",
-              "thumbnailUrl" => "https://i3.ytimg.com/vi/{$matches["id"]}/hqdefault.jpg",
-              "standaloneUrl" => "https://www.youtube.com/watch?v={$matches["id"]}",
+              "id" => $id,
+              "embedUrl" => "https://www.youtube.com/embed/{$id}",
+              "thumbnailUrl" => "https://i3.ytimg.com/vi/{$id}/hqdefault.jpg",
+              "standaloneUrl" => "https://www.youtube.com/watch?v={$id}",
               "aspectRatio" => "16/9",
             ];
           }
@@ -137,23 +254,11 @@ add_action(
       "termsUrl" => "https://vimeo.com/cookie_policy",
       "iframe" => [
         "parseInput" => function (string $input) {
-          if (
-            preg_match(
-              "/^https:\/\/player\.vimeo\.com\/video\/(?<id>[0-9]+)/",
-              $input,
-              $matches,
-            ) ||
-            preg_match(
-              "/^https:\/\/vimeo\.com\/(?<id>[0-9]+)/",
-              $input,
-              $matches,
-            )
-          ) {
-            extract($matches);
+          $id = wstg_parse_vimeo_embed_id($input);
+          if ($id) {
             return [
-              // "id" => $id,
+              "id" => $id,
               "embedUrl" => "https://player.vimeo.com/video/{$id}",
-              // "embedUrl" => "https://player.vimeo.com/video/{$id}?dnt=1",
               "thumbnailUrl" => "https://vumbnail.com/{$id}.jpg",
               "standaloneUrl" => "https://vimeo.com/{$id}",
               "aspectRatio" => "16/9",
@@ -181,17 +286,13 @@ add_action(
       "termsUrl" => "https://www.mediaflow.com/integritetsinformation/",
       "iframe" => [
         "parseInput" => function (string $input) {
-          if (
-            preg_match(
-              "/^(?:https:)?\/\/play\.(?<domain>mediaflow(?:pro))\.com\/ovp\/(?<server>\d+)\/(?<id>[a-zA-Z0-9]+)/",
-              $input,
-              $matches,
-            )
-          ) {
-            extract($matches);
+          $mediaflow = wstg_parse_mediaflow_embed($input);
+          if ($mediaflow) {
+            $domain = $mediaflow["domain"];
+            $server = $mediaflow["server"];
+            $id = $mediaflow["id"];
             return [
-              // "id" => $id,
-              // "server" => $server,
+              "id" => $id,
               "embedUrl" => "https://play.{$domain}.com/ovp/{$server}/{$id}?dnt=1",
               "thumbnailUrl" => "https://im{$server}.inviewer.se/skiss/{$id}.jpg",
               "aspectRatio" => "16/9",
