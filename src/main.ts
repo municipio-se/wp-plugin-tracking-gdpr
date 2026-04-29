@@ -7,6 +7,7 @@ import './wstg-iframe';
 import matomo from './matomo';
 
 const settings = window.whitespaceTrackingGdpr;
+const revision = Number.parseInt(String(settings.revision), 10);
 
 function maybeRegex(value: string): string | RegExp {
   if (value.startsWith('/') && value.endsWith('/')) {
@@ -68,7 +69,7 @@ CookieConsent.run({
   cookie: {
     name: `cc_cookie_${window.location.hostname.replace(/\./g, '_')}`,
   },
-  revision: settings.revision,
+  revision,
   language: {
     default: settings.language,
     translations: {
