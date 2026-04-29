@@ -24,6 +24,7 @@ declare global {
         };
       };
       language: string;
+      revision: number;
       translation: Translation & {
         preferencesModal: {
           description?: string;

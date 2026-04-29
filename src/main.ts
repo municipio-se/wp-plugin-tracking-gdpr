@@ -68,6 +68,7 @@ CookieConsent.run({
   cookie: {
     name: `cc_cookie_${window.location.hostname.replace(/\./g, '_')}`,
   },
+  revision: settings.revision,
   language: {
     default: settings.language,
     translations: {

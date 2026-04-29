@@ -137,6 +137,7 @@ add_action(
       "containerId" => $matomo_container_id,
       "siteId" => $matomo_site_id,
     ];
+    $settings["revision"] = wstg_get_consent_revision();
 
     wp_localize_script(
       "whitespace-tracking-gdpr",
