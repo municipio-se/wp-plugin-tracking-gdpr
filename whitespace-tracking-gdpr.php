@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Whitespace Tracking & GDPR
  * Description: Adds tracking for Matomo and a consent dialog for cookie law and GDPR compliance.
- * Version: 2025.12.6
+ * Version: 2025.12.7
  * Author: Whitespace Dev
  * Text Domain: whitespace-tracking-gdpr
  * Domain Path: /languages/
