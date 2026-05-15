@@ -4,19 +4,23 @@
 
 ## v2025.12.8 – 2026-04-29
 
-- **Consent revisions** – Coerced localized consent revision values to numbers before passing them to frontend settings.
+- **Consent revisions** – Coerced localized consent revision values to numbers
+  before passing them to frontend settings.
 
 ## v2025.12.7 – 2026-04-29
 
-- **Consent revisions** – Added revisioned consent publishing so administrators can force renewed consent after settings change.
+- **Consent revisions** – Added revisioned consent publishing so administrators
+  can force renewed consent after settings change.
 
 ## v2025.12.6 – 2026-02-17
 
-- **Mediaflow embeds** – Moved Mediaflow wrapper replacement into the service configuration to keep iframe replacement behavior service-driven.
+- **Mediaflow embeds** – Moved Mediaflow wrapper replacement into the service
+  configuration to keep iframe replacement behavior service-driven.
 
 ## v2025.12.5 – 2026-02-17
 
-- **Frontend styling** – Updated descriptions to inherit text color from their surrounding UI.
+- **Frontend styling** – Updated descriptions to inherit text color from their
+  surrounding UI.
 
 ## v2025.12.4 – 2026-02-17
 
@@ -24,11 +28,13 @@
 
 ## v2025.12.3 – 2026-01-30
 
-- **Content Security Policy** – Prevented a fatal error when the allowed `frame-src` setting was empty.
+- **Content Security Policy** – Prevented a fatal error when the allowed
+  `frame-src` setting was empty.
 
 ## v2025.12.2 – 2026-01-29
 
-- **Content Security Policy** – Fixed additional allowed `frame-src` settings so every configured source is used.
+- **Content Security Policy** – Fixed additional allowed `frame-src` settings so
+  every configured source is used.
 - **Maintenance** – Removed debug code from the CSP handling.
 
 ## v2025.12.1 – 2026-01-16

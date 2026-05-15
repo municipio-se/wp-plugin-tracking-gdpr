@@ -80,7 +80,9 @@ function wstg_parse_youtube_embed_id($input) {
   }
 
   if (wstg_host_matches($parts["host"], "youtu.be")) {
-    if (preg_match("#^/(?<id>[a-zA-Z0-9_-]+)(?:/|$)#", $parts["path"], $matches)) {
+    if (
+      preg_match("#^/(?<id>[a-zA-Z0-9_-]+)(?:/|$)#", $parts["path"], $matches)
+    ) {
       return $matches["id"];
     }
     return null;
@@ -128,11 +130,7 @@ function wstg_parse_vimeo_embed_id($input) {
 
   if (wstg_host_matches($parts["host"], "player.vimeo.com")) {
     if (
-      preg_match(
-        "#^/video/(?<id>[0-9]+)(?:/|$)#",
-        $parts["path"],
-        $matches,
-      )
+      preg_match("#^/video/(?<id>[0-9]+)(?:/|$)#", $parts["path"], $matches)
     ) {
       return $matches["id"];
     }

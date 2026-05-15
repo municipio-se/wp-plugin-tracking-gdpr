@@ -26,7 +26,8 @@ function wstg_resolve_iframe_replacement_target(
   string $url,
 ) {
   // Services can optionally override which DOM node gets replaced.
-  $replacementTarget = $parsed["service"]["iframe"]["replacementTarget"] ?? null;
+  $replacementTarget =
+    $parsed["service"]["iframe"]["replacementTarget"] ?? null;
 
   if (!is_callable($replacementTarget)) {
     return $iframeNode;
@@ -81,22 +82,22 @@ add_filter(
        * @param array $context Iframe replacement context.
        * @return string Filtered replacement HTML.
        */
-      $replacement_html = apply_filters(
-        "wstg_content_iframe_replacement",
-        "",
-        [
-          "video_service" => $video_service,
-          "video_id" => $video_id,
-          "url" => $url,
-          "node" => $node,
-        ],
-      );
+      $replacement_html = apply_filters("wstg_content_iframe_replacement", "", [
+        "video_service" => $video_service,
+        "video_id" => $video_id,
+        "url" => $url,
+        "node" => $node,
+      ]);
 
       if (empty($replacement_html)) {
         continue;
       }
 
-      $targetNode = wstg_resolve_iframe_replacement_target($node, $parsed, $url);
+      $targetNode = wstg_resolve_iframe_replacement_target(
+        $node,
+        $parsed,
+        $url,
+      );
       $placeholder = "%%WSTG_IFRAME_REPLACEMENT_{$replacementIndex}%%";
       $placeholderReplacements[$placeholder] = $replacement_html;
       $replacementIndex++;
