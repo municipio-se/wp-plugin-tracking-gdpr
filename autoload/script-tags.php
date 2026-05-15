@@ -46,14 +46,11 @@ add_filter(
         : "uncategorized";
 
     /**
-     * Filter the category of the script
+     * Filters the consent category assigned to an enqueued external script.
      *
-     * @hook wstg_script_category
-     * @since 0.0.0
-     *
-     * @param string $category The category of the script
-     * @param array $attributes The attributes of the script tag
-     * @return string The category of the script
+     * @param string $category Consent category slug.
+     * @param array $attributes Script tag attributes.
+     * @return string Filtered consent category slug.
      */
     $category = apply_filters("wstg_script_category", $category, $attributes);
 
@@ -61,14 +58,11 @@ add_filter(
       $attributes["data-category"] = $category;
 
       /**
-       * Filter the service of the script
+       * Filters the service key assigned to an enqueued external script.
        *
-       * @hook wstg_script_service
-       * @since 0.0.0
-       *
-       * @param string $service The service of the script
-       * @param array $attributes The attributes of the script tag
-       * @return string The service of the script
+       * @param string $service Service key.
+       * @param array $attributes Script tag attributes.
+       * @return string Filtered service key.
        */
       $service = apply_filters("wstg_script_service", "", $attributes);
       if ($service) {

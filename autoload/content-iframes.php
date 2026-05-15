@@ -74,6 +74,13 @@ add_filter(
       $video_service = $parsed["serviceKey"] ?? false;
       $video_id = $parsed["id"] ?? false;
 
+      /**
+       * Filters the replacement HTML used for consent-aware iframe placeholders.
+       *
+       * @param string $replacement_html Replacement HTML.
+       * @param array $context Iframe replacement context.
+       * @return string Filtered replacement HTML.
+       */
       $replacement_html = apply_filters(
         "wstg_content_iframe_replacement",
         "",

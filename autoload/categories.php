@@ -1,6 +1,12 @@
 <?php
 
 function wstg_get_cookie_categories() {
+  /**
+   * Filters the cookie category definitions used by the consent dialog.
+   *
+   * @param array $categories Cookie category definitions keyed by category slug.
+   * @return array Filtered cookie category definitions.
+   */
   return apply_filters("wstg_get_cookie_categories", [
     "necessary" => [
       "title" => _x(

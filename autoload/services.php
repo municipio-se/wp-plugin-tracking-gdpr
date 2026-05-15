@@ -6,6 +6,13 @@ $wstg_services = [];
 function wstg_register_service($key, $service) {
   global $wstg_services;
   $service["key"] = $key;
+  /**
+   * Filters a service definition before it is stored in the registry.
+   *
+   * @param array $service Service definition.
+   * @param string $key Service key.
+   * @return array Filtered service definition.
+   */
   $service = apply_filters("wstg_register_service", $service, $key);
   $wstg_services[$key] = $service;
 }
@@ -218,6 +225,9 @@ function wstg_parse_input($input) {
 }
 
 add_action("plugins_loaded", function () {
+  /**
+   * Runs when services should register themselves with wstg_register_service().
+   */
   do_action("wstg_register_services");
 });
 
@@ -456,15 +466,12 @@ add_action(
       // ];
 
       /**
-       * Filter the sub fields for a service.
+       * Filters the ACF settings sub fields generated for a registered service.
        *
-       * @hook wstg_service_settings_sub_fields
-       * @since 0.0.0
-       *
-       * @param array $sub_field The service field array.
-       * @param string $service_key The service key.
-       * @param array $service The service array.
-       * @return array The modified sub field array.
+       * @param array $sub_fields Service settings sub fields.
+       * @param string $service_key Service key.
+       * @param array $service Service definition.
+       * @return array Filtered service settings sub fields.
        */
       $service_field["sub_fields"] = apply_filters(
         "wstg_service_settings_sub_fields",

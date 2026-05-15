@@ -430,6 +430,15 @@ add_filter(
   function ($output, $item, $depth, $args) {
     $classes = is_array($item->classes) ? $item->classes : [];
     if (in_array("wstg-trigger-cookie-dialog", $classes, true)) {
+      /**
+       * Filters the menu item output for links that trigger the cookie dialog.
+       *
+       * @param string $output Menu item HTML.
+       * @param WP_Post $item Menu item object.
+       * @param int $depth Menu item depth.
+       * @param stdClass $args Menu rendering arguments.
+       * @return string Filtered menu item HTML.
+       */
       $output = apply_filters(
         "wstg_trigger_cookie_dialog_menu_item",
         $output,

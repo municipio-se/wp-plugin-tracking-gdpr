@@ -34,6 +34,14 @@ function wstg_bump_consent_revision(): int {
   $previous_revision = wstg_get_consent_revision();
   $revision = wstg_set_consent_revision($previous_revision + 1);
 
+  /**
+   * Runs after the published consent revision has been bumped.
+   *
+   * @since 2025.12.7
+   *
+   * @param int $revision New consent revision.
+   * @param int $previous_revision Previous consent revision.
+   */
   do_action("wstg_consent_revision_bumped", $revision, $previous_revision);
 
   return $revision;
