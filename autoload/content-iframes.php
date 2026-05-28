@@ -22,10 +22,12 @@ function wstg_content_document_to_html(Document $document) {
 
 function wstg_resolve_iframe_replacement_target(
   Element $iframeNode,
-  array $parsed,
+  ?array $parsed,
   string $url,
 ) {
-  // Services can optionally override which DOM node gets replaced.
+  // The parser can return null for legacy iframe markup with missing or invalid
+  // src attributes, while external replacement filters may still produce HTML.
+  // In that case, keep replacement scoped to the iframe node itself.
   $replacementTarget =
     $parsed["service"]["iframe"]["replacementTarget"] ?? null;
 
