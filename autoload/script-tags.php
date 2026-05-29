@@ -40,6 +40,10 @@ add_filter("wp_script_attributes", function ($attributes) {
 add_filter(
   "wp_script_attributes",
   function ($attributes) {
+    if (is_admin()) {
+      return $attributes; // Consent rewriting is frontend-only; admin scripts may be editor dependencies.
+    }
+
     $category =
       strpos($attributes["src"], get_site_url() . "/") === 0
         ? ""
