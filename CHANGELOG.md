@@ -2,6 +2,13 @@
 
 [Svensk version](CHANGELOG.sv.md)
 
+## v2025.12.9 – 2026-06-01
+
+- **Admin scripts** – Kept consent script rewriting out of WordPress admin so
+  external editor dependencies can execute normally.
+- **Iframe indexing** – Handled legacy or malformed iframe markup without a
+  parsed replacement target during indexing.
+
 ## v2025.12.8 – 2026-04-29
 
 - **Consent revisions** – Coerced localized consent revision values to numbers

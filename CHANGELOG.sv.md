@@ -2,6 +2,13 @@
 
 [English version](CHANGELOG.md)
 
+## v2025.12.9 – 2026-06-01
+
+- **Adminskript** – Undantog WordPress admin från omskrivning av samtyckesskript
+  så externa editorberoenden kan köras normalt.
+- **Iframe-indexering** – Hanterade äldre eller felaktig iframe-markup utan
+  tolkat ersättningsmål vid indexering.
+
 ## v2025.12.8 – 2026-04-29
 
 - **Samtyckesrevisioner** – Omvandlade lokaliserade värden för samtyckesrevision
