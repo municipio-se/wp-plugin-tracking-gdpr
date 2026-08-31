@@ -97,8 +97,10 @@ sparade inställningarna kan därefter läsas av LTS-paketet igen.
   och pluginet kopplar `requireCookieConsent` till varje tracker när den skapas.
   `_paq` fylls inte i förväg, så Matomo skapar ingen extra standardtracker.
   Samtycket synkroniseras efter att containern har satt kakattribut som `Secure`
-  och `SameSite`. Externa containrar får inte använda Matomos starkare
-  `requireConsent` när kaklös grundmätning krävs.
+  och `SameSite`. Pluginet anropar `setCookieConsentGiven` på varje sida
+  eftersom den egna samtyckeskakan redan minns valet. Matomo skapar därför ingen
+  andra, beständig `mtm_cookie_consent`-kaka. Externa containrar får inte
+  använda Matomos starkare `requireConsent` när kaklös grundmätning krävs.
 
 ## Adminverktyg och migrationer
 

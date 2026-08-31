@@ -54,8 +54,8 @@ test('a direct tracker starts once in cookieless mode', async () => {
     .loadMatomo();
 
   assert.deepEqual(window._paq.slice(0, 2), [
-    ['forgetCookieConsentGiven'],
     ['requireCookieConsent'],
+    ['forgetCookieConsentGiven'],
   ]);
   assert.equal(
     window._paq.filter(([command]) => command === 'trackPageView').length,
@@ -92,7 +92,7 @@ test('container trackers receive consent after their cookie settings', async () 
   const calls = [];
   const tracker = {
     requireCookieConsent: () => calls.push('require'),
-    rememberCookieConsentGiven: () => calls.push('remember'),
+    setCookieConsentGiven: () => calls.push('set'),
     forgetCookieConsentGiven: () => calls.push('forget'),
   };
   let trackerSetup;
@@ -114,7 +114,7 @@ test('container trackers receive consent after their cookie settings', async () 
 
   assert.deepEqual(calls, ['require']);
   await new Promise((resolve) => queueMicrotask(resolve));
-  assert.deepEqual(calls, ['require', 'remember']);
+  assert.deepEqual(calls, ['require', 'set']);
 
   listeners.get('cc:onChange')({
     detail: {
@@ -122,7 +122,7 @@ test('container trackers receive consent after their cookie settings', async () 
       cookie: { categories: [] },
     },
   });
-  assert.deepEqual(calls, ['require', 'remember', 'forget']);
+  assert.deepEqual(calls, ['require', 'set', 'forget']);
 
   calls.length = 0;
   trackerSetup(tracker);
@@ -138,11 +138,16 @@ test('consent changes toggle Matomo cookie state without a page view', async () 
 
   new MatomoManager('https://matomo.test/', {
     siteId: '71',
-  }).connectToConsentDialog();
+  })
+    .connectToConsentDialog()
+    .loadMatomo();
   listeners.get('cc:onConsent')({
     detail: { cookie: { categories: [] } },
   });
-  assert.deepEqual(window._paq, [['forgetCookieConsentGiven']]);
+  assert.deepEqual(window._paq.slice(0, 2), [
+    ['requireCookieConsent'],
+    ['forgetCookieConsentGiven'],
+  ]);
   window._paq.length = 0;
   window._mtm.length = 0;
 
@@ -160,7 +165,7 @@ test('consent changes toggle Matomo cookie state without a page view', async () 
   });
 
   assert.deepEqual(window._paq, [
-    ['rememberCookieConsentGiven'],
+    ['setCookieConsentGiven'],
     ['forgetCookieConsentGiven'],
   ]);
   assert.deepEqual(window._mtm, [

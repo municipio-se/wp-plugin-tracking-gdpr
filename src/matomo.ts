@@ -6,6 +6,7 @@ export class MatomoManager {
   public siteId?: string;
   private analyticsConsent: boolean | null = null;
   private containerConsentRegistered = false;
+  private directTrackerStarted = false;
   constructor(
     public url: string,
     { containerId, siteId }: { containerId?: string; siteId?: string },
@@ -21,6 +22,8 @@ export class MatomoManager {
       return this;
     }
     window._paq.push(['requireCookieConsent']);
+    this.directTrackerStarted = true;
+    this.applyConsentToDirectTracker();
     window._paq.push(['trackPageView']);
     window._paq.push(['enableLinkTracking']);
     var u = this.url;
@@ -63,10 +66,8 @@ export class MatomoManager {
         window.Matomo?.getAsyncTrackers().forEach((tracker) => {
           this.applyConsentToTracker(tracker);
         });
-      } else if (!this.containerId && nextAnalyticsConsent) {
-        window._paq.push(['rememberCookieConsentGiven']);
-      } else if (!this.containerId) {
-        window._paq.push(['forgetCookieConsentGiven']);
+      } else if (!this.containerId && this.directTrackerStarted) {
+        this.applyConsentToDirectTracker();
       }
 
       if (nextAnalyticsConsent) {
@@ -90,10 +91,21 @@ export class MatomoManager {
 
   private applyConsentToTracker(tracker: MatomoTracker) {
     if (this.analyticsConsent) {
-      tracker.rememberCookieConsentGiven();
+      tracker.setCookieConsentGiven();
     } else {
       tracker.forgetCookieConsentGiven();
     }
+  }
+
+  private applyConsentToDirectTracker() {
+    if (this.analyticsConsent === null) {
+      return;
+    }
+    window._paq.push([
+      this.analyticsConsent
+        ? 'setCookieConsentGiven'
+        : 'forgetCookieConsentGiven',
+    ]);
   }
 
   private registerContainerConsent() {

@@ -96,9 +96,11 @@ package again.
   ID exist. The plugin attaches `requireCookieConsent` when each container
   tracker is created, without pre-populating `_paq` and causing Matomo to create
   an extra default tracker. Consent is synchronized after the container has
-  applied cookie attributes such as `Secure` and `SameSite`. Remote containers
-  must not use Matomo's stronger `requireConsent` when cookieless baseline
-  measurement is required.
+  applied cookie attributes such as `Secure` and `SameSite`. The plugin uses
+  `setCookieConsentGiven` on every page because its own consent cookie already
+  remembers the choice. Matomo therefore does not create a second persistent
+  `mtm_cookie_consent` cookie. Remote containers must not use Matomo's stronger
+  `requireConsent` when cookieless baseline measurement is required.
 
 ## Admin Tools and Migrations
 

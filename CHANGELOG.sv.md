@@ -17,7 +17,9 @@
 - **Analys** – Behöll kaklös Matomo-mätning före samtycke och gjorde uppstart av
   direkt tracker och Tag Manager deterministisk. Containersamtycke kopplas till
   varje konfigurerad tracker utan att skapa en extra standardtracker som kan
-  skriva om kakor med svagare attribut när sidan lämnas.
+  skriva om kakor med svagare attribut när sidan lämnas. Pluginets egen
+  samtyckeskaka är nu den beständiga källan, så Matomo skapar inte längre den
+  överflödiga `mtm_cookie_consent`-kakan.
 - **Nätverksanrop** – Lade till en uttrycklig, tjänsteägd spärr för deklarerade
   fetch- och beacon-destinationer.
 - **Tillgänglighet** – Samordnade Municipios menylåda med samtyckesdialogen och

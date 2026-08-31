@@ -15,7 +15,9 @@
 - **Analytics** – Preserved cookieless Matomo measurement before consent and
   made direct tracker and Tag Manager startup deterministic. Container consent
   is attached to each configured tracker without creating an extra default
-  tracker that can rewrite cookies with weaker attributes during unload.
+  tracker that can rewrite cookies with weaker attributes during unload. The
+  plugin's own consent cookie is now the persistent source, so Matomo no longer
+  creates a redundant `mtm_cookie_consent` cookie.
 - **Network requests** – Added an explicit, service-owned request gate for
   declared fetch and beacon destinations.
 - **Accessibility** – Coordinated the Municipio menu drawer with the consent
