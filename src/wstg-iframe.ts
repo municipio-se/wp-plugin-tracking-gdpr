@@ -8,19 +8,10 @@
  */
 
 import { documentLoadComplete } from './load';
-
-const IFRAME_ATTRIBUTE_NAMES = [
-  'allow',
-  'allowfullscreen',
-  'height',
-  'loading',
-  'name',
-  'referrerpolicy',
-  'sandbox',
-  'src',
-  'srcdoc',
-  'width',
-];
+import {
+  getSupportedIframeAttributes,
+  isSupportedIframeAttribute,
+} from './iframe-attributes';
 
 /*
 Example:
@@ -101,7 +92,7 @@ class WstgIframeElement extends HTMLElement {
           .filter(
             (attr) =>
               attr.name.startsWith('iframe-') ||
-              IFRAME_ATTRIBUTE_NAMES.includes(attr.name),
+              isSupportedIframeAttribute(attr.name),
           )
           .map((attr) => [attr.name.replace(/^iframe-/, ''), attr.value]),
       ),
@@ -269,11 +260,10 @@ export function adaptMunicipioIframes(root: ParentNode = document) {
       const placeholder = document.createElement('wstg-iframe');
       placeholder.setAttribute('service', payload.service);
       placeholder.setAttribute('category', payload.category);
-      for (const [name, value] of Object.entries(payload.iframe)) {
-        if (!IFRAME_ATTRIBUTE_NAMES.includes(name) || value == null) {
-          continue;
-        }
-        placeholder.setAttribute(name, value === true ? '' : String(value));
+      for (const [name, value] of Object.entries(
+        getSupportedIframeAttributes(payload.iframe),
+      )) {
+        placeholder.setAttribute(name, value);
       }
       placeholder.append(...Array.from(container.childNodes));
       container.replaceWith(placeholder);

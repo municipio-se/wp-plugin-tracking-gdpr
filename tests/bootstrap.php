@@ -326,8 +326,9 @@ if ($scenario === "active") {
   );
   wstg_test_assert(
     str_contains($processedContent, "wstg-iframe-placeholder") &&
-      !str_contains($processedContent, "<iframe"),
-    "A supported content iframe was not replaced before browser loading.",
+      !str_contains($processedContent, "<iframe") &&
+      str_contains($processedContent, "&quot;title&quot;:&quot;Video&quot;"),
+    "A supported content iframe was not replaced with its accessible name preserved.",
   );
   $municipioContent = apply_filters(
     "the_content",
