@@ -99,7 +99,7 @@ export class MatomoManager {
       return;
     }
     if (this.analyticsConsent) {
-      tracker.setCookieConsentGiven();
+      tracker.rememberCookieConsentGiven();
     } else {
       tracker.forgetCookieConsentGiven();
     }
@@ -126,17 +126,21 @@ export class MatomoManager {
      * Queuing commands in `_paq` before Matomo's bundled tracker loads makes
      * Matomo create an unconfigured default tracker before the container adds
      * its configured tracker. Registering at TrackerSetup keeps one tracker and
-     * applies both the requirement and the persisted consent state before its
-     * first page view. This must be synchronous: otherwise Matomo sees missing
-     * consent during startup and deletes existing analytics cookies.
+     * applies the requirement before its first page view. Tag Manager applies
+     * the same requirement again after TrackerSetup, so container consent must
+     * use Matomo's remembered cookie. If Tracking GDPR already has consent but
+     * that cookie is missing, restore it in a microtask after the container has
+     * configured Secure and SameSite.
      */
     const register = () => {
       if (!window.Matomo) {
         return;
       }
       const prepareTracker = (tracker: MatomoTracker) => {
-        tracker.requireCookieConsent();
-        this.applyConsentToTracker(tracker);
+        const needsRememberedConsent = tracker.requireCookieConsent();
+        if (needsRememberedConsent && this.analyticsConsent) {
+          queueMicrotask(() => this.applyConsentToTracker(tracker));
+        }
       };
       window.Matomo.on('TrackerSetup', prepareTracker);
       window.Matomo.getAsyncTrackers().forEach(prepareTracker);
