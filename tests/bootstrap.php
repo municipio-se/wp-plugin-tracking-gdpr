@@ -315,7 +315,9 @@ if ($scenario === "active") {
       str_contains($placeholder, "video.example") &&
       str_contains($placeholder, "--wstg-iframe-aspect-ratio: 16 / 9") &&
       str_contains($placeholder, "https://video.example/watch/123") &&
-      str_contains($placeholder, "c-button__filled--secondary") &&
+      str_contains($placeholder, "c-button__filled--primary") &&
+      str_contains($placeholder, 'class="wstg-iframe__external-icon"') &&
+      str_contains($placeholder, 'aria-hidden="true"') &&
       !str_contains($placeholder, 'slot="acceptButton"'),
     "A supported iframe did not get a plugin-owned consent placeholder.",
   );

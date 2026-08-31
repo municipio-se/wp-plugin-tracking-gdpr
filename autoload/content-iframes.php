@@ -124,10 +124,10 @@ function wstg_render_iframe_placeholder(array $context): string {
       : "";
 
   $buttonClasses =
-    "wstg-iframe__action c-button c-button__filled c-button__filled--secondary c-button--md";
+    "wstg-iframe__action c-button c-button__filled c-button__filled--primary c-button--md";
   $standaloneLink = $standaloneUrl
     ? sprintf(
-      '<a class="%s" href="%s" target="_blank" rel="noreferrer noopener">%s</a>',
+      '<a class="%s" href="%s" target="_blank" rel="noreferrer noopener">%s<svg class="wstg-iframe__external-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/><path d="m11 13 9-9"/><path d="M15 4h5v5"/></svg></a>',
       esc_attr($buttonClasses),
       esc_url($standaloneUrl),
       esc_html(
