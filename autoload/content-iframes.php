@@ -21,6 +21,32 @@ function wstg_content_document_to_html(Document $document) {
 }
 
 /**
+ * Normalize a service-owned aspect ratio before exposing it as a CSS value.
+ *
+ * Registered services may supply presentation metadata, but arbitrary CSS must
+ * never be copied into the page. Positive numeric ratios cover the supported
+ * video services without widening that trust boundary.
+ */
+function wstg_normalize_iframe_aspect_ratio($value): string {
+  if (
+    !is_string($value) ||
+    !preg_match(
+      "/^\s*(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*$/",
+      $value,
+      $matches,
+    )
+  ) {
+    return "";
+  }
+
+  if ((float) $matches[1] <= 0 || (float) $matches[2] <= 0) {
+    return "";
+  }
+
+  return "{$matches[1]} / {$matches[2]}";
+}
+
+/**
  * Render the plugin-owned consent control for a supported iframe service.
  *
  * The original iframe attributes are copied to the custom element, but the
@@ -37,6 +63,15 @@ function wstg_render_iframe_placeholder(array $context): string {
 
   $category = $service["category"] ?? "embedded";
   $serviceTitle = $service["title"] ?? $serviceKey;
+  $aspectRatio = wstg_normalize_iframe_aspect_ratio(
+    $parsed["aspectRatio"] ?? "",
+  );
+  $standaloneUrl = $parsed["standaloneUrl"] ?? "";
+  $standaloneUrl =
+    is_string($standaloneUrl) &&
+    in_array(parse_url($standaloneUrl, PHP_URL_SCHEME), ["http", "https"], true)
+      ? $standaloneUrl
+      : "";
   $attributes = array_merge($parsed["attributes"] ?? [], [
     "src" => $parsed["embedUrl"],
   ]);
@@ -73,33 +108,54 @@ function wstg_render_iframe_placeholder(array $context): string {
     return "";
   }
 
+  // A remote preview would disclose the visitor's IP address before embedded
+  // content has been accepted. Blocked embeds may therefore only use a
+  // same-origin or locally proxied thumbnail.
   $thumbnailHost = parse_url($parsed["thumbnailUrl"] ?? "", PHP_URL_HOST);
   $siteHost = parse_url(home_url("/"), PHP_URL_HOST);
   $thumbnail =
-    $thumbnailHost && $siteHost && strtolower($thumbnailHost) === strtolower($siteHost)
+    $thumbnailHost &&
+    $siteHost &&
+    strtolower($thumbnailHost) === strtolower($siteHost)
+      ? sprintf(
+        '<img src="%s" alt="" loading="lazy" slot="thumbnail">',
+        esc_url($parsed["thumbnailUrl"]),
+      )
+      : "";
+
+  $buttonClasses =
+    "wstg-iframe__action c-button c-button__filled c-button__filled--secondary c-button--md";
+  $standaloneLink = $standaloneUrl
     ? sprintf(
-      '<img src="%s" alt="" loading="lazy" slot="thumbnail">',
-      esc_url($parsed["thumbnailUrl"]),
+      '<a class="%s" href="%s" target="_blank" rel="noreferrer noopener">%s</a>',
+      esc_attr($buttonClasses),
+      esc_url($standaloneUrl),
+      esc_html(
+        sprintf(__("Open on %s", "whitespace-tracking-gdpr"), $serviceTitle),
+      ),
     )
+    : "";
+  $style = $aspectRatio
+    ? sprintf(' style="--wstg-iframe-aspect-ratio: %s"', esc_attr($aspectRatio))
     : "";
 
   return sprintf(
-    '<div class="wstg-iframe-placeholder" data-wstg-iframe="%s">%s<div class="wstg-iframe__dialog" slot="dialog"><p>%s</p><div class="wstg-iframe__actions"><button type="button" slot="acceptButton">%s</button><button type="button" slot="settingsButton">%s</button></div></div></div>',
+    '<div class="wstg-iframe-placeholder" data-wstg-iframe="%s"%s>%s<div class="wstg-iframe__dialog" slot="dialog"><p>%s</p><div class="wstg-iframe__actions"><button class="%s" type="button" slot="settingsButton">%s</button>%s</div></div></div>',
     esc_attr($payload),
+    $style,
     $thumbnail,
     esc_html(
       sprintf(
         __(
-          "This content is provided by %s. Allow embedded content to view it.",
+          "This content cannot be displayed because you have not consented to cookies and sharing data with %s.",
           "whitespace-tracking-gdpr",
         ),
         $serviceTitle,
       ),
     ),
-    esc_html(
-      sprintf(__("Allow %s", "whitespace-tracking-gdpr"), $serviceTitle),
-    ),
-    esc_html(__("Cookie settings", "whitespace-tracking-gdpr")),
+    esc_attr($buttonClasses),
+    esc_html(__("Change my settings", "whitespace-tracking-gdpr")),
+    $standaloneLink,
   );
 }
 

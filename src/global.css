@@ -5,29 +5,89 @@
 
 wstg-iframe,
 .wstg-iframe-placeholder {
+  aspect-ratio: var(--wstg-iframe-aspect-ratio, 16 / 9);
+  background: var(--color-black, #000);
   display: grid;
-  min-height: 12rem;
+  grid-template-columns: minmax(0, 1fr);
+  isolation: isolate;
   overflow: hidden;
   place-items: center;
   position: relative;
   width: 100%;
 }
 
+wstg-iframe > *,
+.wstg-iframe-placeholder > * {
+  grid-area: 1 / 1;
+}
+
 wstg-iframe > iframe {
+  align-self: stretch;
   border: 0;
   height: 100%;
+  justify-self: stretch;
+  width: 100%;
+}
+
+.wstg-iframe-placeholder > [slot='thumbnail'],
+wstg-iframe > [slot='thumbnail'] {
+  align-self: stretch;
+  height: 100%;
+  justify-self: stretch;
+  object-fit: cover;
+  opacity: 0.5;
   width: 100%;
 }
 
 .wstg-iframe__dialog {
+  background: var(--color-background-card, var(--color-white, #fff));
+  border-radius: var(--radius-lg, 0.5rem);
+  box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
+  color: var(--color-text, #1a1a1a);
+  margin: 0.75rem;
   max-width: 42rem;
   padding: 1.5rem;
-  text-align: center;
+  text-align: start;
+  width: calc(100% - 1.5rem);
+  z-index: 2;
+}
+
+.wstg-iframe__dialog > p {
+  margin-block: 0 1rem;
 }
 
 .wstg-iframe__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+:where(.wstg-iframe__action) {
+  align-items: center;
+  background: var(--c-button-secondary-color, var(--color-secondary, #f5f5f5));
+  border: 0;
+  border-radius: var(--c-button-border-radius, var(--radius-md, 0.25rem));
+  color: var(
+    --c-button-secondary-color-contrasting,
+    var(--color-secondary-contrasting, #333)
+  );
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: var(--button-font-weight, 500);
   justify-content: center;
+  min-height: 2.5rem;
+  min-width: 4.5rem;
+  padding: 0.5rem 1.25rem;
+  text-decoration: none;
+}
+
+:where(.wstg-iframe__action:hover) {
+  filter: brightness(0.92);
+}
+
+:where(.wstg-iframe__action:focus-visible) {
+  outline: 0.1875rem solid currentColor;
+  outline-offset: 0.1875rem;
 }

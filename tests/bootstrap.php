@@ -267,7 +267,11 @@ if ($scenario === "active") {
     "iframe" => [
       "parseInput" => function (string $input): ?array {
         return $input === "https://video.example/embed/123"
-          ? ["embedUrl" => $input]
+          ? [
+            "embedUrl" => $input,
+            "standaloneUrl" => "https://video.example/watch/123",
+            "aspectRatio" => "16/9",
+          ]
           : null;
       },
       "attributes" => ["allowfullscreen" => true],
@@ -308,8 +312,18 @@ if ($scenario === "active") {
   wstg_test_assert(
     str_contains($placeholder, 'class="wstg-iframe-placeholder"') &&
       str_contains($placeholder, "test-video") &&
-      str_contains($placeholder, "video.example"),
+      str_contains($placeholder, "video.example") &&
+      str_contains($placeholder, "--wstg-iframe-aspect-ratio: 16 / 9") &&
+      str_contains($placeholder, "https://video.example/watch/123") &&
+      str_contains($placeholder, "c-button__filled--secondary") &&
+      !str_contains($placeholder, 'slot="acceptButton"'),
     "A supported iframe did not get a plugin-owned consent placeholder.",
+  );
+  wstg_test_assert(
+    wstg_normalize_iframe_aspect_ratio("4 / 3") === "4 / 3" &&
+      wstg_normalize_iframe_aspect_ratio("0/3") === "" &&
+      wstg_normalize_iframe_aspect_ratio("16/9; color: red") === "",
+    "Iframe aspect ratio metadata was not normalized safely.",
   );
   $componentAttributes = apply_filters(
     "ComponentLibrary/Component/Iframe/Attribute",

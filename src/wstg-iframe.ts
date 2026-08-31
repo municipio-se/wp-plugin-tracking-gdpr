@@ -260,6 +260,9 @@ export function adaptMunicipioIframes(root: ParentNode = document) {
       const placeholder = document.createElement('wstg-iframe');
       placeholder.setAttribute('service', payload.service);
       placeholder.setAttribute('category', payload.category);
+      if (container.hasAttribute('style')) {
+        placeholder.setAttribute('style', container.getAttribute('style')!);
+      }
       for (const [name, value] of Object.entries(
         getSupportedIframeAttributes(payload.iframe),
       )) {

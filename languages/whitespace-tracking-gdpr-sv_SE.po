@@ -321,17 +321,17 @@ msgstr ""
 
 #: autoload/content-iframes.php
 #, php-format
-msgid "This content is provided by %s. Allow embedded content to view it."
-msgstr "Det här innehållet tillhandahålls av %s. Tillåt inbäddat innehåll för att visa det."
+msgid "This content cannot be displayed because you have not consented to cookies and sharing data with %s."
+msgstr "Detta innehåll kan inte visas eftersom du inte samtyckt till kakor och delning av uppgifter med %s."
+
+#: autoload/content-iframes.php
+msgid "Change my settings"
+msgstr "Ändra mina inställningar"
 
 #: autoload/content-iframes.php
 #, php-format
-msgid "Allow %s"
-msgstr "Tillåt %s"
-
-#: autoload/content-iframes.php
-msgid "Cookie settings"
-msgstr "Kakinställningar"
+msgid "Open on %s"
+msgstr "Öppna på %s"
 
 #: autoload/services.php
 msgid "YouTube embed domain"

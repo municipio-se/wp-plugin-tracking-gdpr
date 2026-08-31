@@ -282,16 +282,16 @@ msgstr ""
 
 #: autoload/content-iframes.php
 #, php-format
-msgid "This content is provided by %s. Allow embedded content to view it."
+msgid "This content cannot be displayed because you have not consented to cookies and sharing data with %s."
+msgstr ""
+
+#: autoload/content-iframes.php
+msgid "Change my settings"
 msgstr ""
 
 #: autoload/content-iframes.php
 #, php-format
-msgid "Allow %s"
-msgstr ""
-
-#: autoload/content-iframes.php
-msgid "Cookie settings"
+msgid "Open on %s"
 msgstr ""
 
 #: autoload/services.php
