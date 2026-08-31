@@ -82,6 +82,10 @@ function is_network_admin(): bool {
   return false;
 }
 
+function is_admin(): bool {
+  return false;
+}
+
 function home_url(string $path = ""): string {
   return "https://example.test" . $path;
 }
@@ -133,6 +137,10 @@ function wstg_test_assert(bool $condition, string $message): void {
     exit(1);
   }
 }
+
+// Simulate current Municipio's early markup hook, which WPMU Security also
+// uses. Tracking GDPR detects this hook when it selects its CSP integration.
+add_filter("Website/HTML/output", fn($markup) => $markup, 10);
 
 define("WPMU_PLUGIN_DIR", __DIR__ . "/fixtures/mu-plugins");
 require dirname(__DIR__) . "/vendor/autoload.php";
@@ -212,6 +220,40 @@ if ($scenario === "active") {
       true,
     ),
     "Unknown inline code was added to the CSP allowlist.",
+  );
+  apply_filters(
+    "Website/HTML/output",
+    "<script>{$ajax_script}</script><script>{$unknown_script}</script>",
+  );
+  wstg_test_assert(
+    !str_contains(
+      (string) wstg_csp(),
+      "'sha256-" . base64_encode(hash("sha256", $ajax_script, true)) . "'",
+    ),
+    "The pre-minification ajaxurl hash was added to the CSP.",
+  );
+  $final_ajax_script =
+    "var ajaxurl = 'https://example.test/wp/wp-admin/admin-ajax.php';";
+  apply_filters(
+    "Municipio\\MarkupProcessor",
+    "<script>{$final_ajax_script}</script>" .
+      "<script>{$unknown_script}</script>",
+  );
+  wstg_test_assert(
+    str_contains(
+      (string) wstg_csp(),
+      "'sha256-" .
+        base64_encode(hash("sha256", $final_ajax_script, true)) .
+        "'",
+    ),
+    "The final Municipio ajaxurl hash was not added to the CSP.",
+  );
+  wstg_test_assert(
+    !str_contains(
+      (string) wstg_csp(),
+      "'sha256-" . base64_encode(hash("sha256", $unknown_script, true)) . "'",
+    ),
+    "Unknown final inline code was added to the CSP allowlist.",
   );
   wstg_register_service("test-video", [
     "title" => "Test video",

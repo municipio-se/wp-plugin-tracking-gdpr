@@ -80,8 +80,10 @@ package again.
   is connected to the global service category without a second consent state.
   Revoking the category unloads an already active iframe.
 - **Current Municipio CSP** – The plugin owns the frontend CSP header, uses
-  nonces plus narrowly validated hashes for Municipio bootstrap and JSON-LD, and
-  prevents WPMU Security from emitting a competing policy.
+  nonces plus narrowly validated hashes for Municipio bootstrap and JSON-LD,
+  and prevents WPMU Security from emitting a competing policy. Hashes are
+  collected from Municipio's final processed markup so script minification
+  cannot invalidate them.
 - **Must-use plugins** – Translation loading supports both regular plugin and
   mu-plugin installation paths.
 - **Mediaflow embeds** – Mediaflow wrapper replacement is handled through the

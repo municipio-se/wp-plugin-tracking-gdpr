@@ -100,9 +100,9 @@ function wstg_csp_get_trusted_inline_script_hashes(string $markup): array {
  * Send Tracking GDPR's CSP once all applicable sources have been collected.
  */
 function wstg_csp_send_header(): void {
-  static $sent = false;
+  static $sent_header = null;
 
-  if ($sent || is_admin() || headers_sent()) {
+  if (is_admin() || headers_sent()) {
     return;
   }
 
@@ -111,8 +111,14 @@ function wstg_csp_send_header(): void {
   $csp->deny("script-src", "data:");
   $csp->deny("frame-src", "data:");
   $csp->allow("img-src", "https:");
-  header("Content-Security-Policy: " . $csp, true);
-  $sent = true;
+  $header = "Content-Security-Policy: " . $csp;
+
+  if ($header === $sent_header) {
+    return;
+  }
+
+  header($header, true);
+  $sent_header = $header;
 }
 
 /*
@@ -132,16 +138,32 @@ if ($wstg_has_markup_csp_integration) {
   add_filter(
     "Website/HTML/output",
     function ($markup) {
-      if (is_string($markup)) {
-        foreach (wstg_csp_get_trusted_inline_script_hashes($markup) as $hash) {
-          wstg_csp_allow("script-src-elem", $hash);
-        }
-      }
+      // Reserve ownership before WPMU Security runs on the same early hook.
+      // Municipio still minifies inline scripts after this point, so hashes
+      // must be collected from its final markup filter below.
       wstg_csp_send_header();
 
       return $markup;
     },
     5,
+  );
+
+  add_filter(
+    "Municipio\\MarkupProcessor",
+    function ($markup) {
+      if (is_string($markup)) {
+        foreach (wstg_csp_get_trusted_inline_script_hashes($markup) as $hash) {
+          wstg_csp_allow("script-src-elem", $hash);
+        }
+      }
+
+      // Replace the early ownership header after Municipio has completed Tidy,
+      // script minification and its other built-in markup processors.
+      wstg_csp_send_header();
+
+      return $markup;
+    },
+    PHP_INT_MAX,
   );
 } else {
   add_action("send_headers", "wstg_csp_send_header");

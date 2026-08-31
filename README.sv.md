@@ -83,6 +83,8 @@ sparade inställningarna kan därefter läsas av LTS-paketet igen.
 - **CSP i aktuell Municipio** – Pluginet äger frontendens CSP-header, använder
   nonce och snävt validerade hashvärden för Municipios bootstrap och JSON-LD
   samt hindrar WPMU Security från att skicka en konkurrerande policy.
+  Hashvärdena samlas in från Municipios slutbearbetade markup så att
+  scriptminifieringen inte kan göra dom ogiltiga.
 - **Must-use plugins** – Inläsning av översättningar stödjer både vanlig
   plugininstallation och mu-plugin-installation.
 - **Mediaflow-inbäddningar** – Ersättning av Mediaflow-wrappers hanteras via
