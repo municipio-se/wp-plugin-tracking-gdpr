@@ -15,7 +15,9 @@
 - **Inbäddat innehåll** – Lade till inerta, samtyckesstyrda iframe-platshållare,
   avlastning vid återkallat samtycke och val av YouTube-värd per sajt.
 - **Analys** – Behöll kaklös Matomo-mätning före samtycke och gjorde uppstart av
-  direkt tracker och Tag Manager deterministisk.
+  direkt tracker och Tag Manager deterministisk. Containersamtycke kopplas till
+  varje konfigurerad tracker utan att skapa en extra standardtracker som kan
+  skriva om kakor med svagare attribut när sidan lämnas.
 - **Nätverksanrop** – Lade till en uttrycklig, tjänsteägd spärr för deklarerade
   fetch- och beacon-destinationer.
 - **Tillgänglighet** – Samordnade Municipios menylåda med samtyckesdialogen och

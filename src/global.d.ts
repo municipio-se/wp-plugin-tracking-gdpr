@@ -9,6 +9,20 @@ declare type ServiceCookie = {
 };
 
 declare global {
+  type MatomoTracker = {
+    forgetCookieConsentGiven: () => void;
+    rememberCookieConsentGiven: () => void;
+    requireCookieConsent: () => void;
+  };
+
+  type MatomoRuntime = {
+    getAsyncTrackers: () => MatomoTracker[];
+    on: (
+      event: 'TrackerSetup',
+      callback: (tracker: MatomoTracker) => void,
+    ) => void;
+  };
+
   interface Window {
     whitespaceTrackingGdpr: {
       categories: {
@@ -43,6 +57,8 @@ declare global {
       }>;
     };
     ccDebug: () => void;
+    Matomo?: MatomoRuntime;
+    matomoPluginAsyncInit: Array<() => void>;
     _mtm: Array<any>;
     _paq: Array<any>;
   }

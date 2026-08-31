@@ -93,10 +93,12 @@ package again.
   before they are passed to the frontend.
 - **Matomo startup** – Direct tracking starts in cookieless mode. A configured
   Tag Manager container owns tracker startup when both a container ID and site
-  ID exist, and receives `requireCookieConsent` before it loads to prevent
-  duplicate page views and pre-consent cookies. Remote containers must not use
-  Matomo's stronger `requireConsent` when cookieless baseline measurement is
-  required.
+  ID exist. The plugin attaches `requireCookieConsent` when each container
+  tracker is created, without pre-populating `_paq` and causing Matomo to create
+  an extra default tracker. Consent is synchronized after the container has
+  applied cookie attributes such as `Secure` and `SameSite`. Remote containers
+  must not use Matomo's stronger `requireConsent` when cookieless baseline
+  measurement is required.
 
 ## Admin Tools and Migrations
 

@@ -26,6 +26,7 @@ function createEnvironment(categories = []) {
     getElementsByTagName: () => [firstScript],
   };
   globalThis.window = {
+    matomoPluginAsyncInit: [],
     _mtm: [],
     _paq: [],
     addEventListener: (name, callback) => listeners.set(name, callback),
@@ -66,7 +67,7 @@ test('a direct tracker starts once in cookieless mode', async () => {
   );
 });
 
-test('a container owns page-view startup and receives cookie consent first', async () => {
+test('a container owns page-view startup without creating a queued tracker', async () => {
   const { insertedScripts } = createEnvironment(['analytics']);
   const { MatomoManager } = await importManager();
 
@@ -78,14 +79,57 @@ test('a container owns page-view startup and receives cookie consent first', asy
     .loadMTM()
     .loadMatomo();
 
-  assert.deepEqual(window._paq, [
-    ['rememberCookieConsentGiven'],
-    ['requireCookieConsent'],
-  ]);
+  assert.deepEqual(window._paq, []);
+  assert.equal(window.matomoPluginAsyncInit.length, 1);
   assert.deepEqual(
     insertedScripts.map(({ src }) => src),
     ['https://matomo.test/js/container_container.js'],
   );
+});
+
+test('container trackers receive consent after their cookie settings', async () => {
+  const { listeners } = createEnvironment(['analytics']);
+  const calls = [];
+  const tracker = {
+    requireCookieConsent: () => calls.push('require'),
+    rememberCookieConsentGiven: () => calls.push('remember'),
+    forgetCookieConsentGiven: () => calls.push('forget'),
+  };
+  let trackerSetup;
+  window.Matomo = {
+    getAsyncTrackers: () => [tracker],
+    on: (event, callback) => {
+      assert.equal(event, 'TrackerSetup');
+      trackerSetup = callback;
+    },
+  };
+  const { MatomoManager } = await importManager();
+
+  new MatomoManager('https://matomo.test/', {
+    containerId: 'container',
+    siteId: '100',
+  })
+    .connectToConsentDialog()
+    .loadMTM();
+
+  assert.deepEqual(calls, ['require']);
+  await new Promise((resolve) => queueMicrotask(resolve));
+  assert.deepEqual(calls, ['require', 'remember']);
+
+  listeners.get('cc:onChange')({
+    detail: {
+      changedCategories: ['analytics'],
+      cookie: { categories: [] },
+    },
+  });
+  assert.deepEqual(calls, ['require', 'remember', 'forget']);
+
+  calls.length = 0;
+  trackerSetup(tracker);
+  assert.deepEqual(calls, ['require']);
+  await new Promise((resolve) => queueMicrotask(resolve));
+  assert.deepEqual(calls, ['require', 'forget']);
+  assert.deepEqual(window._paq, []);
 });
 
 test('consent changes toggle Matomo cookie state without a page view', async () => {

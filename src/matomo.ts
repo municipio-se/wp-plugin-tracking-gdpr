@@ -4,6 +4,8 @@ window._mtm = window._mtm || [];
 export class MatomoManager {
   public containerId?: string;
   public siteId?: string;
+  private analyticsConsent: boolean | null = null;
+  private containerConsentRegistered = false;
   constructor(
     public url: string,
     { containerId, siteId }: { containerId?: string; siteId?: string },
@@ -36,9 +38,7 @@ export class MatomoManager {
     if (!this.containerId) {
       return this;
     }
-    // Enforce the plugin's cookieless baseline even when the remote container
-    // tag has not enabled Matomo's cookie-consent option itself.
-    window._paq.push(['requireCookieConsent']);
+    this.registerContainerConsent();
     window._mtm.push({
       'mtm.startTime': new Date().getTime(),
       event: 'mtm.Start',
@@ -52,19 +52,26 @@ export class MatomoManager {
     return this;
   }
   connectToConsentDialog() {
-    let analyticsConsent: boolean | null = null;
     const applyConsent = (categories: string[]) => {
       const nextAnalyticsConsent = categories.includes('analytics');
-      if (nextAnalyticsConsent === analyticsConsent) {
+      if (nextAnalyticsConsent === this.analyticsConsent) {
         return;
       }
-      analyticsConsent = nextAnalyticsConsent;
+      this.analyticsConsent = nextAnalyticsConsent;
+
+      if (this.containerId && this.containerConsentRegistered) {
+        window.Matomo?.getAsyncTrackers().forEach((tracker) => {
+          this.applyConsentToTracker(tracker);
+        });
+      } else if (!this.containerId && nextAnalyticsConsent) {
+        window._paq.push(['rememberCookieConsentGiven']);
+      } else if (!this.containerId) {
+        window._paq.push(['forgetCookieConsentGiven']);
+      }
 
       if (nextAnalyticsConsent) {
-        window._paq.push(['rememberCookieConsentGiven']);
         window._mtm.push({ event: 'mtm.ConsentGiven' });
       } else {
-        window._paq.push(['forgetCookieConsentGiven']);
         window._mtm.push({ event: 'mtm.ConsentRevoked' });
       }
     };
@@ -79,6 +86,48 @@ export class MatomoManager {
     });
     applyConsent(window.CookieConsent.getCookie().categories || []);
     return this;
+  }
+
+  private applyConsentToTracker(tracker: MatomoTracker) {
+    if (this.analyticsConsent) {
+      tracker.rememberCookieConsentGiven();
+    } else {
+      tracker.forgetCookieConsentGiven();
+    }
+  }
+
+  private registerContainerConsent() {
+    if (this.containerConsentRegistered) {
+      return;
+    }
+    this.containerConsentRegistered = true;
+
+    /**
+     * Queuing commands in `_paq` before Matomo's bundled tracker loads makes
+     * Matomo create an unconfigured default tracker before the container adds
+     * its configured tracker. Registering at TrackerSetup keeps one tracker and
+     * applies the consent requirement before its first page view. Consent is
+     * synchronized in the next microtask so the container can first apply
+     * cookie attributes such as Secure and SameSite.
+     */
+    const register = () => {
+      if (!window.Matomo) {
+        return;
+      }
+      const prepareTracker = (tracker: MatomoTracker) => {
+        tracker.requireCookieConsent();
+        queueMicrotask(() => this.applyConsentToTracker(tracker));
+      };
+      window.Matomo.on('TrackerSetup', prepareTracker);
+      window.Matomo.getAsyncTrackers().forEach(prepareTracker);
+    };
+
+    if (window.Matomo) {
+      register();
+      return;
+    }
+    window.matomoPluginAsyncInit = window.matomoPluginAsyncInit || [];
+    window.matomoPluginAsyncInit.push(register);
   }
 }
 
