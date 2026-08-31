@@ -55,7 +55,7 @@ export class MatomoManager {
     return this;
   }
   connectToConsentDialog() {
-    const applyConsent = (categories: string[]) => {
+    const applyConsent = (categories: string[], emitEvent = true) => {
       const nextAnalyticsConsent = categories.includes('analytics');
       if (nextAnalyticsConsent === this.analyticsConsent) {
         return;
@@ -70,10 +70,12 @@ export class MatomoManager {
         this.applyConsentToDirectTracker();
       }
 
-      if (nextAnalyticsConsent) {
-        window._mtm.push({ event: 'mtm.ConsentGiven' });
-      } else {
-        window._mtm.push({ event: 'mtm.ConsentRevoked' });
+      if (emitEvent) {
+        window._mtm.push({
+          event: nextAnalyticsConsent
+            ? 'mtm.ConsentGiven'
+            : 'mtm.ConsentRevoked',
+        });
       }
     };
 
@@ -85,11 +87,17 @@ export class MatomoManager {
         applyConsent(detail.cookie.categories);
       }
     });
-    applyConsent(window.CookieConsent.getCookie().categories || []);
+    // Restore the persisted choice without replaying a Tag Manager consent
+    // event on every page view. TrackerSetup applies this state before the
+    // container's page-view tag runs.
+    applyConsent(window.CookieConsent.getCookie().categories || [], false);
     return this;
   }
 
   private applyConsentToTracker(tracker: MatomoTracker) {
+    if (this.analyticsConsent === null) {
+      return;
+    }
     if (this.analyticsConsent) {
       tracker.setCookieConsentGiven();
     } else {
@@ -118,9 +126,9 @@ export class MatomoManager {
      * Queuing commands in `_paq` before Matomo's bundled tracker loads makes
      * Matomo create an unconfigured default tracker before the container adds
      * its configured tracker. Registering at TrackerSetup keeps one tracker and
-     * applies the consent requirement before its first page view. Consent is
-     * synchronized in the next microtask so the container can first apply
-     * cookie attributes such as Secure and SameSite.
+     * applies both the requirement and the persisted consent state before its
+     * first page view. This must be synchronous: otherwise Matomo sees missing
+     * consent during startup and deletes existing analytics cookies.
      */
     const register = () => {
       if (!window.Matomo) {
@@ -128,7 +136,7 @@ export class MatomoManager {
       }
       const prepareTracker = (tracker: MatomoTracker) => {
         tracker.requireCookieConsent();
-        queueMicrotask(() => this.applyConsentToTracker(tracker));
+        this.applyConsentToTracker(tracker);
       };
       window.Matomo.on('TrackerSetup', prepareTracker);
       window.Matomo.getAsyncTrackers().forEach(prepareTracker);

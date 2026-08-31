@@ -87,7 +87,7 @@ test('a container owns page-view startup without creating a queued tracker', asy
   );
 });
 
-test('container trackers receive consent after their cookie settings', async () => {
+test('container trackers receive persisted consent before their page view', async () => {
   const { listeners } = createEnvironment(['analytics']);
   const calls = [];
   const tracker = {
@@ -112,9 +112,11 @@ test('container trackers receive consent after their cookie settings', async () 
     .connectToConsentDialog()
     .loadMTM();
 
-  assert.deepEqual(calls, ['require']);
-  await new Promise((resolve) => queueMicrotask(resolve));
   assert.deepEqual(calls, ['require', 'set']);
+  assert.deepEqual(
+    window._mtm.map(({ event }) => event),
+    ['mtm.Start'],
+  );
 
   listeners.get('cc:onChange')({
     detail: {
@@ -123,11 +125,13 @@ test('container trackers receive consent after their cookie settings', async () 
     },
   });
   assert.deepEqual(calls, ['require', 'set', 'forget']);
+  assert.deepEqual(
+    window._mtm.map(({ event }) => event),
+    ['mtm.Start', 'mtm.ConsentRevoked'],
+  );
 
   calls.length = 0;
   trackerSetup(tracker);
-  assert.deepEqual(calls, ['require']);
-  await new Promise((resolve) => queueMicrotask(resolve));
   assert.deepEqual(calls, ['require', 'forget']);
   assert.deepEqual(window._paq, []);
 });

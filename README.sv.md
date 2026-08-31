@@ -95,12 +95,14 @@ sparade inställningarna kan därefter läsas av LTS-paketet igen.
 - **Matomo-start** – Direktspårning börjar kaklöst. En konfigurerad Tag
   Manager-container äger trackerstarten när både container-ID och site-ID finns
   och pluginet kopplar `requireCookieConsent` till varje tracker när den skapas.
-  `_paq` fylls inte i förväg, så Matomo skapar ingen extra standardtracker.
-  Samtycket synkroniseras efter att containern har satt kakattribut som `Secure`
-  och `SameSite`. Pluginet anropar `setCookieConsentGiven` på varje sida
-  eftersom den egna samtyckeskakan redan minns valet. Matomo skapar därför ingen
-  andra, beständig `mtm_cookie_consent`-kaka. Externa containrar får inte
-  använda Matomos starkare `requireConsent` när kaklös grundmätning krävs.
+  `_paq` fylls inte i förväg, så Matomo skapar ingen extra standardtracker. Det
+  sparade valet tillämpas synkront när varje tracker skapas, innan dess
+  sidvisningstagg kan radera befintliga analyskakor. Pluginet anropar
+  `setCookieConsentGiven` på varje sida eftersom den egna samtyckeskakan redan
+  minns valet, men skickar bara Tag Manager-händelser när valet faktiskt ändras.
+  Matomo skapar därför ingen andra, beständig `mtm_cookie_consent`-kaka eller
+  överflödig samtyckesping vid navigering. Externa containrar får inte använda
+  Matomos starkare `requireConsent` när kaklös grundmätning krävs.
 
 ## Adminverktyg och migrationer
 

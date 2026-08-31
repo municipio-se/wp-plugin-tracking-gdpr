@@ -19,7 +19,9 @@
   varje konfigurerad tracker utan att skapa en extra standardtracker som kan
   skriva om kakor med svagare attribut när sidan lämnas. Pluginets egen
   samtyckeskaka är nu den beständiga källan, så Matomo skapar inte längre den
-  överflödiga `mtm_cookie_consent`-kakan.
+  överflödiga `mtm_cookie_consent`-kakan. Sparat samtycke tillämpas synkront
+  före varje sidvisning från containern, så analyskakorna överlever navigering
+  utan att en samtyckeshändelse spelas upp igen.
 - **Nätverksanrop** – Lade till en uttrycklig, tjänsteägd spärr för deklarerade
   fetch- och beacon-destinationer.
 - **Tillgänglighet** – Samordnade Municipios menylåda med samtyckesdialogen och

@@ -95,12 +95,14 @@ package again.
   Tag Manager container owns tracker startup when both a container ID and site
   ID exist. The plugin attaches `requireCookieConsent` when each container
   tracker is created, without pre-populating `_paq` and causing Matomo to create
-  an extra default tracker. Consent is synchronized after the container has
-  applied cookie attributes such as `Secure` and `SameSite`. The plugin uses
-  `setCookieConsentGiven` on every page because its own consent cookie already
-  remembers the choice. Matomo therefore does not create a second persistent
-  `mtm_cookie_consent` cookie. Remote containers must not use Matomo's stronger
-  `requireConsent` when cookieless baseline measurement is required.
+  an extra default tracker. The persisted choice is applied synchronously when
+  each tracker is created, before its page-view tag can remove existing
+  analytics cookies. The plugin uses `setCookieConsentGiven` on every page
+  because its own consent cookie already remembers the choice, but it only emits
+  Tag Manager consent events for actual changes. Matomo therefore does not
+  create a second persistent `mtm_cookie_consent` cookie or send a redundant
+  consent ping during navigation. Remote containers must not use Matomo's
+  stronger `requireConsent` when cookieless baseline measurement is required.
 
 ## Admin Tools and Migrations
 
