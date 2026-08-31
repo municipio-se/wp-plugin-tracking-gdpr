@@ -2,6 +2,10 @@ import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import './global.css';
 import * as CookieConsent from 'vanilla-cookieconsent';
 
+import {
+  getConsentCookieName,
+  migrateConsentCookieToHostOnly,
+} from './consent-cookie';
 import { adaptMunicipioIframes } from './wstg-iframe';
 
 import matomo from './matomo';
@@ -9,6 +13,17 @@ import { installNetworkRequestGate } from './network-requests';
 
 const settings = window.whitespaceTrackingGdpr;
 const revision = Number.parseInt(String(settings.revision), 10);
+const consentCookieName = getConsentCookieName(window.location.hostname);
+
+migrateConsentCookieToHostOnly({
+  cookieHeader: document.cookie,
+  hostname: window.location.hostname,
+  name: consentCookieName,
+  protocol: window.location.protocol,
+  writeCookie: (cookie) => {
+    document.cookie = cookie;
+  },
+});
 
 installNetworkRequestGate(settings.networkRequests ?? [], CookieConsent);
 
@@ -70,7 +85,10 @@ CookieConsent.run({
   autoShow: true,
   categories,
   cookie: {
-    name: `cc_cookie_${window.location.hostname.replace(/\./g, '_')}`,
+    // CookieConsent treats an empty domain as host-only. Its default is the
+    // current hostname, which also exposes the cookie to sibling subdomains.
+    domain: '',
+    name: consentCookieName,
   },
   revision,
   language: {
