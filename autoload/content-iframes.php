@@ -20,6 +20,89 @@ function wstg_content_document_to_html(Document $document) {
   return $html;
 }
 
+/**
+ * Render the plugin-owned consent control for a supported iframe service.
+ *
+ * The original iframe attributes are copied to the custom element, but the
+ * browser does not create the iframe until the global consent state permits it.
+ */
+function wstg_render_iframe_placeholder(array $context): string {
+  $parsed = $context["parsed"] ?? wstg_parse_input($context["url"] ?? "");
+  $service = $parsed["service"] ?? null;
+  $serviceKey = $parsed["serviceKey"] ?? null;
+
+  if (!$service || !$serviceKey || empty($parsed["embedUrl"])) {
+    return "";
+  }
+
+  $category = $service["category"] ?? "embedded";
+  $serviceTitle = $service["title"] ?? $serviceKey;
+  $attributes = array_merge($parsed["attributes"] ?? [], [
+    "src" => $parsed["embedUrl"],
+  ]);
+
+  $sourceNode = $context["node"] ?? null;
+  if ($sourceNode instanceof Element) {
+    foreach (
+      [
+        "allow",
+        "allowfullscreen",
+        "height",
+        "loading",
+        "name",
+        "referrerpolicy",
+        "sandbox",
+        "title",
+        "width",
+      ]
+      as $attributeName
+    ) {
+      $value = $sourceNode->getAttribute($attributeName);
+      if ($value !== null) {
+        $attributes[$attributeName] = (string) $value;
+      }
+    }
+  }
+
+  $payload = wp_json_encode([
+    "iframe" => $attributes,
+    "service" => $serviceKey,
+    "category" => $category,
+  ]);
+  if (!$payload) {
+    return "";
+  }
+
+  $thumbnailHost = parse_url($parsed["thumbnailUrl"] ?? "", PHP_URL_HOST);
+  $siteHost = parse_url(home_url("/"), PHP_URL_HOST);
+  $thumbnail =
+    $thumbnailHost && $siteHost && strtolower($thumbnailHost) === strtolower($siteHost)
+    ? sprintf(
+      '<img src="%s" alt="" loading="lazy" slot="thumbnail">',
+      esc_url($parsed["thumbnailUrl"]),
+    )
+    : "";
+
+  return sprintf(
+    '<div class="wstg-iframe-placeholder" data-wstg-iframe="%s">%s<div class="wstg-iframe__dialog" slot="dialog"><p>%s</p><div class="wstg-iframe__actions"><button type="button" slot="acceptButton">%s</button><button type="button" slot="settingsButton">%s</button></div></div></div>',
+    esc_attr($payload),
+    $thumbnail,
+    esc_html(
+      sprintf(
+        __(
+          "This content is provided by %s. Allow embedded content to view it.",
+          "whitespace-tracking-gdpr",
+        ),
+        $serviceTitle,
+      ),
+    ),
+    esc_html(
+      sprintf(__("Allow %s", "whitespace-tracking-gdpr"), $serviceTitle),
+    ),
+    esc_html(__("Cookie settings", "whitespace-tracking-gdpr")),
+  );
+}
+
 function wstg_resolve_iframe_replacement_target(
   Element $iframeNode,
   ?array $parsed,
@@ -31,28 +114,39 @@ function wstg_resolve_iframe_replacement_target(
   $replacementTarget =
     $parsed["service"]["iframe"]["replacementTarget"] ?? null;
 
-  if (!is_callable($replacementTarget)) {
-    return $iframeNode;
+  $resolvedTarget = $iframeNode;
+
+  if (is_callable($replacementTarget)) {
+    $context = [
+      "parsed" => $parsed,
+      "url" => $url,
+      "video_service" => $parsed["serviceKey"] ?? false,
+      "video_id" => $parsed["id"] ?? false,
+    ];
+
+    try {
+      $serviceTarget = $replacementTarget($iframeNode, $context);
+      if ($serviceTarget instanceof Element && $serviceTarget->parent()) {
+        $resolvedTarget = $serviceTarget;
+      }
+    } catch (\Throwable $exception) {
+      $resolvedTarget = $iframeNode;
+    }
   }
 
-  $context = [
-    "parsed" => $parsed,
-    "url" => $url,
-    "video_service" => $parsed["serviceKey"] ?? false,
-    "video_id" => $parsed["id"] ?? false,
-  ];
-
-  try {
-    $resolvedTarget = $replacementTarget($iframeNode, $context);
-  } catch (\Throwable $exception) {
-    return $iframeNode;
+  $ancestor = $resolvedTarget;
+  while ($ancestor instanceof Element && $ancestor->parent()) {
+    $classes = preg_split(
+      "/\s+/",
+      trim((string) $ancestor->getAttribute("class")),
+    );
+    if (in_array("js-suppressed-content", $classes ?: [], true)) {
+      return $ancestor;
+    }
+    $ancestor = $ancestor->parent();
   }
 
-  if ($resolvedTarget instanceof Element && $resolvedTarget->parent()) {
-    return $resolvedTarget;
-  }
-
-  return $iframeNode;
+  return $resolvedTarget;
 }
 
 add_filter(
@@ -89,6 +183,7 @@ add_filter(
         "video_id" => $video_id,
         "url" => $url,
         "node" => $node,
+        "parsed" => $parsed,
       ]);
 
       if (empty($replacement_html)) {
@@ -120,3 +215,42 @@ add_filter(
   },
   20,
 );
+
+add_filter(
+  "wstg_content_iframe_replacement",
+  function (string $replacementHtml, array $context): string {
+    return $replacementHtml ?: wstg_render_iframe_placeholder($context);
+  },
+  10,
+  2,
+);
+
+/**
+ * Annotate Municipio's inactive Component Library iframe template so the
+ * frontend adapter can hand it to the global consent control without loading
+ * the third-party source first.
+ */
+add_filter("ComponentLibrary/Component/Iframe/Attribute", function (
+  $attributes,
+) {
+  // Component Library applies this hook both to the attribute array and to
+  // the already-rendered attribute string. Only the array is safe to amend.
+  if (!is_array($attributes)) {
+    return $attributes;
+  }
+
+  $parsed = wstg_parse_input((string) ($attributes["src"] ?? ""));
+  if (empty($parsed["serviceKey"]) || empty($parsed["service"])) {
+    return $attributes;
+  }
+
+  $attributes["data-wstg-service"] = $parsed["serviceKey"];
+  $attributes["data-wstg-category"] =
+    $parsed["service"]["category"] ?? "embedded";
+  $attributes["src"] = $parsed["embedUrl"] ?? $attributes["src"];
+  foreach ($parsed["attributes"] ?? [] as $name => $value) {
+    $attributes[$name] = $value;
+  }
+
+  return $attributes;
+});

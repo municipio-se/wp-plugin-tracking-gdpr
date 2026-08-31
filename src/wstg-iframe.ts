@@ -38,12 +38,15 @@ class WstgIframeElement extends HTMLElement {
   protected _internals: ElementInternals;
   public iframe: HTMLIFrameElement | null = null;
   protected iframeAttributes?: Record<string, string>;
+  protected expectedOrigin: string | null = null;
 
   constructor() {
     super();
     this._internals = this.attachInternals();
     this.accept = this.accept.bind(this);
     this.showSettings = this.showSettings.bind(this);
+    this.update = this.update.bind(this);
+    this.resizeFromMessage = this.resizeFromMessage.bind(this);
   }
 
   get loader() {
@@ -121,12 +124,9 @@ class WstgIframeElement extends HTMLElement {
 
   handleLoad() {
     this.loader?.setAttribute('hidden', '');
-    window.addEventListener('cc:onFirstConsent', () => {
-      this.update();
-    });
-    window.addEventListener('cc:onChange', () => {
-      this.update();
-    });
+    window.addEventListener('cc:onFirstConsent', this.update);
+    window.addEventListener('cc:onChange', this.update);
+    window.addEventListener('message', this.resizeFromMessage);
     this.update();
   }
 
@@ -165,8 +165,8 @@ class WstgIframeElement extends HTMLElement {
       this.dialog!.setAttribute('hidden', '');
     }
     if (this.service) {
-      let acceptedServices = new Set(
-        window.CookieConsent.getCookie().services[this.category] || [],
+      const acceptedServices = new Set(
+        window.CookieConsent.getCookie().services?.[this.category] || [],
       );
       acceptedServices.add(this.service);
       window.CookieConsent.acceptService(
@@ -185,6 +185,9 @@ class WstgIframeElement extends HTMLElement {
   disconnectedCallback() {
     this.acceptButton?.removeEventListener('click', this.accept);
     this.settingsButton?.removeEventListener('click', this.showSettings);
+    window.removeEventListener('cc:onFirstConsent', this.update);
+    window.removeEventListener('cc:onChange', this.update);
+    window.removeEventListener('message', this.resizeFromMessage);
   }
 
   loadIframe() {
@@ -197,6 +200,14 @@ class WstgIframeElement extends HTMLElement {
         this.iframe.setAttribute(name, value);
       }
     }
+    try {
+      this.expectedOrigin = new URL(
+        this.iframe.src,
+        window.location.href,
+      ).origin;
+    } catch {
+      this.expectedOrigin = null;
+    }
     this.appendChild(this.iframe);
   }
 
@@ -206,7 +217,106 @@ class WstgIframeElement extends HTMLElement {
     }
     this.iframe.remove();
     this.iframe = null;
+    this.expectedOrigin = null;
+  }
+
+  resizeFromMessage(event: MessageEvent) {
+    if (
+      !this.iframe ||
+      event.source !== this.iframe.contentWindow ||
+      !this.expectedOrigin ||
+      event.origin !== this.expectedOrigin
+    ) {
+      return;
+    }
+
+    const height = Number(event.data?.height);
+    if (!Number.isFinite(height) || height <= 0) {
+      return;
+    }
+
+    this.iframe.height = String(height);
+    this.style.height = `${height}px`;
   }
 }
 
 customElements.define('wstg-iframe', WstgIframeElement);
+
+/**
+ * Municipio keeps Component Library iframes in an inert template until its own
+ * per-embed acceptance control is used. Move supported services into the
+ * plugin-owned element so global consent remains the single source of truth.
+ */
+export function adaptMunicipioIframes(root: ParentNode = document) {
+  root
+    .querySelectorAll<HTMLElement>('.wstg-iframe-placeholder[data-wstg-iframe]')
+    .forEach((container) => {
+      let payload: {
+        iframe?: Record<string, unknown>;
+        service?: string;
+        category?: string;
+      };
+      try {
+        payload = JSON.parse(container.dataset.wstgIframe as string);
+      } catch {
+        return;
+      }
+
+      if (!payload.iframe || !payload.service || !payload.category) {
+        return;
+      }
+
+      const placeholder = document.createElement('wstg-iframe');
+      placeholder.setAttribute('service', payload.service);
+      placeholder.setAttribute('category', payload.category);
+      for (const [name, value] of Object.entries(payload.iframe)) {
+        if (!IFRAME_ATTRIBUTE_NAMES.includes(name) || value == null) {
+          continue;
+        }
+        placeholder.setAttribute(name, value === true ? '' : String(value));
+      }
+      placeholder.append(...Array.from(container.childNodes));
+      container.replaceWith(placeholder);
+    });
+
+  root
+    .querySelectorAll<HTMLElement>('.js-suppressed-content[data-src]')
+    .forEach((container) => {
+      const template = container.querySelector('template');
+      const iframe = template?.content.querySelector<HTMLIFrameElement>(
+        'iframe[data-wstg-service][data-wstg-category]',
+      );
+      const dialog = container.querySelector<HTMLElement>(
+        '.js-suppressed-content-prompt',
+      );
+      const acceptButton = dialog?.querySelector<HTMLElement>(
+        '[js-suppressed-content-accept]',
+      );
+
+      if (!iframe || !dialog || !acceptButton) {
+        return;
+      }
+
+      const placeholder = document.createElement('wstg-iframe');
+      placeholder.className = container.className;
+      placeholder.setAttribute('service', iframe.dataset.wstgService as string);
+      placeholder.setAttribute(
+        'category',
+        iframe.dataset.wstgCategory as string,
+      );
+      if (container.hasAttribute('style')) {
+        placeholder.setAttribute('style', container.getAttribute('style')!);
+      }
+
+      const iframeTemplate = iframe.cloneNode(true) as HTMLIFrameElement;
+      iframeTemplate.removeAttribute('data-wstg-service');
+      iframeTemplate.removeAttribute('data-wstg-category');
+      iframeTemplate.setAttribute('slot', 'iframe');
+      iframeTemplate.setAttribute('hidden', '');
+      dialog.setAttribute('slot', 'dialog');
+      acceptButton.setAttribute('slot', 'acceptButton');
+
+      placeholder.append(dialog, iframeTemplate);
+      container.replaceWith(placeholder);
+    });
+}

@@ -35,6 +35,12 @@ declare global {
         containerId: string;
         siteId: string;
       };
+      networkRequests: Array<{
+        service: string;
+        category: string;
+        url: string;
+        types: Array<'fetch' | 'beacon'>;
+      }>;
     };
     ccDebug: () => void;
     _mtm: Array<any>;

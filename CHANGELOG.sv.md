@@ -2,6 +2,27 @@
 
 [English version](CHANGELOG.md)
 
+## v2026.8.0 – 2026-08-30
+
+- **Stöd för aktuell Municipio** – Portade pluginet till Municipio Deployment 5
+  och Municipio-tema 6 utan att ändra befintliga inställningar och
+  samtyckesdata.
+- **Multisite och assets** – Lade till multisite-säker bootstrap, kontroll av
+  ACF Pro, översättningsinläsning och identifiering av förstapartsassets i
+  aktuell Municipio.
+- **Content Security Policy** – Lät pluginet äga en enda frontendpolicy och lade
+  till snävt avgränsat stöd för aktuell Municipios bootstrap-skript.
+- **Inbäddat innehåll** – Lade till inerta, samtyckesstyrda iframe-platshållare,
+  avlastning vid återkallat samtycke och val av YouTube-värd per sajt.
+- **Analys** – Behöll kaklös Matomo-mätning före samtycke och gjorde uppstart av
+  direkt tracker och Tag Manager deterministisk.
+- **Nätverksanrop** – Lade till en uttrycklig, tjänsteägd spärr för deklarerade
+  fetch- och beacon-destinationer.
+- **Tillgänglighet** – Samordnade Municipios menylåda med samtyckesdialogen och
+  återställde fokus när dialogen stängs.
+- **Paketidentitet** – Etablerade `whitespace-se/wp-plugin-tracking-gdpr` som
+  aktuell releaselinje. `v25.x` förblir paketet för Municipio LTS.
+
 ## v2025.12.9 – 2026-06-01
 
 - **Adminskript** – Undantog WordPress admin från omskrivning av samtyckesskript

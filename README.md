@@ -2,21 +2,50 @@
 
 [Svensk version](README.sv.md)
 
-Part of [Municipio LTS](https://github.com/municipio-se/municipio-lts).
-Whitespace Tracking & GDPR adds a cookie consent dialog, Matomo tracking
-settings, service-based iframe handling, and Content Security Policy support for
-Municipio sites.
+Originally developed for
+[Municipio LTS](https://github.com/municipio-se/municipio-lts), with a current
+Municipio compatibility layer maintained on `main`. Whitespace Tracking & GDPR
+adds a cookie consent dialog, Matomo tracking settings, service-based iframe
+handling, and Content Security Policy support for Municipio sites.
 
 ## Requirements
 
-Whitespace Tracking & GDPR is a WordPress plugin for Municipio LTS
-installations. The plugin requires PHP dependencies installed through Composer
-and Advanced Custom Fields PRO to be installed and active.
+Whitespace Tracking & GDPR requires its PHP dependencies to be installed through
+Composer and Advanced Custom Fields PRO to be installed and active.
 
-The runtime Composer dependencies are `imangazaliev/didom` and
-`wpackagist-plugin/advanced-custom-fields`. Frontend assets are built from
-TypeScript and CSS sources with pnpm, Vite, TypeScript, and Vanilla
-CookieConsent.
+The runtime Composer dependency is `imangazaliev/didom`. ACF Pro is supplied by
+the host site and is deliberately not replaced by the free ACF package. Frontend
+assets are built from TypeScript and CSS sources with pnpm, Vite, TypeScript,
+and Vanilla CookieConsent.
+
+## Package and Release Policy
+
+The current Municipio release line is owned by Whitespace and published from the
+`main` branch as `whitespace-se/wp-plugin-tracking-gdpr`. It is not published on
+Packagist. A site must declare a scoped Composer `vcs` repository for
+`https://github.com/whitespace-se/wp-plugin-tracking-gdpr.git` and require a
+dated release tag. Version `2026.8.0` is the first release in this line.
+
+The `v25.x` line and the Composer package `municipio/wp-plugin-tracking-gdpr`
+remain the Municipio LTS distribution. The LTS package must not be replaced or
+retired until every supported LTS site has an equivalent replacement and a
+separately verified migration.
+
+## Migrating from the LTS Package
+
+Replace the old package requirement and its repository allowlist with the scoped
+Whitespace VCS repository and a requirement for the chosen current release tag.
+Update both package names in one Composer operation so only the shared installer
+directory `wp-content/plugins/whitespace-tracking-gdpr` remains. Keep the plugin
+network-active and verify every blog in the network.
+
+No destructive data migration is required. The plugin file, installer path, ACF
+option names, service keys, Matomo settings, consent revision, and host-scoped
+consent cookie remain compatible. Existing sites keep `youtube.com` as their
+default embed host unless an administrator explicitly selects the no-cookie
+host. Rollback consists of restoring the previous Composer lock file and
+repository configuration; the retained settings can then be read by the LTS
+package again.
 
 ## Features
 
@@ -26,7 +55,8 @@ CookieConsent.
 - **Service registry** – Registers services such as YouTube, Vimeo, Mediaflow,
   Visma Recruit, and the plugin's own required service.
 - **Embedded content handling** – Replaces supported content iframes with
-  consent-aware `wstg-iframe` placeholders before the original iframe is loaded.
+  consent-aware `wstg-iframe` placeholders before the original iframe is loaded,
+  including Municipio oEmbed and Modularity iframe output.
 - **Iframe report** – Adds an admin report for published post, page, and
   Municipio iframe module embeds detected on the site.
 - **Matomo settings** – Adds settings for Matomo URL, Tag Manager container ID,
@@ -41,7 +71,17 @@ CookieConsent.
 ## Compatibility and Fixes
 
 - **Advanced Custom Fields PRO** – The plugin stops loading its feature files
-  and shows an admin notice when ACF PRO functions are missing.
+  and shows an admin notice when ACF PRO functions are missing. The bootstrap
+  supports ordinary, network, must-use, and late WP-CLI activation order.
+- **Current Municipio assets** – First-party script detection compares URL
+  origins against `home_url()` and therefore supports `/wp`, separate
+  `wp-content`, ports, and domain-based multisite.
+- **Current Municipio iframes** – Component Library's inactive iframe template
+  is connected to the global service category without a second consent state.
+  Revoking the category unloads an already active iframe.
+- **Current Municipio CSP** – The plugin owns the frontend CSP header, uses
+  nonces plus narrowly validated hashes for Municipio bootstrap and JSON-LD, and
+  prevents WPMU Security from emitting a competing policy.
 - **Must-use plugins** – Translation loading supports both regular plugin and
   mu-plugin installation paths.
 - **Mediaflow embeds** – Mediaflow wrapper replacement is handled through the
@@ -51,6 +91,12 @@ CookieConsent.
   empty list instead of causing fatal errors.
 - **Consent storage** – Localized consent revision values are coerced to numbers
   before they are passed to the frontend.
+- **Matomo startup** – Direct tracking starts in cookieless mode. A configured
+  Tag Manager container owns tracker startup when both a container ID and site
+  ID exist, and receives `requireCookieConsent` before it loads to prevent
+  duplicate page views and pre-consent cookies. Remote containers must not use
+  Matomo's stronger `requireConsent` when cookieless baseline measurement is
+  required.
 
 ## Admin Tools and Migrations
 
@@ -76,6 +122,21 @@ Services can declare script matching rules, iframe parsing callbacks, iframe
 attributes, cookie metadata, and CSP directives. Necessary services are always
 enabled; other services are enabled through the Data sharing settings page.
 
+Services may also declare consent-controlled `fetch` and `sendBeacon` URL
+prefixes through their `requests` property. The browser gate matches both the
+origin and path, refuses registered calls until that service is accepted, and
+uses the current consent state for each new call. This is a declared integration
+contract, not a general network firewall: unregistered destinations,
+iframe-internal traffic, calls made before the plugin boots, other browser
+network APIs, and requests already in flight remain outside its scope. Matomo's
+documented cookieless baseline is managed separately and is not registered with
+this gate.
+
+Each site can choose whether YouTube embeds use `www.youtube.com` or
+`www.youtube-nocookie.com`. Existing installations keep `www.youtube.com` as the
+default. Privacy-enhanced mode does not by itself guarantee that YouTube
+performs no third-party tracking or data sharing.
+
 ## Hook Reference
 
 ### Cookie Categories
@@ -93,6 +154,9 @@ Filters the service key assigned to an enqueued external script.
 
 `apply_filters( 'wstg_register_service', array $service, string $key )` Filters
 a service definition before it is stored in the registry.
+
+`apply_filters( 'wstg_network_request_rules', array $rules )` Filters the
+serializable rules used to gate registered `fetch` and `sendBeacon` calls.
 
 `do_action( 'wstg_register_services' )` Runs when services should register
 themselves with `wstg_register_service()`.

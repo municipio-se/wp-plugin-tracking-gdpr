@@ -1,11 +1,12 @@
 {
   "name": "wp-plugin-whitespace-tracking-gdpr",
   "private": true,
-  "version": "2025.12.9",
+  "version": "2026.8.0",
   "type": "module",
   "scripts": {
     "dev": "vite build --watch",
     "build": "tsc && vite build",
+    "test": "node --test tests/*.mjs",
     "preview": "vite preview",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css,yml,html,php}\""
   },

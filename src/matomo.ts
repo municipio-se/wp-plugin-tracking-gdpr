@@ -12,7 +12,10 @@ export class MatomoManager {
     this.siteId = siteId;
   }
   loadMatomo() {
-    if (!this.siteId) {
+    // A Matomo Tag Manager container may include its own page-view tag. When a
+    // container is configured it owns tracker startup, preventing a second
+    // direct tracker from recording the same page view.
+    if (!this.siteId || this.containerId) {
       return this;
     }
     window._paq.push(['requireCookieConsent']);
@@ -33,6 +36,9 @@ export class MatomoManager {
     if (!this.containerId) {
       return this;
     }
+    // Enforce the plugin's cookieless baseline even when the remote container
+    // tag has not enabled Matomo's cookie-consent option itself.
+    window._paq.push(['requireCookieConsent']);
     window._mtm.push({
       'mtm.startTime': new Date().getTime(),
       event: 'mtm.Start',
@@ -46,26 +52,32 @@ export class MatomoManager {
     return this;
   }
   connectToConsentDialog() {
-    window.addEventListener('cc:onConsent', ({ detail }) => {
-      if (detail.cookie.categories.includes('analytics')) {
+    let analyticsConsent: boolean | null = null;
+    const applyConsent = (categories: string[]) => {
+      const nextAnalyticsConsent = categories.includes('analytics');
+      if (nextAnalyticsConsent === analyticsConsent) {
+        return;
+      }
+      analyticsConsent = nextAnalyticsConsent;
+
+      if (nextAnalyticsConsent) {
         window._paq.push(['rememberCookieConsentGiven']);
         window._mtm.push({ event: 'mtm.ConsentGiven' });
       } else {
         window._paq.push(['forgetCookieConsentGiven']);
         window._mtm.push({ event: 'mtm.ConsentRevoked' });
       }
+    };
+
+    window.addEventListener('cc:onConsent', ({ detail }) => {
+      applyConsent(detail.cookie.categories);
     });
     window.addEventListener('cc:onChange', ({ detail }) => {
       if (detail.changedCategories.includes('analytics')) {
-        if (detail.cookie.categories.includes('analytics')) {
-          window._paq.push(['rememberCookieConsentGiven']);
-          window._mtm.push({ event: 'mtm.ConsentGiven' });
-        } else {
-          window._paq.push(['forgetCookieConsentGiven']);
-          window._mtm.push({ event: 'mtm.ConsentRevoked' });
-        }
+        applyConsent(detail.cookie.categories);
       }
     });
+    applyConsent(window.CookieConsent.getCookie().categories || []);
     return this;
   }
 }

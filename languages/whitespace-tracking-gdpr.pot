@@ -276,8 +276,38 @@ msgstr ""
 msgid "Enabled services and settings"
 msgstr ""
 
-#: autoload/services.php:331
-msgid "Select which services your site is using. These will be displayed in the cookie and tracking consent dialog."
+#: autoload/services.php
+msgid "Select which services your site is using. These will be displayed in the cookie and tracking consent dialog. The plugin controls registered scripts, embeds, and declared fetch or sendBeacon destinations; it is not a general network firewall."
+msgstr ""
+
+#: autoload/content-iframes.php
+#, php-format
+msgid "This content is provided by %s. Allow embedded content to view it."
+msgstr ""
+
+#: autoload/content-iframes.php
+#, php-format
+msgid "Allow %s"
+msgstr ""
+
+#: autoload/content-iframes.php
+msgid "Cookie settings"
+msgstr ""
+
+#: autoload/services.php
+msgid "YouTube embed domain"
+msgstr ""
+
+#: autoload/services.php
+msgid "Choose which YouTube domain this site uses. The nocookie domain does not guarantee that visitors are free from third-party tracking or other data sharing."
+msgstr ""
+
+#: autoload/services.php
+msgid "Standard YouTube"
+msgstr ""
+
+#: autoload/services.php
+msgid "YouTube privacy-enhanced mode"
 msgstr ""
 
 #: autoload/services.php:342

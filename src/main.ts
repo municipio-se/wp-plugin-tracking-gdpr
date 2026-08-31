@@ -2,12 +2,15 @@ import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import './global.css';
 import * as CookieConsent from 'vanilla-cookieconsent';
 
-import './wstg-iframe';
+import { adaptMunicipioIframes } from './wstg-iframe';
 
 import matomo from './matomo';
+import { installNetworkRequestGate } from './network-requests';
 
 const settings = window.whitespaceTrackingGdpr;
 const revision = Number.parseInt(String(settings.revision), 10);
+
+installNetworkRequestGate(settings.networkRequests ?? [], CookieConsent);
 
 function maybeRegex(value: string): string | RegExp {
   if (value.startsWith('/') && value.endsWith('/')) {
@@ -95,10 +98,24 @@ window.ccDebug = function () {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  adaptMunicipioIframes();
   document.querySelectorAll('.wstg-trigger-cookie-dialog').forEach((el) => {
     el.addEventListener('click', (event) => {
       event.preventDefault();
-      CookieConsent.show(true);
+      const drawer = (event.currentTarget as HTMLElement).closest<HTMLElement>(
+        '.js-drawer.is-open',
+      );
+      const closeButton = drawer?.querySelector<HTMLButtonElement>(
+        `button[aria-controls="${drawer.id}"]`,
+      );
+
+      if (closeButton) {
+        closeButton.click();
+        requestAnimationFrame(() => CookieConsent.showPreferences());
+        return;
+      }
+
+      CookieConsent.showPreferences();
     });
   });
 });

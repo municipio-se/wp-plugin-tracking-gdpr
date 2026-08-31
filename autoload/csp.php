@@ -32,6 +32,89 @@ function wstg_csp_nonce() {
   return $csp->getNonce();
 }
 
+/**
+ * Return CSP hashes only for known, non-executable or validated Municipio
+ * inline output.
+ *
+ * Unknown inline code, including custom-code fields, must remain blocked. A
+ * blanket hash of every rendered script would make injected markup trusted.
+ */
+function wstg_csp_get_trusted_inline_script_hashes(string $markup): array {
+  preg_match_all(
+    "/<script\\b([^>]*)>(.*?)<\\/script\\s*>/is",
+    $markup,
+    $matches,
+    PREG_SET_ORDER,
+  );
+
+  $hashes = [];
+  foreach ($matches as $match) {
+    $attributes = $match[1];
+    $script = $match[2];
+
+    if (
+      !is_string($attributes) ||
+      !is_string($script) ||
+      trim($script) === "" ||
+      preg_match("/\\bsrc\\s*=/i", $attributes)
+    ) {
+      continue;
+    }
+
+    $trusted = false;
+    if (trim($attributes) === "") {
+      $trusted =
+        preg_match(
+          "/^\\s*var ajaxurl = '([^']+)';\\s*$/",
+          $script,
+          $ajax_url,
+        ) === 1 &&
+        hash_equals(
+          admin_url("admin-ajax.php"),
+          html_entity_decode($ajax_url[1], ENT_QUOTES | ENT_HTML5, "UTF-8"),
+        );
+    }
+
+    if (
+      preg_match(
+        '/\\btype\\s*=\\s*(["\'])application\\/ld\\+json\\1/i',
+        $attributes,
+      ) === 1
+    ) {
+      json_decode(trim($script), true);
+      $trusted = json_last_error() === JSON_ERROR_NONE;
+    }
+
+    if (!$trusted) {
+      continue;
+    }
+
+    $hash = base64_encode(hash("sha256", $script, true));
+    $hashes["'sha256-{$hash}'"] = true;
+  }
+
+  return array_keys($hashes);
+}
+
+/**
+ * Send Tracking GDPR's CSP once all applicable sources have been collected.
+ */
+function wstg_csp_send_header(): void {
+  static $sent = false;
+
+  if ($sent || is_admin() || headers_sent()) {
+    return;
+  }
+
+  $csp = wstg_csp();
+  $csp->allow("default-src", "data:");
+  $csp->deny("script-src", "data:");
+  $csp->deny("frame-src", "data:");
+  $csp->allow("img-src", "https:");
+  header("Content-Security-Policy: " . $csp, true);
+  $sent = true;
+}
+
 /*
 Should result in something like this:
 
@@ -43,17 +126,26 @@ script-src-attr 'self' 'unsafe-inline';
 style-src 'self' 'unsafe-inline';
 frame-ancestors 'self'
 */
-add_action("send_headers", function () {
-  if (is_admin()) {
-    return; // Do not apply CSP in admin area
-  }
-  $csp = wstg_csp();
-  $csp->allow("default-src", "data:");
-  $csp->deny("script-src", "data:");
-  $csp->deny("frame-src", "data:");
-  $csp->allow("img-src", "https:");
-  header("Content-Security-Policy: " . $csp);
-});
+$wstg_has_markup_csp_integration = has_filter("Website/HTML/output");
+
+if ($wstg_has_markup_csp_integration) {
+  add_filter(
+    "Website/HTML/output",
+    function ($markup) {
+      if (is_string($markup)) {
+        foreach (wstg_csp_get_trusted_inline_script_hashes($markup) as $hash) {
+          wstg_csp_allow("script-src-elem", $hash);
+        }
+      }
+      wstg_csp_send_header();
+
+      return $markup;
+    },
+    5,
+  );
+} else {
+  add_action("send_headers", "wstg_csp_send_header");
+}
 
 /**
  * Adds fields for adding additional allowed frame-src sources to the CSP

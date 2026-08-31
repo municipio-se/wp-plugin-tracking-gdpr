@@ -1,5 +1,5 @@
 {
-  "name": "municipio/wp-plugin-tracking-gdpr",
+  "name": "whitespace-se/wp-plugin-tracking-gdpr",
   "description": "WordPress plugin that adds more GDPR and tracking features to Municipio",
   "type": "wordpress-plugin",
   "minimum-stability": "dev",
@@ -10,6 +10,13 @@
       "php-http/discovery": true,
       "composer/installers": true
     }
+  },
+  "scripts": {
+    "test": [
+      "@php tests/bootstrap.php active",
+      "@php tests/bootstrap.php missing",
+      "@php tests/bootstrap.php late-activation"
+    ]
   },
   "extra": {
     "installer-name": "whitespace-tracking-gdpr",
@@ -38,10 +45,6 @@
     }
   ],
   "require": {
-    "imangazaliev/didom": "^2.0",
-    "wpackagist-plugin/advanced-custom-fields": "*"
-  },
-  "require-dev": {
-    "wpackagist-plugin/advanced-custom-fields": "^6.3"
+    "imangazaliev/didom": "^2.0"
   }
 }

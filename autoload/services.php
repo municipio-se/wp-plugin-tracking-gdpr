@@ -50,6 +50,54 @@ function wstg_get_service($key) {
   return $wstg_services[$key] ?? null;
 }
 
+/**
+ * Return serializable rules for network calls explicitly owned by services.
+ *
+ * A rule is a URL prefix whose origin and path must match. This deliberately
+ * does not claim to control unregistered calls, requests made before this
+ * plugin boots, iframe-internal traffic, or requests already in flight when
+ * consent is revoked.
+ */
+function wstg_get_network_request_rules(): array {
+  $rules = [];
+
+  foreach (wstg_get_enabled_services() as $serviceKey => $service) {
+    foreach ($service["requests"] ?? [] as $request) {
+      if (!is_array($request) || empty($request["url"])) {
+        continue;
+      }
+
+      $types = array_values(
+        array_intersect($request["types"] ?? ["fetch", "beacon"], [
+          "fetch",
+          "beacon",
+        ]),
+      );
+      if (!$types) {
+        continue;
+      }
+
+      $rules[] = [
+        "service" => $serviceKey,
+        "category" => $service["category"] ?? "uncategorized",
+        "url" => $request["url"],
+        "types" => $types,
+      ];
+    }
+  }
+
+  /**
+   * Filters the client-side rules for consent-controlled network calls.
+   *
+   * Rules must identify an enabled service, its category, a URL prefix and one
+   * or both supported types (`fetch` and `beacon`).
+   *
+   * @param array $rules Serializable network request rules.
+   * @return array Filtered network request rules.
+   */
+  return apply_filters("wstg_network_request_rules", $rules);
+}
+
 function wstg_normalize_embed_url($input) {
   if (str_starts_with($input, "//")) {
     return "https:{$input}";
@@ -120,6 +168,22 @@ function wstg_parse_youtube_embed_id($input) {
   }
 
   return null;
+}
+
+/**
+ * Return the per-site YouTube embed host without changing existing sites.
+ *
+ * Missing and legacy values deliberately keep the historical youtube.com
+ * output. The nocookie host is an explicit customer policy choice, not a claim
+ * that YouTube stops all third-party data processing.
+ */
+function wstg_get_youtube_embed_host(): string {
+  $settings = get_field("wstg_service_settings", "option") ?: [];
+  $configuredHost = $settings["youtube"]["embed_domain"] ?? "www.youtube.com";
+
+  return $configuredHost === "www.youtube-nocookie.com"
+    ? "www.youtube-nocookie.com"
+    : "www.youtube.com";
 }
 
 function wstg_parse_vimeo_embed_id($input) {
@@ -245,7 +309,8 @@ add_action(
           if ($id) {
             return [
               "id" => $id,
-              "embedUrl" => "https://www.youtube.com/embed/{$id}",
+              "embedUrl" =>
+                "https://" . wstg_get_youtube_embed_host() . "/embed/{$id}",
               "thumbnailUrl" => "https://i3.ytimg.com/vi/{$id}/hqdefault.jpg",
               "standaloneUrl" => "https://www.youtube.com/watch?v={$id}",
               "aspectRatio" => "16/9",
@@ -463,6 +528,32 @@ add_action(
       //   "disabled" => 1,
       // ];
 
+      if ($service_key === "youtube") {
+        $service_field["sub_fields"][] = [
+          "key" => "field_wstg_service_youtube_embed_domain",
+          "name" => "embed_domain",
+          "label" => __("YouTube embed domain", "whitespace-tracking-gdpr"),
+          "instructions" => __(
+            "Choose which YouTube domain this site uses. The nocookie domain does not guarantee that visitors are free from third-party tracking or other data sharing.",
+            "whitespace-tracking-gdpr",
+          ),
+          "type" => "select",
+          "choices" => [
+            "www.youtube.com" => __(
+              "Standard YouTube",
+              "whitespace-tracking-gdpr",
+            ),
+            "www.youtube-nocookie.com" => __(
+              "YouTube privacy-enhanced mode",
+              "whitespace-tracking-gdpr",
+            ),
+          ],
+          "default_value" => "www.youtube.com",
+          "return_format" => "value",
+          "wrapper" => ["width" => "75"],
+        ];
+      }
+
       /**
        * Filters the ACF settings sub fields generated for a registered service.
        *
@@ -477,6 +568,7 @@ add_action(
         $service_key,
         $service,
       );
+
       $services_sub_fields[] = $service_field;
     }
     acf_add_local_field_group([
@@ -491,7 +583,7 @@ add_action(
             "whitespace-tracking-gdpr",
           ),
           "instructions" => __(
-            "Select which services your site is using. These will be displayed in the cookie and tracking consent dialog.",
+            "Select which services your site is using. These will be displayed in the cookie and tracking consent dialog. The plugin controls registered scripts, embeds, and declared fetch or sendBeacon destinations; it is not a general network firewall.",
             "whitespace-tracking-gdpr",
           ),
           "type" => "group",

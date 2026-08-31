@@ -2,6 +2,58 @@
 
 use WhitespaceTrackingGdpr\Csp;
 
+/**
+ * Normalize a URL to the origin a browser uses for same-origin checks.
+ */
+function wstg_url_origin(string $url, ?string $default_scheme = null): ?string {
+  $parts = parse_url($url);
+  if ($parts === false || empty($parts["host"])) {
+    return null;
+  }
+
+  $scheme = strtolower($parts["scheme"] ?? ($default_scheme ?? ""));
+  if (!in_array($scheme, ["http", "https"], true)) {
+    return null;
+  }
+
+  $host = strtolower($parts["host"]);
+  $port = $parts["port"] ?? ($scheme === "https" ? 443 : 80);
+
+  return "{$scheme}://{$host}:{$port}";
+}
+
+/**
+ * Determine whether a script URL belongs to the current public site origin.
+ *
+ * Municipio serves WordPress from /wp while wp-content lives at the public
+ * root. Paths must therefore not be compared with site_url().
+ */
+function wstg_is_first_party_script_url(string $url): bool {
+  $url = trim(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, "UTF-8"));
+  if ($url === "") {
+    return true;
+  }
+
+  $parts = parse_url($url);
+  if ($parts === false) {
+    return false;
+  }
+
+  if (empty($parts["scheme"]) && empty($parts["host"])) {
+    return true;
+  }
+
+  $home_origin = wstg_url_origin(home_url("/"));
+  if ($home_origin === null) {
+    return false;
+  }
+
+  $home_scheme = parse_url($home_origin, PHP_URL_SCHEME);
+  $script_origin = wstg_url_origin($url, $home_scheme ?: null);
+
+  return $script_origin !== null && hash_equals($home_origin, $script_origin);
+}
+
 add_action("init", function () {
   wstg_csp_deny("script-src", Csp::SELF);
   wstg_csp_allow("script-src-attr", Csp::SELF);
@@ -44,8 +96,9 @@ add_filter(
       return $attributes; // Consent rewriting is frontend-only; admin scripts may be editor dependencies.
     }
 
+    $src = $attributes["src"] ?? "";
     $category =
-      strpos($attributes["src"], get_site_url() . "/") === 0
+      is_string($src) && wstg_is_first_party_script_url($src)
         ? ""
         : "uncategorized";
 

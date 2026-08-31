@@ -307,13 +307,47 @@ msgstr "Tjänster"
 msgid "Enabled services and settings"
 msgstr "Aktiverade tjänster och inställningar"
 
-#: autoload/services.php:331
+#: autoload/services.php
 msgid ""
 "Select which services your site is using. These will be displayed in the "
-"cookie and tracking consent dialog."
+"cookie and tracking consent dialog. The plugin controls registered scripts, "
+"embeds, and declared fetch or sendBeacon destinations; it is not a general "
+"network firewall."
 msgstr ""
-"Välj vilka tjänster din webbplats använder. Dessa kommer att visas i "
-"dialogrutan för cookie- och spårningssamtycke."
+"Välj vilka tjänster sajten använder. Dom visas i dialogrutan för kak- och "
+"spårningssamtycke. Pluginet styr registrerade script, inbäddningar och "
+"deklarerade mål för fetch eller sendBeacon. Det är inte en generell "
+"nätverksbrandvägg."
+
+#: autoload/content-iframes.php
+#, php-format
+msgid "This content is provided by %s. Allow embedded content to view it."
+msgstr "Det här innehållet tillhandahålls av %s. Tillåt inbäddat innehåll för att visa det."
+
+#: autoload/content-iframes.php
+#, php-format
+msgid "Allow %s"
+msgstr "Tillåt %s"
+
+#: autoload/content-iframes.php
+msgid "Cookie settings"
+msgstr "Kakinställningar"
+
+#: autoload/services.php
+msgid "YouTube embed domain"
+msgstr "Domän för YouTube-inbäddningar"
+
+#: autoload/services.php
+msgid "Choose which YouTube domain this site uses. The nocookie domain does not guarantee that visitors are free from third-party tracking or other data sharing."
+msgstr "Välj vilken YouTube-domän sajten använder. Nocookie-domänen garanterar inte att besökare slipper tredjepartsspårning eller annan datadelning."
+
+#: autoload/services.php
+msgid "Standard YouTube"
+msgstr "YouTube standardläge"
+
+#: autoload/services.php
+msgid "YouTube privacy-enhanced mode"
+msgstr "YouTube med förbättrad integritet"
 
 #: autoload/services.php:342
 msgid "Allow any embedded content"
