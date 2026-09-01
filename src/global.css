@@ -83,6 +83,15 @@ wstg-iframe > [slot='thumbnail'] {
   text-decoration: none;
 }
 
+/* Municipio's global link states otherwise override the filled button text. */
+.wstg-iframe__actions > a.wstg-iframe__action:any-link {
+  color: var(
+    --c-button-primary-color-contrasting,
+    var(--color-primary-contrasting, #fff)
+  );
+  text-decoration: none;
+}
+
 .wstg-iframe__external-icon {
   fill: none;
   flex: none;
