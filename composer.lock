@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11481fb9cb4546891ab63eedc80fa73a",
+    "content-hash": "eaec0c14183446c6dc386b8e0275e50e",
     "packages": [
         {
             "name": "imangazaliev/didom",

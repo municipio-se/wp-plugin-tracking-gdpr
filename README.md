@@ -20,24 +20,20 @@ and Vanilla CookieConsent.
 
 ## Package and Release Policy
 
-The current Municipio release line is owned by Whitespace and published from the
-`main` branch as `whitespace-se/wp-plugin-tracking-gdpr`. It is not published on
-Packagist. A site must declare a scoped Composer `vcs` repository for
-`https://github.com/whitespace-se/wp-plugin-tracking-gdpr.git` and require a
-dated release tag. Version `2026.8.0` is the first release in this line.
-
-The `v25.x` line and the Composer package `municipio/wp-plugin-tracking-gdpr`
-remain the Municipio LTS distribution. The LTS package must not be replaced or
-retired until every supported LTS site has an equivalent replacement and a
-separately verified migration.
+The current Municipio release line is published from `main` as
+`municipio/wp-plugin-tracking-gdpr`. A site must declare a scoped Composer `vcs`
+repository for `https://github.com/municipio-se/wp-plugin-tracking-gdpr.git` and
+require an exact dated `2026.x` release tag. The `v25.x` branch remains the LTS
+source line, and LTS constraints on `^2025.12` cannot select a current release.
+Version `2026.8.1` is the first current release with the canonical repository
+identity.
 
 ## Migrating from the LTS Package
 
-Replace the old package requirement and its repository allowlist with the scoped
-Whitespace VCS repository and a requirement for the chosen current release tag.
-Update both package names in one Composer operation so only the shared installer
-directory `wp-content/plugins/whitespace-tracking-gdpr` remains. Keep the plugin
-network-active and verify every blog in the network.
+Replace the old version constraint with an exact current release tag and point
+the repository allowlist at the canonical Municipio VCS repository. The shared
+package identity and installer directory avoid parallel installations. Keep the
+plugin network-active and verify every blog in the network.
 
 No destructive data migration is required. The plugin file, installer path, ACF
 option names, service keys, Matomo settings, consent revision, and host-scoped
@@ -80,10 +76,10 @@ package again.
   is connected to the global service category without a second consent state.
   Revoking the category unloads an already active iframe.
 - **Current Municipio CSP** – The plugin owns the frontend CSP header, uses
-  nonces plus narrowly validated hashes for Municipio bootstrap and JSON-LD,
-  and prevents WPMU Security from emitting a competing policy. Hashes are
-  collected from Municipio's final processed markup so script minification
-  cannot invalidate them.
+  nonces plus narrowly validated hashes for Municipio bootstrap and JSON-LD, and
+  prevents WPMU Security from emitting a competing policy. Hashes are collected
+  from Municipio's final processed markup so script minification cannot
+  invalidate them.
 - **Must-use plugins** – Translation loading supports both regular plugin and
   mu-plugin installation paths.
 - **Mediaflow embeds** – Mediaflow wrapper replacement is handled through the

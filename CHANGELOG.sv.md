@@ -2,6 +2,13 @@
 
 [English version](CHANGELOG.md)
 
+## v2026.8.1 – 2026-09-01
+
+- **Composer-identitet** – Återställde `municipio/wp-plugin-tracking-gdpr` som
+  paketnamn efter att repot flyttats till Municipio-organisationen.
+  Current-linjen hålls fortsatt avgränsad genom sin exakta `2026.x`-tagg, medan
+  LTS-krav på `^2025.12` endast kan välja LTS-releaser.
+
 ## v2026.8.0 – 2026-08-30
 
 - **Stöd för aktuell Municipio** – Portade pluginet till Municipio Deployment 5
@@ -25,8 +32,8 @@
   fetch- och beacon-destinationer.
 - **Tillgänglighet** – Samordnade Municipios menylåda med samtyckesdialogen och
   återställde fokus när dialogen stängs.
-- **Paketidentitet** – Etablerade `whitespace-se/wp-plugin-tracking-gdpr` som
-  aktuell releaselinje. `v25.x` förblir paketet för Municipio LTS.
+- **Releaselinje** – Etablerade den första `2026.x`-releasen för current
+  Municipio. `v25.x` förblir källbranch för Municipio LTS.
 
 ## v2025.12.9 – 2026-06-01
 

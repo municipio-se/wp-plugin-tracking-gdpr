@@ -20,24 +20,20 @@ CookieConsent.
 
 ## Paket- och releasepolicy
 
-Den aktuella Municipio-linjen ägs av Whitespace och publiceras från `main` som
-`whitespace-se/wp-plugin-tracking-gdpr`. Paketet publiceras inte på Packagist.
-En sajt måste deklarera ett avgränsat Composer-repo av typen `vcs` för
-`https://github.com/whitespace-se/wp-plugin-tracking-gdpr.git` och kräva en
-daterad releasetagg. Version `2026.8.0` är den första releasen i linjen.
-
-`v25.x`-linjen och Composer-paketet `municipio/wp-plugin-tracking-gdpr` förblir
-distributionen för Municipio LTS. LTS-paketet får inte ersättas eller avvecklas
-förrän varje LTS-sajt som stöds har en likvärdig ersättare och en separat
-verifierad migrering.
+Den aktuella Municipio-linjen publiceras från `main` som
+`municipio/wp-plugin-tracking-gdpr`. En sajt måste deklarera ett avgränsat
+Composer-repo av typen `vcs` för
+`https://github.com/municipio-se/wp-plugin-tracking-gdpr.git` och kräva en exakt
+daterad `2026.x`-releasetagg. `v25.x` förblir källbranch för LTS, och LTS-krav
+på `^2025.12` kan inte välja en current-release. Version `2026.8.1` är den
+första current-releasen med repots kanoniska identitet.
 
 ## Migrering från LTS-paketet
 
-Ersätt det gamla paketkravet och dess repo-tillåtelselista med Whitespace-repot
-och ett krav på den valda aktuella releasetaggen. Uppdatera båda paketnamnen i
-en Composer-operation så att bara den gemensamma installationskatalogen
-`wp-content/plugins/whitespace-tracking-gdpr` återstår. Behåll pluginet
-nätverksaktiverat och verifiera varje blogg i nätverket.
+Ersätt den gamla versionsbegränsningen med en exakt current-tagg och rikta
+repo-tillåtelselistan mot Municipios kanoniska VCS-repo. Den gemensamma
+paketidentiteten och installationskatalogen undviker parallella installationer.
+Behåll pluginet nätverksaktiverat och verifiera varje blogg i nätverket.
 
 Ingen destruktiv datamigrering behövs. Pluginfilen, installationssökvägen,
 ACF-inställningsnamnen, tjänstenycklarna, Matomo-inställningarna,
