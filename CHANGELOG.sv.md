@@ -2,6 +2,14 @@
 
 [English version](CHANGELOG.md)
 
+## v2026.8.2 – 2026-09-01
+
+- **Content Security Policy** – Lade till det dokumenterade filtret
+  `wstg_csp_sources` så andra plugin kan registrera avgränsade källor utan att
+  ta över frontendens header. Pluginet importerar också befintliga
+  `WpSecurity/Csp`-registreringar utan att providers behöver vara beroende av
+  Tracking GDPR.
+
 ## v2026.8.1 – 2026-09-01
 
 - **Composer-identitet** – Återställde `municipio/wp-plugin-tracking-gdpr` som

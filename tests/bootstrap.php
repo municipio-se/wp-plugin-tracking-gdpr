@@ -221,6 +221,19 @@ if ($scenario === "active") {
     ),
     "Unknown inline code was added to the CSP allowlist.",
   );
+  add_filter("wstg_csp_sources", function ($sources) {
+    $sources["connect-src"] = array_merge($sources["connect-src"] ?? [], [
+      "https://search.example.test:8108",
+      "https://invalid.example.test;script-src",
+      "https://invalid.example.test another-source",
+    ]);
+    $sources["unknown-src"] = "https://ignored.example.test";
+    return $sources;
+  });
+  add_filter("WpSecurity/Csp", function ($sources) {
+    $sources["connect-src"][] = "https://provider.example.test:9443";
+    return $sources;
+  });
   apply_filters(
     "Website/HTML/output",
     "<script>{$ajax_script}</script><script>{$unknown_script}</script>",
@@ -254,6 +267,13 @@ if ($scenario === "active") {
       "'sha256-" . base64_encode(hash("sha256", $unknown_script, true)) . "'",
     ),
     "Unknown final inline code was added to the CSP allowlist.",
+  );
+  wstg_test_assert(
+    str_contains((string) wstg_csp(), "https://search.example.test:8108") &&
+      str_contains((string) wstg_csp(), "https://provider.example.test:9443") &&
+      !str_contains((string) wstg_csp(), "invalid.example.test") &&
+      !str_contains((string) wstg_csp(), "ignored.example.test"),
+    "Plugin-registered CSP sources were not applied safely.",
   );
   wstg_register_service("test-video", [
     "title" => "Test video",

@@ -25,8 +25,8 @@ Den aktuella Municipio-linjen publiceras från `main` som
 Composer-repo av typen `vcs` för
 `https://github.com/municipio-se/wp-plugin-tracking-gdpr.git` och kräva en exakt
 daterad `2026.x`-releasetagg. `v25.x` förblir källbranch för LTS, och LTS-krav
-på `^2025.12` kan inte välja en current-release. Version `2026.8.1` är den
-första current-releasen med repots kanoniska identitet.
+på `^2025.12` kan inte välja en current-release. Version `2026.8.2` är den
+aktuella releasen med repots kanoniska identitet.
 
 ## Migrering från LTS-paketet
 
@@ -163,6 +163,15 @@ Filtrerar en servicedefinition innan den sparas i registret.
 
 `apply_filters( 'wstg_network_request_rules', array $rules )` Filtrerar dom
 serialiserbara regler som styr registrerade `fetch`- och `sendBeacon`-anrop.
+
+`apply_filters( 'wstg_csp_sources', array $sources_by_directive )` Låter andra
+plugin registrera CSP-källor. Nycklarna ska vara CSP-direktiv som stöds och
+varje värde kan vara en källsträng eller en lista med källsträngar. Källor med
+blanksteg, semikolon eller kommatecken ignoreras.
+
+Tracking GDPR importerar också källor som registreras genom Municipios
+befintliga filter `WpSecurity/Csp`. Providers kan därför behålla sin nuvarande
+WPMU Security-integration utan att vara beroende av Tracking GDPR.
 
 `do_action( 'wstg_register_services' )` Körs när tjänster ska registrera sig med
 `wstg_register_service()`.

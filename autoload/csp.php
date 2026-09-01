@@ -33,6 +33,72 @@ function wstg_csp_nonce() {
 }
 
 /**
+ * Add sources registered by other plugins to Tracking GDPR's CSP.
+ *
+ * The `wstg_csp_sources` filter receives an array keyed by CSP directive. Each
+ * value may be one source string or an array of source strings. Invalid
+ * directives and sources are ignored so integrations cannot inject another
+ * header directive through whitespace or a semicolon.
+ */
+function wstg_csp_apply_registered_sources(): void {
+  // Current Municipio integrations already register sources through WPMU
+  // Security. Import that contract here so providers stay independent of
+  // Tracking GDPR.
+  $registered_sources = apply_filters("WpSecurity/Csp", []);
+  if (!is_array($registered_sources)) {
+    $registered_sources = [];
+  }
+
+  $registered_sources = apply_filters("wstg_csp_sources", $registered_sources);
+  if (!is_array($registered_sources)) {
+    return;
+  }
+
+  $supported_directives = [
+    "child-src",
+    "connect-src",
+    "default-src",
+    "font-src",
+    "form-action",
+    "frame-ancestors",
+    "frame-src",
+    "img-src",
+    "manifest-src",
+    "media-src",
+    "object-src",
+    "prefetch-src",
+    "script-src",
+    "script-src-attr",
+    "script-src-elem",
+    "style-src",
+    "style-src-attr",
+    "style-src-elem",
+    "worker-src",
+  ];
+
+  foreach ($registered_sources as $directive => $sources) {
+    if (
+      !is_string($directive) ||
+      !in_array($directive, $supported_directives, true)
+    ) {
+      continue;
+    }
+
+    foreach (is_array($sources) ? $sources : [$sources] as $source) {
+      if (
+        !is_string($source) ||
+        $source === "" ||
+        preg_match("/[\\s;,]/", $source) === 1
+      ) {
+        continue;
+      }
+
+      wstg_csp_allow($directive, $source);
+    }
+  }
+}
+
+/**
  * Return CSP hashes only for known, non-executable or validated Municipio
  * inline output.
  *
@@ -111,6 +177,7 @@ function wstg_csp_send_header(): void {
   $csp->deny("script-src", "data:");
   $csp->deny("frame-src", "data:");
   $csp->allow("img-src", "https:");
+  wstg_csp_apply_registered_sources();
   $header = "Content-Security-Policy: " . $csp;
 
   if ($header === $sent_header) {

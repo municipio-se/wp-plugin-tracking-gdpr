@@ -25,7 +25,7 @@ The current Municipio release line is published from `main` as
 repository for `https://github.com/municipio-se/wp-plugin-tracking-gdpr.git` and
 require an exact dated `2026.x` release tag. The `v25.x` branch remains the LTS
 source line, and LTS constraints on `^2025.12` cannot select a current release.
-Version `2026.8.1` is the first current release with the canonical repository
+Version `2026.8.2` is the current release with the canonical repository
 identity.
 
 ## Migrating from the LTS Package
@@ -161,6 +161,15 @@ a service definition before it is stored in the registry.
 
 `apply_filters( 'wstg_network_request_rules', array $rules )` Filters the
 serializable rules used to gate registered `fetch` and `sendBeacon` calls.
+
+`apply_filters( 'wstg_csp_sources', array $sources_by_directive )` Lets other
+plugins register CSP sources. Keys must be supported CSP directives and each
+value may be one source string or an array of source strings. Sources containing
+whitespace, semicolons, or commas are ignored.
+
+Tracking GDPR also imports sources registered through Municipio's existing
+`WpSecurity/Csp` filter. Providers can therefore keep their current WPMU
+Security integration without depending on Tracking GDPR.
 
 `do_action( 'wstg_register_services' )` Runs when services should register
 themselves with `wstg_register_service()`.
