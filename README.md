@@ -25,7 +25,7 @@ The current Municipio release line is published from `main` as
 repository for `https://github.com/municipio-se/wp-plugin-tracking-gdpr.git` and
 require an exact dated `2026.x` release tag. The `v25.x` branch remains the LTS
 source line, and LTS constraints on `^2025.12` cannot select a current release.
-Version `2026.8.2` is the current release with the canonical repository
+Version `2026.9.0` is the current release with the canonical repository
 identity.
 
 ## Migrating from the LTS Package
@@ -79,7 +79,9 @@ package again.
   nonces plus narrowly validated hashes for Municipio bootstrap and JSON-LD, and
   prevents WPMU Security from emitting a competing policy. Hashes are collected
   from Municipio's final processed markup so script minification cannot
-  invalidate them.
+  invalidate them. The baseline also blocks object embeds, limits base URLs and
+  form submissions to the site's own origin, and permits data URLs only for
+  images and fonts.
 - **Must-use plugins** – Translation loading supports both regular plugin and
   mu-plugin installation paths.
 - **Mediaflow embeds** – Mediaflow wrapper replacement is handled through the

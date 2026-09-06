@@ -25,7 +25,7 @@ Den aktuella Municipio-linjen publiceras från `main` som
 Composer-repo av typen `vcs` för
 `https://github.com/municipio-se/wp-plugin-tracking-gdpr.git` och kräva en exakt
 daterad `2026.x`-releasetagg. `v25.x` förblir källbranch för LTS, och LTS-krav
-på `^2025.12` kan inte välja en current-release. Version `2026.8.2` är den
+på `^2025.12` kan inte välja en current-release. Version `2026.9.0` är den
 aktuella releasen med repots kanoniska identitet.
 
 ## Migrering från LTS-paketet
@@ -80,7 +80,9 @@ sparade inställningarna kan därefter läsas av LTS-paketet igen.
   nonce och snävt validerade hashvärden för Municipios bootstrap och JSON-LD
   samt hindrar WPMU Security från att skicka en konkurrerande policy.
   Hashvärdena samlas in från Municipios slutbearbetade markup så att
-  scriptminifieringen inte kan göra dom ogiltiga.
+  scriptminifieringen inte kan göra dom ogiltiga. Baslinjen blockerar också
+  objektinbäddningar, begränsar bas-URL:er och formulärinskick till sajtens egen
+  origin och tillåter data-URL:er enbart för bilder och typsnitt.
 - **Must-use plugins** – Inläsning av översättningar stödjer både vanlig
   plugininstallation och mu-plugin-installation.
 - **Mediaflow-inbäddningar** – Ersättning av Mediaflow-wrappers hanteras via

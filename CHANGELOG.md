@@ -2,6 +2,13 @@
 
 [Svensk version](CHANGELOG.sv.md)
 
+## v2026.9.0 – 2026-09-06
+
+- **Content Security Policy** – Added explicit `object-src 'none'`,
+  `base-uri 'self'`, and `form-action 'self'` directives. Data URLs are now
+  limited to image and font sources instead of being inherited through
+  `default-src`.
+
 ## v2026.8.2 – 2026-09-01
 
 - **Content Security Policy** – Added the documented `wstg_csp_sources` filter

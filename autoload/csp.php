@@ -55,6 +55,7 @@ function wstg_csp_apply_registered_sources(): void {
   }
 
   $supported_directives = [
+    "base-uri",
     "child-src",
     "connect-src",
     "default-src",
@@ -173,7 +174,8 @@ function wstg_csp_send_header(): void {
   }
 
   $csp = wstg_csp();
-  $csp->allow("default-src", "data:");
+  $csp->allow("font-src", "data:");
+  $csp->allow("img-src", "data:");
   $csp->deny("script-src", "data:");
   $csp->deny("frame-src", "data:");
   $csp->allow("img-src", "https:");
@@ -191,12 +193,16 @@ function wstg_csp_send_header(): void {
 /*
 Should result in something like this:
 
+base-uri 'self';
 connect-src 'self';
-default-src 'self' data:;
+default-src 'self';
+font-src 'self' data:;
 img-src 'self' data: https:;
+object-src 'none';
 script-src-elem 'strict-dynamic' 'nonce-xxx';
 script-src-attr 'self' 'unsafe-inline';
 style-src 'self' 'unsafe-inline';
+form-action 'self';
 frame-ancestors 'self'
 */
 $wstg_has_markup_csp_integration = has_filter("Website/HTML/output");

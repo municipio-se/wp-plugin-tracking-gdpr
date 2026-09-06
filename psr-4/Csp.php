@@ -6,6 +6,7 @@ namespace WhitespaceTrackingGdpr;
 
 class Csp {
   const SELF = "'self'";
+  const NONE = "'none'";
   const UNSAFE_INLINE = "'unsafe-inline'";
   const NONCE = "'nonce-{{nonce}}'";
   const STRICT_DYNAMIC = "'strict-dynamic'";
@@ -16,6 +17,7 @@ class Csp {
   public function __construct() {
     $this->nonce = bin2hex(random_bytes(16));
     $this->srcDirectives = [
+      "base-uri" => [self::SELF => 1],
       "child-src" => [], // Fallback for frame-src and worker-src.
       "connect-src" => ["data:" => 0],
       "default-src" => [self::SELF => 1], // Fallback for all other fetch directives.
@@ -23,7 +25,7 @@ class Csp {
       "img-src" => [],
       "manifest-src" => [],
       "media-src" => [],
-      "object-src" => [],
+      "object-src" => [self::NONE => 1],
       "prefetch-src" => [],
       "script-src" => [], // Fallback for script-src-elem and script-src-attr.
       "script-src-elem" => [
@@ -36,8 +38,7 @@ class Csp {
       "style-src-elem" => [],
       "style-src-attr" => [],
       "worker-src" => [],
-      "form-action" => [],
-      // "form-action" => [self::SELF => 1],
+      "form-action" => [self::SELF => 1],
       "frame-ancestors" => [self::SELF => 1],
     ];
   }
@@ -57,9 +58,11 @@ class Csp {
         continue; // Skip empty directives
       }
       switch ($directive) {
+        case "base-uri":
         case "default-src":
         case "form-action":
         case "frame-ancestors":
+        case "object-src":
           // These do not inherit
           break;
         case "frame-src":

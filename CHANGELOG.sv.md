@@ -2,6 +2,13 @@
 
 [English version](CHANGELOG.md)
 
+## v2026.9.0 – 2026-09-06
+
+- **Content Security Policy** – Lade till explicita direktiv för
+  `object-src 'none'`, `base-uri 'self'` och `form-action 'self'`. Data-URL:er
+  tillåts nu bara för bilder och typsnitt i stället för att ärvas genom
+  `default-src`.
+
 ## v2026.8.2 – 2026-09-01
 
 - **Content Security Policy** – Lade till det dokumenterade filtret

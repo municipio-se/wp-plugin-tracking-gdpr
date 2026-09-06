@@ -275,6 +275,26 @@ if ($scenario === "active") {
       !str_contains((string) wstg_csp(), "ignored.example.test"),
     "Plugin-registered CSP sources were not applied safely.",
   );
+  $policy = (string) wstg_csp();
+  wstg_test_assert(
+    str_contains($policy, "base-uri 'self'") &&
+      str_contains($policy, "default-src 'self'") &&
+      !str_contains($policy, "default-src 'self' data:") &&
+      str_contains($policy, "font-src 'self' data:") &&
+      str_contains($policy, "img-src 'self' data: https:") &&
+      str_contains($policy, "object-src 'none'") &&
+      str_contains($policy, "form-action 'self'"),
+    "The hardened CSP baseline was not serialized as intended.",
+  );
+  $navigationPolicy = new \WhitespaceTrackingGdpr\Csp();
+  $navigationPolicy->allow("default-src", "https:");
+  wstg_test_assert(
+    str_contains((string) $navigationPolicy, "base-uri 'self'") &&
+      !str_contains((string) $navigationPolicy, "base-uri 'self' https:") &&
+      str_contains((string) $navigationPolicy, "form-action 'self'") &&
+      !str_contains((string) $navigationPolicy, "form-action 'self' https:"),
+    "Navigation directives inherited the default fetch sources.",
+  );
   wstg_register_service("test-video", [
     "title" => "Test video",
     "category" => "embedded",
