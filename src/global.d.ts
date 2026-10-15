@@ -10,6 +10,13 @@ declare type ServiceCookie = {
 
 declare global {
   type MatomoTracker = {
+    requireConsent: () => void;
+    isConsentRequired: () => boolean;
+    setConsentGiven: (setCookieConsent?: boolean) => void;
+    forgetConsentGiven: () => void;
+    disableCookies: () => void;
+    disableBrowserFeatureDetection: () => void;
+    enableBrowserFeatureDetection: () => void;
     forgetCookieConsentGiven: () => void;
     rememberCookieConsentGiven: () => void;
     requireCookieConsent: () => boolean;

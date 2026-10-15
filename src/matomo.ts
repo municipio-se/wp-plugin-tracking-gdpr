@@ -7,6 +7,7 @@ export class MatomoManager {
   private analyticsConsent: boolean | null = null;
   private containerConsentRegistered = false;
   private directTrackerStarted = false;
+  private containerTrackers = new Map<MatomoTracker, () => void>();
   constructor(
     public url: string,
     { containerId, siteId }: { containerId?: string; siteId?: string },
@@ -63,9 +64,7 @@ export class MatomoManager {
       this.analyticsConsent = nextAnalyticsConsent;
 
       if (this.containerId && this.containerConsentRegistered) {
-        window.Matomo?.getAsyncTrackers().forEach((tracker) => {
-          this.applyConsentToTracker(tracker);
-        });
+        this.containerTrackers.forEach((synchronize) => synchronize());
       } else if (!this.containerId && this.directTrackerStarted) {
         this.applyConsentToDirectTracker();
       }
@@ -94,17 +93,6 @@ export class MatomoManager {
     return this;
   }
 
-  private applyConsentToTracker(tracker: MatomoTracker) {
-    if (this.analyticsConsent === null) {
-      return;
-    }
-    if (this.analyticsConsent) {
-      tracker.rememberCookieConsentGiven();
-    } else {
-      tracker.forgetCookieConsentGiven();
-    }
-  }
-
   private applyConsentToDirectTracker() {
     if (this.analyticsConsent === null) {
       return;
@@ -122,25 +110,96 @@ export class MatomoManager {
     }
     this.containerConsentRegistered = true;
 
-    /**
-     * Queuing commands in `_paq` before Matomo's bundled tracker loads makes
-     * Matomo create an unconfigured default tracker before the container adds
-     * its configured tracker. Registering at TrackerSetup keeps one tracker and
-     * applies the requirement before its first page view. Tag Manager applies
-     * the same requirement again after TrackerSetup, so container consent must
-     * use Matomo's remembered cookie. If Tracking GDPR already has consent but
-     * that cookie is missing, restore it in a microtask after the container has
-     * configured Secure and SameSite.
-     */
+    // MTM configures trackers after TrackerSetup, then immediately tracks the
+    // page. Synchronize its consent requirements synchronously so its first
+    // request respects the dialog, even when Matomo remembers an older choice.
     const register = () => {
       if (!window.Matomo) {
         return;
       }
       const prepareTracker = (tracker: MatomoTracker) => {
-        const needsRememberedConsent = tracker.requireCookieConsent();
-        if (needsRememberedConsent && this.analyticsConsent) {
-          queueMicrotask(() => this.applyConsentToTracker(tracker));
-        }
+        if (this.containerTrackers.has(tracker)) return;
+        let internal = false;
+        let cookiesDisabled = false;
+        let featuresDisabled = false;
+        let trackingConsentRequired = tracker.isConsentRequired();
+        const original = {
+          requireCookieConsent: tracker.requireCookieConsent.bind(tracker),
+          requireConsent: tracker.requireConsent.bind(tracker),
+          setConsentGiven: tracker.setConsentGiven.bind(tracker),
+          forgetConsentGiven: tracker.forgetConsentGiven.bind(tracker),
+          setCookieConsentGiven: tracker.setCookieConsentGiven.bind(tracker),
+          forgetCookieConsentGiven:
+            tracker.forgetCookieConsentGiven.bind(tracker),
+          disableCookies: tracker.disableCookies.bind(tracker),
+          disableBrowserFeatureDetection:
+            tracker.disableBrowserFeatureDetection.bind(tracker),
+          enableBrowserFeatureDetection:
+            tracker.enableBrowserFeatureDetection.bind(tracker),
+        };
+        const synchronize = () => {
+          internal = true;
+          try {
+            if (trackingConsentRequired) {
+              if (this.analyticsConsent) original.setConsentGiven(false);
+              else original.forgetConsentGiven();
+            }
+            if (this.analyticsConsent && !cookiesDisabled) {
+              original.setCookieConsentGiven();
+            } else {
+              original.forgetCookieConsentGiven();
+            }
+          } finally {
+            internal = false;
+          }
+        };
+        // Matomo also disables cookies internally when consent is absent.
+        // Only an explicit container setting must survive a later grant.
+        tracker.disableCookies = () => {
+          if (!internal) cookiesDisabled = true;
+          original.disableCookies();
+        };
+        tracker.disableBrowserFeatureDetection = () => {
+          if (!internal) featuresDisabled = true;
+          original.disableBrowserFeatureDetection();
+        };
+        tracker.enableBrowserFeatureDetection = () => {
+          if (!featuresDisabled) original.enableBrowserFeatureDetection();
+        };
+        tracker.setConsentGiven = (setCookieConsent) => {
+          if (this.analyticsConsent) original.setConsentGiven(setCookieConsent);
+        };
+        tracker.setCookieConsentGiven = () => {
+          if (this.analyticsConsent && !cookiesDisabled)
+            original.setCookieConsentGiven();
+        };
+        tracker.requireCookieConsent = () => {
+          if (internal) return original.requireCookieConsent();
+          internal = true;
+          let required;
+          try {
+            required = original.requireCookieConsent();
+          } finally {
+            internal = false;
+          }
+          synchronize();
+          return required;
+        };
+        tracker.requireConsent = () => {
+          if (internal) return original.requireConsent();
+          trackingConsentRequired = true;
+          internal = true;
+          try {
+            original.requireConsent();
+          } finally {
+            internal = false;
+          }
+          synchronize();
+        };
+        // Keep every TrackerSetup instance, including MTM configurations that
+        // do not register their tracker in Matomo.getAsyncTrackers().
+        this.containerTrackers.set(tracker, synchronize);
+        tracker.requireCookieConsent();
       };
       window.Matomo.on('TrackerSetup', prepareTracker);
       window.Matomo.getAsyncTrackers().forEach(prepareTracker);
